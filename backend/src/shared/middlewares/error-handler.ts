@@ -1,0 +1,31 @@
+import type { NextFunction, Request, Response } from 'express';
+import { ZodError } from 'zod';
+import { AppError } from '../errors/app-error.js';
+import { fail } from '../utils/respond.js';
+import { env } from '../../config/env.js';
+
+export function errorHandler(
+  err: unknown,
+  _req: Request,
+  res: Response,
+  // Express identifies error middleware by arity; the parameter must exist.
+  _next: NextFunction,
+): void {
+  if (err instanceof AppError) {
+    fail(res, err.code, err.message, err.statusCode);
+    return;
+  }
+
+  if (err instanceof ZodError) {
+    const message = err.issues
+      .map((issue) => `${issue.path.join('.') || 'body'}: ${issue.message}`)
+      .join('; ');
+    fail(res, 'VALIDATION_ERROR', message, 400);
+    return;
+  }
+
+  if (env.NODE_ENV !== 'test') {
+    console.error('Unhandled error:', err);
+  }
+  fail(res, 'INTERNAL_ERROR', 'An unexpected error occurred', 500);
+}
