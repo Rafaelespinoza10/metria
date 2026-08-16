@@ -83,7 +83,7 @@ goals
 measurement_types
   id uuid PK
   key text NOT NULL                 -- 'weight', 'waist', 'left_biceps', …
-  unit text NOT NULL                -- 'kg' | 'cm'
+  unit text NOT NULL                -- 'kg' | 'cm' | '%'
   user_id uuid NULL FK              -- NULL = system type; set = future custom type
   created_at
   UNIQUE (key) WHERE user_id IS NULL; UNIQUE (user_id, key)
@@ -241,12 +241,12 @@ Badge names/descriptions are not stored — they are i18n keys in the clients, k
 
 ## Backend tasks
 
-- [ ] Add `drizzle-orm`, `pg` driver, `drizzle-kit`; `database/client.ts` and
+- [x] Add `drizzle-orm`, `pg` driver, `drizzle-kit`; `database/client.ts` and
       `database/schema/` (one file per domain, barrel export).
-- [ ] Implement every table/enum/index above.
-- [ ] `drizzle.config.ts`; scripts `db:generate`, `db:migrate`.
-- [ ] Seed script: system measurement types (weight + 16 sites), badge keys.
-- [ ] Document local dev DB setup in `backend/README.md`.
+- [x] Implement every table/enum/index above.
+- [x] `drizzle.config.ts`; scripts `db:generate`, `db:migrate`, `db:seed`; local `docker-compose.yml` (PostgreSQL 16 on port 5433).
+- [x] Seed script: system measurement types (weight, body fat, 15 sites), badge keys.
+- [x] Document local dev DB setup in `backend/README.md`.
 
 ## Frontend tasks
 
@@ -308,6 +308,6 @@ Uploads     static serving of stored files (auth-gated)
 
 ## Definition of done
 
-- [ ] All tables, enums, indexes implemented and migrated locally.
-- [ ] Seeds in place; README documents DB setup.
-- [ ] Checklist updated; summary reported.
+- [x] All tables, enums, indexes implemented and migrated locally.
+- [x] Seeds in place; README documents DB setup.
+- [x] Checklist updated; summary reported.
