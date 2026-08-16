@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Builds
+dist/
+build/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Expo
+.expo/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Uploaded files (local storage driver)
+backend/storage/
+
+# OS / editor
+.DS_Store
+*.log
