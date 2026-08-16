@@ -1,0 +1,12 @@
+{
+  "common": {
+    "appName": "Metria",
+    "loading": "Loading…",
+    "error": "Something went wrong",
+    "retry": "Retry"
+  },
+  "home": {
+    "tagline": "Your habits. Your body. Your progress.",
+    "placeholder": "The foundation is ready. Features arrive workflow by workflow."
+  }
+}
