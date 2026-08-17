@@ -12,6 +12,10 @@ import { createHealthRoutes } from './modules/health/health.routes.js';
 import { createMeasurementsRoutes } from './modules/measurements/measurements.routes.js';
 import { MeasurementsRepository } from './modules/measurements/measurements.repository.js';
 import { MeasurementsService } from './modules/measurements/measurements.service.js';
+import { DailyTargetsRepository } from './modules/nutrition/daily-targets.repository.js';
+import { createNutritionRoutes } from './modules/nutrition/nutrition.routes.js';
+import { NutritionRepository } from './modules/nutrition/nutrition.repository.js';
+import { NutritionService } from './modules/nutrition/nutrition.service.js';
 import { createUploadsRoutes } from './modules/uploads/uploads.routes.js';
 import { UsersRepository } from './modules/users/users.repository.js';
 import { createUsersRoutes } from './modules/users/users.routes.js';
@@ -49,9 +53,16 @@ export function createApp(deps: AppDependencies = {}): express.Express {
     tokenService,
     mailer,
   );
+  const nutritionRepository = new NutritionRepository();
+  const dailyTargetsRepository = new DailyTargetsRepository();
   const usersService = new UsersService(usersRepository, storage);
   const goalsService = new GoalsService(goalsRepository, measurementsRepository);
   const measurementsService = new MeasurementsService(measurementsRepository, storage);
+  const nutritionService = new NutritionService(
+    nutritionRepository,
+    dailyTargetsRepository,
+    usersRepository,
+  );
   const authMiddleware = createAuthMiddleware({ usersRepository, tokenService });
 
   app.use('/api/health', createHealthRoutes());
@@ -59,6 +70,7 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   app.use('/api/users', createUsersRoutes({ usersService, authMiddleware }));
   app.use('/api/goals', createGoalsRoutes({ goalsService, authMiddleware }));
   app.use('/api/measurements', createMeasurementsRoutes({ measurementsService, authMiddleware }));
+  app.use('/api/nutrition', createNutritionRoutes({ nutritionService, authMiddleware }));
   app.use('/api/uploads', createUploadsRoutes({ storage, authMiddleware }));
 
   app.use(notFound);
