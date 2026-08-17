@@ -52,3 +52,32 @@ export interface DaySummary {
   totals: MacroTotals;
   targets: NutritionTargets;
 }
+
+export interface AiFood {
+  name: string;
+  estimatedGrams?: number;
+  calories: number;
+  protein: number;
+  carbohydrates: number;
+  fat: number;
+  micronutrients?: Record<string, number>;
+  confidence: number;
+}
+
+export interface MealEstimation {
+  foods: AiFood[];
+  overallConfidence?: number;
+  notes?: string;
+}
+
+export interface MealAnalysis {
+  id: string;
+  status: 'pending' | 'completed' | 'failed' | 'confirmed' | 'discarded';
+  result: MealEstimation | null;
+  errorCode: string | null;
+}
+
+export interface AlternativeSuggestion {
+  title: string;
+  description: string;
+}
