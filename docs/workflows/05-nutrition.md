@@ -55,10 +55,10 @@ Progress Score later.
 
 ## Frontend tasks
 
-- [ ] `features/nutrition`: day screen (hero + macro bars + grouped meals + day nav),
+- [x] `features/nutrition`: day screen (hero + macro bars + grouped meals + day nav),
       add-meal screen (category, name, items editor), targets screen.
-- [ ] Home quick-action row for Nutrition.
-- [ ] en/es strings; Jest tests for totals/date helpers + a component.
+- [x] Home quick-action row for Nutrition.
+- [x] en/es strings; Jest tests for totals/date helpers + a component.
 
 ## API contracts
 
@@ -107,4 +107,4 @@ Frontend Jest: meal totals + day-navigation date helpers; macro progress compone
 
 ## Definition of done
 
-- [ ] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
+- [x] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
