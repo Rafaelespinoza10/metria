@@ -18,6 +18,8 @@ export interface CreateMealData {
   localDate: string;
   notes?: string | undefined;
   items: MealItemInput[];
+  source?: MealRow['source'] | undefined;
+  analysisId?: string | undefined;
 }
 
 export interface UpdateMealData {
