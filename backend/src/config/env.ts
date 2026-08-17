@@ -15,6 +15,8 @@ const envSchema = z.object({
     .positive()
     .default(7 * 24 * 60 * 60),
   STORAGE_DIR: z.string().min(1).default('storage'),
+  // '*' or a comma-separated list of allowed origins.
+  CORS_ORIGIN: z.string().min(1).default('*'),
   // AI features stay disabled (analyses fail gracefully) when the key is absent.
   OPENAI_API_KEY: z.string().min(1).optional(),
   OPENAI_MODEL: z.string().min(1).default('gpt-4o-mini'),
