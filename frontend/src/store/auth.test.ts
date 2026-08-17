@@ -45,6 +45,14 @@ describe('auth store', () => {
     });
   });
 
+  it('setUser replaces the profile in place (used after PATCH /users/me)', async () => {
+    await useAuthStore.getState().signIn('token-abc', user);
+    useAuthStore.getState().setUser({ ...user, name: 'Rafa', locale: 'en' });
+
+    expect(useAuthStore.getState().user).toMatchObject({ name: 'Rafa', locale: 'en' });
+    expect(useAuthStore.getState().status).toBe('signedIn');
+  });
+
   it('signOut clears the stored session and state', async () => {
     await useAuthStore.getState().signIn('token-abc', user);
     await useAuthStore.getState().signOut();
