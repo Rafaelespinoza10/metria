@@ -48,7 +48,18 @@
     "sleep": "Sleep",
     "sleepHint": "Nights, quality, and target",
     "insights": "Insights",
-    "insightsHint": "What your week says about you"
+    "insightsHint": "What your week says about you",
+    "today": "Today",
+    "vsLastWeek": "{{delta}} vs last week",
+    "bodyProgress": "Body progress",
+    "workoutCount": "Workouts",
+    "prevWindow": "prev. {{count}}",
+    "window": {
+      "week": "Week",
+      "7d": "7d",
+      "30d": "30d",
+      "90d": "90d"
+    }
   },
   "goals": {
     "title": "Goals",
