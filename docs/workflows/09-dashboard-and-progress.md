@@ -57,9 +57,9 @@ Read-only over meals, activity, sleep, workouts, measurements, daily_targets.
 
 ## Frontend tasks
 
-- [ ] Home dashboard: score hero with delta, Today bars, Body Progress card with window
+- [x] Home dashboard: score hero with delta, Today bars, Body Progress card with window
       chips; loading skeletons shaped like the layout; en/es strings.
-- [ ] Jest tests for delta formatting helpers.
+- [x] Jest tests for delta formatting helpers.
 
 ## API contracts
 
@@ -99,4 +99,4 @@ score 0 with no data; future date → 400. Frontend Jest: delta/sign formatting 
 
 ## Definition of done
 
-- [ ] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
+- [x] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
