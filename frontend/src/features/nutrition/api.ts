@@ -1,5 +1,12 @@
 import { api } from '../../services/api';
-import type { CreateMealInput, DaySummary, Meal, NutritionTargets } from './types';
+import type {
+  AlternativeSuggestion,
+  CreateMealInput,
+  DaySummary,
+  Meal,
+  MealAnalysis,
+  NutritionTargets,
+} from './types';
 
 export function fetchMeals(date: string): Promise<{ meals: Meal[] }> {
   return api<{ meals: Meal[] }>(`/api/nutrition/meals?date=${date}`);
@@ -25,4 +32,41 @@ export function putTargets(input: NutritionTargets): Promise<{ targets: Nutritio
     method: 'PUT',
     body: JSON.stringify(input),
   });
+}
+
+export function analyzeMealPhoto(photo: {
+  uri: string;
+  mimeType: string;
+  fileName: string;
+}): Promise<{ analysis: MealAnalysis }> {
+  const formData = new FormData();
+  formData.append('photo', {
+    uri: photo.uri,
+    name: photo.fileName,
+    type: photo.mimeType,
+  } as unknown as Blob);
+  return api<{ analysis: MealAnalysis }>('/api/nutrition/analyses', {
+    method: 'POST',
+    body: formData,
+  });
+}
+
+export function fetchAnalysis(id: string): Promise<{ analysis: MealAnalysis }> {
+  return api<{ analysis: MealAnalysis }>(`/api/nutrition/analyses/${id}`);
+}
+
+export function confirmAnalysis(id: string, input: CreateMealInput): Promise<{ meal: Meal }> {
+  return api<{ meal: Meal }>(`/api/nutrition/analyses/${id}/confirm`, {
+    method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export function fetchAlternatives(
+  mealId: string,
+): Promise<{ suggestions: AlternativeSuggestion[] }> {
+  return api<{ suggestions: AlternativeSuggestion[] }>(
+    `/api/nutrition/meals/${mealId}/alternatives`,
+    { method: 'POST' },
+  );
 }

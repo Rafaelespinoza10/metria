@@ -1,5 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createMeal, fetchMeals, fetchSummary, fetchTargets, putTargets } from './api';
+import {
+  analyzeMealPhoto,
+  confirmAnalysis,
+  createMeal,
+  fetchAlternatives,
+  fetchAnalysis,
+  fetchMeals,
+  fetchSummary,
+  fetchTargets,
+  putTargets,
+} from './api';
+import type { CreateMealInput } from './types';
 
 export function useMeals(date: string) {
   return useQuery({
@@ -38,4 +49,28 @@ export function usePutTargets() {
     mutationFn: putTargets,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['nutrition'] }),
   });
+}
+
+export function useAnalyzeMealPhoto() {
+  return useMutation({ mutationFn: analyzeMealPhoto });
+}
+
+export function useAnalysis(id: string) {
+  return useQuery({
+    queryKey: ['nutrition', 'analysis', id],
+    queryFn: () => fetchAnalysis(id),
+    select: (data) => data.analysis,
+  });
+}
+
+export function useConfirmAnalysis(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: CreateMealInput) => confirmAnalysis(id, input),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['nutrition'] }),
+  });
+}
+
+export function useAlternatives() {
+  return useMutation({ mutationFn: fetchAlternatives });
 }

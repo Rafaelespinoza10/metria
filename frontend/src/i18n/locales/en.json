@@ -144,7 +144,20 @@
       "lunch": "Lunch",
       "dinner": "Dinner",
       "snack": "Snack"
-    }
+    },
+    "scanTitle": "Scan a meal",
+    "scanHeadline": "One photo, quick review",
+    "scanHint": "Metria estimates foods and macros from a photo. Values are estimates — you review and correct everything before saving.",
+    "pickPhoto": "Choose photo",
+    "analyzing": "Analyzing your photo. This takes a few seconds.",
+    "analysisFailed": "The analysis didn't work this time. You can retry or log the meal manually.",
+    "reviewTitle": "Review estimate",
+    "estimateDisclaimer": "These values are AI estimates from your photo. Adjust anything before saving.",
+    "confidence": "~{{percent}}% confidence",
+    "confirmMeal": "Confirm and save",
+    "suggestAlternatives": "Suggest alternatives",
+    "alternativesFor": "Alternatives to {{meal}}",
+    "alternativesUnavailable": "Suggestions aren't available right now."
   },
   "activity": {
     "title": "Activity",

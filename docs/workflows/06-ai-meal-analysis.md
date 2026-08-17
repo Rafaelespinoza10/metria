@@ -65,11 +65,11 @@ Logging a meal becomes one photo plus a quick review, instead of manual macro en
 
 ## Frontend tasks
 
-- [ ] Extract a reusable meal items editor from AddMeal; reuse it in the review screen.
-- [ ] `features/nutrition` AI screens: scan/upload (analyzing state), review/edit with
+- [x] Extract a reusable meal items editor from AddMeal; reuse it in the review screen.
+- [x] `features/nutrition` AI screens: scan/upload (analyzing state), review/edit with
       estimate disclaimer + per-item confidence, confirm → meal.
-- [ ] Alternatives request from the day view (bottom card list).
-- [ ] en/es strings; Jest tests for the AI→items mapping helper.
+- [x] Alternatives request from the day view (bottom card list).
+- [x] en/es strings; Jest tests for the AI→items mapping helper.
 
 ## API contracts
 
@@ -121,4 +121,4 @@ meal 404. Frontend Jest: AI foods → editor items mapping.
 
 ## Definition of done
 
-- [ ] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
+- [x] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
