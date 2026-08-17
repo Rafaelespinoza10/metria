@@ -6,6 +6,10 @@ import { SkeletonBlock } from '../components/SkeletonBlock';
 import { LoginScreen } from '../features/auth/screens/LoginScreen';
 import { RegisterScreen } from '../features/auth/screens/RegisterScreen';
 import { HomeScreen } from '../features/dashboard/screens/HomeScreen';
+import { CreateGoalScreen } from '../features/goals/screens/CreateGoalScreen';
+import { GoalsScreen } from '../features/goals/screens/GoalsScreen';
+import { LogMeasurementScreen } from '../features/measurements/screens/LogMeasurementScreen';
+import { MeasurementsScreen } from '../features/measurements/screens/MeasurementsScreen';
 import { useAuthStore } from '../store/auth';
 import { theme } from '../theme';
 import type { AppStackParamList, AuthStackParamList } from './types';
@@ -50,6 +54,10 @@ export function RootNavigator() {
       ) : status === 'signedIn' ? (
         <AppStack.Navigator screenOptions={{ headerShown: false }}>
           <AppStack.Screen name="Home" component={HomeScreen} />
+          <AppStack.Screen name="Goals" component={GoalsScreen} />
+          <AppStack.Screen name="CreateGoal" component={CreateGoalScreen} />
+          <AppStack.Screen name="Measurements" component={MeasurementsScreen} />
+          <AppStack.Screen name="LogMeasurement" component={LogMeasurementScreen} />
         </AppStack.Navigator>
       ) : (
         <AuthStack.Navigator screenOptions={{ headerShown: false }}>

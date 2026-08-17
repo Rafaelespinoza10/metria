@@ -1,12 +1,33 @@
 import { Ionicons } from '@expo/vector-icons';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { PressableScale } from '../../../components/PressableScale';
+import type { AppStackParamList } from '../../../navigation/types';
 import { useLogout } from '../../auth/hooks';
 import { useAuthStore } from '../../../store/auth';
 import { theme } from '../../../theme';
+
+type Props = NativeStackScreenProps<AppStackParamList, 'Home'>;
+
+interface QuickAction {
+  icon: keyof typeof Ionicons.glyphMap;
+  titleKey: string;
+  subtitleKey: string;
+  route: 'Goals' | 'Measurements';
+}
+
+const QUICK_ACTIONS: QuickAction[] = [
+  { icon: 'flag-outline', titleKey: 'home.goals', subtitleKey: 'home.goalsHint', route: 'Goals' },
+  {
+    icon: 'body-outline',
+    titleKey: 'home.measurements',
+    subtitleKey: 'home.measurementsHint',
+    route: 'Measurements',
+  },
+];
 
 function greetingKey(date: Date): string {
   const hour = date.getHours();
@@ -15,7 +36,7 @@ function greetingKey(date: Date): string {
   return 'home.goodEvening';
 }
 
-export function HomeScreen() {
+export function HomeScreen({ navigation }: Props) {
   const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
   const logoutMutation = useLogout();
@@ -54,6 +75,35 @@ export function HomeScreen() {
           <Text className="mt-3 text-sm leading-relaxed text-content-secondary">
             {t('home.emptyHint')}
           </Text>
+        </Animated.View>
+
+        <Animated.View entering={FadeInDown.delay(120).springify()} className="mt-8">
+          <Text className="text-lg font-semibold text-content-primary">{t('home.track')}</Text>
+          <View className="mt-3 rounded-3xl border border-white/5 bg-ink-900 px-5">
+            {QUICK_ACTIONS.map((action, index) => (
+              <PressableScale
+                key={action.route}
+                onPress={() => navigation.navigate(action.route)}
+                accessibilityRole="button"
+                className={`flex-row items-center gap-4 py-4 ${
+                  index > 0 ? 'border-t border-white/5' : ''
+                }`}
+              >
+                <View className="h-11 w-11 items-center justify-center rounded-2xl bg-brand-soft">
+                  <Ionicons name={action.icon} size={22} color={theme.colors.brand.DEFAULT} />
+                </View>
+                <View className="flex-1">
+                  <Text className="text-base font-semibold text-content-primary">
+                    {t(action.titleKey)}
+                  </Text>
+                  <Text className="mt-0.5 text-sm text-content-secondary">
+                    {t(action.subtitleKey)}
+                  </Text>
+                </View>
+                <Ionicons name="chevron-forward" size={18} color={theme.colors.content.tertiary} />
+              </PressableScale>
+            ))}
+          </View>
         </Animated.View>
       </View>
     </SafeAreaView>

@@ -5,4 +5,8 @@ export type AuthStackParamList = {
 
 export type AppStackParamList = {
   Home: undefined;
+  Goals: undefined;
+  CreateGoal: undefined;
+  Measurements: undefined;
+  LogMeasurement: undefined;
 };
