@@ -1,12 +1,38 @@
 {
   "common": {
-    "appName": "Metria",
+    "appName": "METRIA",
     "loading": "Cargando…",
     "error": "Algo salió mal",
     "retry": "Reintentar"
   },
+  "auth": {
+    "welcomeBack": "Hola de nuevo",
+    "loginTitle": "Inicia sesión",
+    "registerKicker": "Empieza a registrar",
+    "registerTitle": "Crea tu cuenta",
+    "name": "Nombre",
+    "email": "Correo",
+    "password": "Contraseña",
+    "namePlaceholder": "¿Cómo te llamamos?",
+    "emailPlaceholder": "tu@correo.com",
+    "passwordPlaceholder": "Mínimo 8 caracteres",
+    "signIn": "Iniciar sesión",
+    "createAccount": "Crear cuenta",
+    "noAccount": "¿Aún no tienes cuenta?",
+    "haveAccount": "¿Ya tienes cuenta?",
+    "errors": {
+      "invalidCredentials": "El correo y la contraseña no coinciden.",
+      "emailTaken": "Ya existe una cuenta con este correo.",
+      "invalidInput": "Revisa los campos e inténtalo de nuevo.",
+      "generic": "Algo salió mal. Inténtalo de nuevo."
+    }
+  },
   "home": {
-    "tagline": "Tus hábitos. Tu cuerpo. Tu progreso.",
-    "placeholder": "La base está lista. Las funciones llegan flujo por flujo."
+    "goodMorning": "Buenos días",
+    "goodAfternoon": "Buenas tardes",
+    "goodEvening": "Buenas noches",
+    "progressScore": "Puntaje de progreso",
+    "emptyHint": "Registra tu primer día para desbloquear tu puntaje.",
+    "logout": "Cerrar sesión"
   }
 }

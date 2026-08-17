@@ -1,12 +1,38 @@
 {
   "common": {
-    "appName": "Metria",
+    "appName": "METRIA",
     "loading": "Loading…",
     "error": "Something went wrong",
     "retry": "Retry"
   },
+  "auth": {
+    "welcomeBack": "Welcome back",
+    "loginTitle": "Sign in",
+    "registerKicker": "Start tracking",
+    "registerTitle": "Create your account",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "namePlaceholder": "What should we call you?",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "At least 8 characters",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already have an account?",
+    "errors": {
+      "invalidCredentials": "That email and password don't match.",
+      "emailTaken": "An account with this email already exists.",
+      "invalidInput": "Check the fields and try again.",
+      "generic": "Something went wrong. Try again."
+    }
+  },
   "home": {
-    "tagline": "Your habits. Your body. Your progress.",
-    "placeholder": "The foundation is ready. Features arrive workflow by workflow."
+    "goodMorning": "Good morning",
+    "goodAfternoon": "Good afternoon",
+    "goodEvening": "Good evening",
+    "progressScore": "Progress score",
+    "emptyHint": "Track your first day to unlock your score.",
+    "logout": "Log out"
   }
 }
