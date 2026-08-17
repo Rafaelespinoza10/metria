@@ -4,6 +4,7 @@ export const errorCodes = [
   'FORBIDDEN',
   'NOT_FOUND',
   'CONFLICT',
+  'AI_UNAVAILABLE',
   'INTERNAL_ERROR',
 ] as const;
 

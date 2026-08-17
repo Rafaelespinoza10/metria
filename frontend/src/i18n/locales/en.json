@@ -46,7 +46,9 @@
     "workouts": "Workouts",
     "workoutsHint": "Gym sessions and sets",
     "sleep": "Sleep",
-    "sleepHint": "Nights, quality, and target"
+    "sleepHint": "Nights, quality, and target",
+    "insights": "Insights",
+    "insightsHint": "What your week says about you"
   },
   "goals": {
     "title": "Goals",
@@ -144,7 +146,20 @@
       "lunch": "Lunch",
       "dinner": "Dinner",
       "snack": "Snack"
-    }
+    },
+    "scanTitle": "Scan a meal",
+    "scanHeadline": "One photo, quick review",
+    "scanHint": "Metria estimates foods and macros from a photo. Values are estimates — you review and correct everything before saving.",
+    "pickPhoto": "Choose photo",
+    "analyzing": "Analyzing your photo. This takes a few seconds.",
+    "analysisFailed": "The analysis didn't work this time. You can retry or log the meal manually.",
+    "reviewTitle": "Review estimate",
+    "estimateDisclaimer": "These values are AI estimates from your photo. Adjust anything before saving.",
+    "confidence": "~{{percent}}% confidence",
+    "confirmMeal": "Confirm and save",
+    "suggestAlternatives": "Suggest alternatives",
+    "alternativesFor": "Alternatives to {{meal}}",
+    "alternativesUnavailable": "Suggestions aren't available right now."
   },
   "activity": {
     "title": "Activity",
@@ -197,5 +212,16 @@
     "saveTarget": "Save target",
     "hoursPerNight": "Hours per night",
     "targetHint": "Your nightly duration goal, e.g. 8 hours."
+  },
+  "insights": {
+    "title": "Insights",
+    "daily": "Today",
+    "weekly": "This week",
+    "unavailable": "Insights aren't available right now. Your data is safe — try again later.",
+    "disclaimer": "AI interpretation of your own tracked numbers. Not medical advice.",
+    "avgSteps": "Avg. steps",
+    "avgSleep": "Avg. sleep",
+    "proteinGoal": "Protein goal met",
+    "workouts": "Workouts"
   }
 }

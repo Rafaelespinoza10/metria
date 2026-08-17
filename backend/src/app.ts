@@ -1,4 +1,6 @@
 import express from 'express';
+import { OpenAIInsights, OpenAIMealAlternatives, OpenAIMealVision } from './ai/openai.js';
+import type { InsightsPort, MealAlternativesPort, MealVisionPort } from './ai/ports.js';
 import { env } from './config/env.js';
 import { ActivityRepository } from './modules/activity/activity.repository.js';
 import { createActivityRoutes } from './modules/activity/activity.routes.js';
@@ -12,10 +14,16 @@ import { createGoalsRoutes } from './modules/goals/goals.routes.js';
 import { GoalsRepository } from './modules/goals/goals.repository.js';
 import { GoalsService } from './modules/goals/goals.service.js';
 import { createHealthRoutes } from './modules/health/health.routes.js';
+import { AggregatesService } from './modules/insights/aggregates.service.js';
+import { InsightsRepository } from './modules/insights/insights.repository.js';
+import { createInsightsRoutes } from './modules/insights/insights.routes.js';
+import { InsightsService } from './modules/insights/insights.service.js';
 import { createMeasurementsRoutes } from './modules/measurements/measurements.routes.js';
 import { MeasurementsRepository } from './modules/measurements/measurements.repository.js';
 import { MeasurementsService } from './modules/measurements/measurements.service.js';
 import { DailyTargetsRepository } from './modules/nutrition/daily-targets.repository.js';
+import { MealAnalysisRepository } from './modules/nutrition/meal-analysis.repository.js';
+import { MealAnalysisService } from './modules/nutrition/meal-analysis.service.js';
 import { createNutritionRoutes } from './modules/nutrition/nutrition.routes.js';
 import { SleepRepository } from './modules/sleep/sleep.repository.js';
 import { createSleepRoutes } from './modules/sleep/sleep.routes.js';
@@ -40,6 +48,10 @@ export interface AppDependencies {
   passwordResetMailer?: PasswordResetMailer;
   /** Overridable in tests to use a temp directory. */
   storage?: StoragePort;
+  /** Overridable in tests — the suite never calls OpenAI. */
+  mealVision?: MealVisionPort;
+  mealAlternatives?: MealAlternativesPort;
+  insightsPort?: InsightsPort;
 }
 
 export function createApp(deps: AppDependencies = {}): express.Express {
@@ -64,6 +76,9 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   );
   const nutritionRepository = new NutritionRepository();
   const dailyTargetsRepository = new DailyTargetsRepository();
+  const sleepRepository = new SleepRepository();
+  const workoutsRepository = new WorkoutsRepository();
+  const activityRepository = new ActivityRepository();
   const usersService = new UsersService(usersRepository, storage);
   const goalsService = new GoalsService(goalsRepository, measurementsRepository);
   const measurementsService = new MeasurementsService(measurementsRepository, storage);
@@ -73,15 +88,34 @@ export function createApp(deps: AppDependencies = {}): express.Express {
     usersRepository,
   );
   const activityService = new ActivityService(
-    new ActivityRepository(),
+    activityRepository,
     dailyTargetsRepository,
     usersRepository,
   );
-  const workoutsService = new WorkoutsService(new WorkoutsRepository(), usersRepository);
-  const sleepService = new SleepService(
-    new SleepRepository(),
-    dailyTargetsRepository,
+  const workoutsService = new WorkoutsService(workoutsRepository, usersRepository);
+  const mealAnalysisService = new MealAnalysisService(
+    new MealAnalysisRepository(),
+    nutritionRepository,
+    goalsRepository,
     usersRepository,
+    storage,
+    deps.mealVision ?? new OpenAIMealVision(),
+    deps.mealAlternatives ?? new OpenAIMealAlternatives(),
+  );
+  const sleepService = new SleepService(sleepRepository, dailyTargetsRepository, usersRepository);
+  const aggregatesService = new AggregatesService(
+    nutritionRepository,
+    activityRepository,
+    sleepRepository,
+    workoutsRepository,
+    measurementsRepository,
+    dailyTargetsRepository,
+  );
+  const insightsService = new InsightsService(
+    new InsightsRepository(),
+    aggregatesService,
+    usersRepository,
+    deps.insightsPort ?? new OpenAIInsights(),
   );
   const authMiddleware = createAuthMiddleware({ usersRepository, tokenService });
 
@@ -90,10 +124,14 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   app.use('/api/users', createUsersRoutes({ usersService, authMiddleware }));
   app.use('/api/goals', createGoalsRoutes({ goalsService, authMiddleware }));
   app.use('/api/measurements', createMeasurementsRoutes({ measurementsService, authMiddleware }));
-  app.use('/api/nutrition', createNutritionRoutes({ nutritionService, authMiddleware }));
+  app.use(
+    '/api/nutrition',
+    createNutritionRoutes({ nutritionService, mealAnalysisService, authMiddleware }),
+  );
   app.use('/api/activity', createActivityRoutes({ activityService, authMiddleware }));
   app.use('/api/workouts', createWorkoutsRoutes({ workoutsService, authMiddleware }));
   app.use('/api/sleep', createSleepRoutes({ sleepService, authMiddleware }));
+  app.use('/api/insights', createInsightsRoutes({ insightsService, authMiddleware }));
   app.use('/api/uploads', createUploadsRoutes({ storage, authMiddleware }));
 
   app.use(notFound);

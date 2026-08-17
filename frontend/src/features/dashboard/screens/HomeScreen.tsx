@@ -16,7 +16,7 @@ interface QuickAction {
   icon: keyof typeof Ionicons.glyphMap;
   titleKey: string;
   subtitleKey: string;
-  route: 'Goals' | 'Measurements' | 'Nutrition' | 'Activity' | 'Workouts' | 'Sleep';
+  route: 'Goals' | 'Measurements' | 'Nutrition' | 'Activity' | 'Workouts' | 'Sleep' | 'Insights';
 }
 
 const QUICK_ACTIONS: QuickAction[] = [
@@ -50,6 +50,12 @@ const QUICK_ACTIONS: QuickAction[] = [
     titleKey: 'home.measurements',
     subtitleKey: 'home.measurementsHint',
     route: 'Measurements',
+  },
+  {
+    icon: 'sparkles-outline',
+    titleKey: 'home.insights',
+    subtitleKey: 'home.insightsHint',
+    route: 'Insights',
   },
 ];
 
