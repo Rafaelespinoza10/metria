@@ -46,7 +46,9 @@
     "workouts": "Entrenos",
     "workoutsHint": "Sesiones de gym y series",
     "sleep": "Sueño",
-    "sleepHint": "Noches, calidad y objetivo"
+    "sleepHint": "Noches, calidad y objetivo",
+    "insights": "Insights",
+    "insightsHint": "Lo que tu semana dice de ti"
   },
   "goals": {
     "title": "Metas",
@@ -210,5 +212,16 @@
     "saveTarget": "Guardar objetivo",
     "hoursPerNight": "Horas por noche",
     "targetHint": "Tu meta de duración por noche, p. ej. 8 horas."
+  },
+  "insights": {
+    "title": "Insights",
+    "daily": "Hoy",
+    "weekly": "Esta semana",
+    "unavailable": "Los insights no están disponibles ahora. Tus datos están a salvo; inténtalo más tarde.",
+    "disclaimer": "Interpretación de IA sobre tus propios números. No es consejo médico.",
+    "avgSteps": "Pasos prom.",
+    "avgSleep": "Sueño prom.",
+    "proteinGoal": "Meta de proteína",
+    "workouts": "Entrenos"
   }
 }
