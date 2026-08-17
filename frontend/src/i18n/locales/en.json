@@ -59,7 +59,9 @@
       "7d": "7d",
       "30d": "30d",
       "90d": "90d"
-    }
+    },
+    "achievements": "Achievements",
+    "achievementsHint": "Streaks and milestones"
   },
   "goals": {
     "title": "Goals",
@@ -234,5 +236,38 @@
     "avgSleep": "Avg. sleep",
     "proteinGoal": "Protein goal met",
     "workouts": "Workouts"
+  },
+  "gamification": {
+    "title": "Achievements",
+    "badges": "Milestones",
+    "trackingStreak": "Tracking streak",
+    "sleepStreak": "Sleep streak",
+    "longest": "Longest: {{count}} days",
+    "badge": {
+      "tracking_7_days": {
+        "title": "7 days tracking",
+        "description": "Log anything for 7 days in a row."
+      },
+      "tracking_30_days": {
+        "title": "30 days tracking",
+        "description": "Log anything for 30 days in a row."
+      },
+      "sleep_goal_7_consecutive": {
+        "title": "Sleep week",
+        "description": "Meet your sleep goal 7 nights in a row."
+      },
+      "workouts_10": {
+        "title": "10 workouts",
+        "description": "Register 10 gym sessions."
+      },
+      "steps_100k_total": {
+        "title": "100k steps",
+        "description": "Reach 100,000 total steps."
+      },
+      "first_measurement_improvement": {
+        "title": "First progress",
+        "description": "Improve a body measurement for the first time."
+      }
+    }
   }
 }
