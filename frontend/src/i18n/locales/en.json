@@ -1,12 +1,110 @@
 {
   "common": {
-    "appName": "Metria",
+    "appName": "METRIA",
     "loading": "Loading…",
     "error": "Something went wrong",
     "retry": "Retry"
   },
+  "auth": {
+    "welcomeBack": "Welcome back",
+    "loginTitle": "Sign in",
+    "registerKicker": "Start tracking",
+    "registerTitle": "Create your account",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "namePlaceholder": "What should we call you?",
+    "emailPlaceholder": "you@example.com",
+    "passwordPlaceholder": "At least 8 characters",
+    "signIn": "Sign in",
+    "createAccount": "Create account",
+    "noAccount": "No account yet?",
+    "haveAccount": "Already have an account?",
+    "errors": {
+      "invalidCredentials": "That email and password don't match.",
+      "emailTaken": "An account with this email already exists.",
+      "invalidInput": "Check the fields and try again.",
+      "generic": "Something went wrong. Try again."
+    }
+  },
   "home": {
-    "tagline": "Your habits. Your body. Your progress.",
-    "placeholder": "The foundation is ready. Features arrive workflow by workflow."
+    "goodMorning": "Good morning",
+    "goodAfternoon": "Good afternoon",
+    "goodEvening": "Good evening",
+    "progressScore": "Progress score",
+    "emptyHint": "Track your first day to unlock your score.",
+    "logout": "Log out",
+    "track": "Track",
+    "goals": "Goals",
+    "goalsHint": "Set and review your objectives",
+    "measurements": "Measurements",
+    "measurementsHint": "Body metrics and progress photos"
+  },
+  "goals": {
+    "title": "Goals",
+    "newGoal": "New goal",
+    "create": "Create goal",
+    "empty": "Set your first goal to give your tracking a direction.",
+    "selectCategory": "Category",
+    "selectMetric": "Metric",
+    "selectMeasurementType": "Body site",
+    "startValue": "Start value",
+    "targetValue": "Target value",
+    "status": {
+      "active": "Active",
+      "achieved": "Achieved",
+      "abandoned": "Abandoned"
+    },
+    "category": {
+      "lose_fat": "Lose fat",
+      "gain_muscle": "Gain muscle",
+      "maintain": "Maintain",
+      "improve_habits": "Improve habits"
+    },
+    "metric": {
+      "weight": "Weight",
+      "body_fat": "Body fat",
+      "calories": "Calories",
+      "protein": "Protein",
+      "carbohydrates": "Carbs",
+      "fats": "Fats",
+      "steps": "Steps",
+      "active_minutes": "Active minutes",
+      "sleep_minutes": "Sleep",
+      "workout_frequency": "Workout frequency",
+      "measurement": "Body site"
+    }
+  },
+  "measurements": {
+    "title": "Measurements",
+    "latest": "Latest values",
+    "log": "Log measurement",
+    "save": "Save",
+    "empty": "Log your first measurement to start your body history.",
+    "selectType": "Body site",
+    "value": "Value",
+    "notes": "Notes",
+    "notesPlaceholder": "Optional",
+    "photos": "Progress photos",
+    "addPhoto": "Add photo",
+    "type": {
+      "weight": "Weight",
+      "body_fat": "Body fat",
+      "neck": "Neck",
+      "shoulders": "Shoulders",
+      "chest": "Chest",
+      "waist": "Waist",
+      "hips": "Hips",
+      "left_biceps": "Left biceps",
+      "right_biceps": "Right biceps",
+      "left_triceps": "Left triceps",
+      "right_triceps": "Right triceps",
+      "left_forearm": "Left forearm",
+      "right_forearm": "Right forearm",
+      "left_thigh": "Left thigh",
+      "right_thigh": "Right thigh",
+      "left_calf": "Left calf",
+      "right_calf": "Right calf"
+    }
   }
 }

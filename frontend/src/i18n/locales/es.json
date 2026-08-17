@@ -1,12 +1,110 @@
 {
   "common": {
-    "appName": "Metria",
+    "appName": "METRIA",
     "loading": "Cargando…",
     "error": "Algo salió mal",
     "retry": "Reintentar"
   },
+  "auth": {
+    "welcomeBack": "Hola de nuevo",
+    "loginTitle": "Inicia sesión",
+    "registerKicker": "Empieza a registrar",
+    "registerTitle": "Crea tu cuenta",
+    "name": "Nombre",
+    "email": "Correo",
+    "password": "Contraseña",
+    "namePlaceholder": "¿Cómo te llamamos?",
+    "emailPlaceholder": "tu@correo.com",
+    "passwordPlaceholder": "Mínimo 8 caracteres",
+    "signIn": "Iniciar sesión",
+    "createAccount": "Crear cuenta",
+    "noAccount": "¿Aún no tienes cuenta?",
+    "haveAccount": "¿Ya tienes cuenta?",
+    "errors": {
+      "invalidCredentials": "El correo y la contraseña no coinciden.",
+      "emailTaken": "Ya existe una cuenta con este correo.",
+      "invalidInput": "Revisa los campos e inténtalo de nuevo.",
+      "generic": "Algo salió mal. Inténtalo de nuevo."
+    }
+  },
   "home": {
-    "tagline": "Tus hábitos. Tu cuerpo. Tu progreso.",
-    "placeholder": "La base está lista. Las funciones llegan flujo por flujo."
+    "goodMorning": "Buenos días",
+    "goodAfternoon": "Buenas tardes",
+    "goodEvening": "Buenas noches",
+    "progressScore": "Puntaje de progreso",
+    "emptyHint": "Registra tu primer día para desbloquear tu puntaje.",
+    "logout": "Cerrar sesión",
+    "track": "Registrar",
+    "goals": "Metas",
+    "goalsHint": "Define y revisa tus objetivos",
+    "measurements": "Medidas",
+    "measurementsHint": "Métricas corporales y fotos de progreso"
+  },
+  "goals": {
+    "title": "Metas",
+    "newGoal": "Nueva meta",
+    "create": "Crear meta",
+    "empty": "Crea tu primera meta para darle dirección a tu registro.",
+    "selectCategory": "Categoría",
+    "selectMetric": "Métrica",
+    "selectMeasurementType": "Zona del cuerpo",
+    "startValue": "Valor inicial",
+    "targetValue": "Valor objetivo",
+    "status": {
+      "active": "Activas",
+      "achieved": "Logradas",
+      "abandoned": "Abandonadas"
+    },
+    "category": {
+      "lose_fat": "Perder grasa",
+      "gain_muscle": "Ganar músculo",
+      "maintain": "Mantener",
+      "improve_habits": "Mejorar hábitos"
+    },
+    "metric": {
+      "weight": "Peso",
+      "body_fat": "Grasa corporal",
+      "calories": "Calorías",
+      "protein": "Proteína",
+      "carbohydrates": "Carbohidratos",
+      "fats": "Grasas",
+      "steps": "Pasos",
+      "active_minutes": "Minutos activos",
+      "sleep_minutes": "Sueño",
+      "workout_frequency": "Frecuencia de entreno",
+      "measurement": "Zona del cuerpo"
+    }
+  },
+  "measurements": {
+    "title": "Medidas",
+    "latest": "Últimos valores",
+    "log": "Registrar medida",
+    "save": "Guardar",
+    "empty": "Registra tu primera medida para iniciar tu historial corporal.",
+    "selectType": "Zona del cuerpo",
+    "value": "Valor",
+    "notes": "Notas",
+    "notesPlaceholder": "Opcional",
+    "photos": "Fotos de progreso",
+    "addPhoto": "Agregar foto",
+    "type": {
+      "weight": "Peso",
+      "body_fat": "Grasa corporal",
+      "neck": "Cuello",
+      "shoulders": "Hombros",
+      "chest": "Pecho",
+      "waist": "Cintura",
+      "hips": "Cadera",
+      "left_biceps": "Bíceps izq.",
+      "right_biceps": "Bíceps der.",
+      "left_triceps": "Tríceps izq.",
+      "right_triceps": "Tríceps der.",
+      "left_forearm": "Antebrazo izq.",
+      "right_forearm": "Antebrazo der.",
+      "left_thigh": "Muslo izq.",
+      "right_thigh": "Muslo der.",
+      "left_calf": "Pantorrilla izq.",
+      "right_calf": "Pantorrilla der."
+    }
   }
 }
