@@ -31,11 +31,13 @@ requests**. Never commit directly to `main` or `develop`.
 2. Open the PR against `develop` with `gh pr create --base develop`, including a summary
    and test plan.
 3. **Wait for CI**: `gh pr checks <number> --watch`. CI runs Prettier (`format:check`),
-   lint, typecheck, and tests (`.github/workflows/backend-ci.yml`, `frontend-ci.yml`).
+   lint, typecheck, and tests in BOTH apps (backend: Vitest against a PostgreSQL service;
+   frontend: Jest with jest-expo).
 4. **If any check fails: do NOT merge.** Fix on the branch, push, and watch checks again.
 5. Only when everything is green: `gh pr merge <number> --merge --delete-branch`.
-6. Feature/fix PRs that touch backend logic must include or update tests — a backend PR
-   without tests for new behavior is incomplete.
+6. Feature/fix PRs that add or change behavior must include or update tests — backend
+   (services/endpoints) and frontend (stores, utilities, components) alike. A PR without
+   tests for new behavior is incomplete.
 
 ## Releases
 
