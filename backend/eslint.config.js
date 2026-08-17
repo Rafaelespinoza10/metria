@@ -20,6 +20,15 @@ export default tseslint.config(
     },
   },
   {
+    // Supertest response bodies are `any`; assertions on them are the point of the tests.
+    files: ['src/**/*.test.ts'],
+    rules: {
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+    },
+  },
+  {
     ignores: ['dist/**', 'node_modules/**'],
   },
 );
