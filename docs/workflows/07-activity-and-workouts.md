@@ -54,11 +54,11 @@ progression analytics later.
 
 ## Frontend tasks
 
-- [ ] `features/activity`: day screen (steps hero + minutes, inline editing, day nav) and
+- [x] `features/activity`: day screen (steps hero + minutes, inline editing, day nav) and
       targets screen.
-- [ ] `features/workouts`: list screen + add-workout screen with nested exercise/set
+- [x] `features/workouts`: list screen + add-workout screen with nested exercise/set
       editor.
-- [ ] Home quick-action rows; en/es strings; Jest tests for helpers + a component.
+- [x] Home quick-action rows; en/es strings; Jest tests for helpers + a component.
 
 ## API contracts
 
@@ -109,4 +109,4 @@ exercises). Frontend Jest: workout draft helpers; activity/steps formatting comp
 
 ## Definition of done
 
-- [ ] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
+- [x] Acceptance criteria pass locally and in CI; checklists updated; summary reported.

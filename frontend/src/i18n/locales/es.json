@@ -40,7 +40,11 @@
     "measurements": "Medidas",
     "measurementsHint": "Métricas corporales y fotos de progreso",
     "nutrition": "Nutrición",
-    "nutritionHint": "Comidas, macros y objetivos"
+    "nutritionHint": "Comidas, macros y objetivos",
+    "activity": "Actividad",
+    "activityHint": "Pasos y minutos activos",
+    "workouts": "Entrenos",
+    "workoutsHint": "Sesiones de gym y series"
   },
   "goals": {
     "title": "Metas",
@@ -139,5 +143,39 @@
       "dinner": "Cena",
       "snack": "Snack"
     }
+  },
+  "activity": {
+    "title": "Actividad",
+    "today": "Hoy",
+    "steps": "Pasos",
+    "activeMinutes": "Minutos activos",
+    "save": "Guardar día",
+    "targets": "Objetivos de actividad",
+    "saveTargets": "Guardar objetivos",
+    "stepsTarget": "Pasos por día",
+    "minutesTarget": "Minutos activos por día",
+    "targetsHint": "Los objetivos aplican desde hoy."
+  },
+  "workouts": {
+    "title": "Entrenos",
+    "new": "Nuevo entreno",
+    "save": "Guardar entreno",
+    "empty": "Registra tu primer entreno para iniciar tu historial.",
+    "name": "Nombre del entreno",
+    "namePlaceholder": "Día de empuje",
+    "duration": "Duración (min)",
+    "summary": "{{exercises}} ejercicios · {{sets}} series",
+    "addExercise": "Agregar ejercicio",
+    "addExerciseAction": "Agregar ejercicio",
+    "removeExercise": "Quitar ejercicio",
+    "exerciseName": "Ejercicio",
+    "exerciseNamePlaceholder": "Press de banca",
+    "muscleGroup": "Grupo muscular",
+    "muscleGroupPlaceholder": "Pecho",
+    "reps": "Reps",
+    "weight": "Kg",
+    "rpe": "RPE",
+    "addSet": "Agregar serie",
+    "setLabel": "Serie {{number}}"
   }
 }
