@@ -47,9 +47,9 @@ Progress Score and insights.
 
 ## Frontend tasks
 
-- [ ] `features/sleep`: sleep screen (hero + recent nights), log flow (HH:MM + quality
+- [x] `features/sleep`: sleep screen (hero + recent nights), log flow (HH:MM + quality
       chips), target editor; duration/instant helpers with tests.
-- [ ] Home quick action; en/es strings.
+- [x] Home quick action; en/es strings.
 
 ## API contracts
 
@@ -89,4 +89,4 @@ Frontend Jest: HH:MM → instants helper (previous-day rule), minutes → "7h 34
 
 ## Definition of done
 
-- [ ] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
+- [x] Acceptance criteria pass locally and in CI; checklists updated; summary reported.

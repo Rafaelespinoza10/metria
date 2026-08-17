@@ -16,4 +16,7 @@ export type AppStackParamList = {
   ActivityTargets: undefined;
   Workouts: undefined;
   AddWorkout: undefined;
+  Sleep: undefined;
+  LogSleep: undefined;
+  SleepTarget: undefined;
 };

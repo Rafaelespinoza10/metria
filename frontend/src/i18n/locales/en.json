@@ -44,7 +44,9 @@
     "activity": "Activity",
     "activityHint": "Steps and active minutes",
     "workouts": "Workouts",
-    "workoutsHint": "Gym sessions and sets"
+    "workoutsHint": "Gym sessions and sets",
+    "sleep": "Sleep",
+    "sleepHint": "Nights, quality, and target"
   },
   "goals": {
     "title": "Goals",
@@ -177,5 +179,23 @@
     "rpe": "RPE",
     "addSet": "Add set",
     "setLabel": "Set {{number}}"
+  },
+  "sleep": {
+    "title": "Sleep",
+    "lastNight": "Last night",
+    "duration": "Duration",
+    "recent": "Recent nights",
+    "log": "Log sleep",
+    "save": "Save night",
+    "empty": "Log last night to start your sleep history.",
+    "bedtime": "Bedtime",
+    "wakeTime": "Wake up",
+    "quality": "Quality (1–5)",
+    "durationPreview": "Duration: {{duration}}",
+    "alreadyLogged": "This night is already logged. Edit it instead.",
+    "target": "Sleep target",
+    "saveTarget": "Save target",
+    "hoursPerNight": "Hours per night",
+    "targetHint": "Your nightly duration goal, e.g. 8 hours."
   }
 }
