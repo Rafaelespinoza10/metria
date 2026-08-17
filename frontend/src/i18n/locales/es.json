@@ -269,5 +269,24 @@
         "description": "Mejora una medida corporal por primera vez."
       }
     }
+  },
+  "settings": {
+    "title": "Ajustes",
+    "profile": "Perfil",
+    "name": "Nombre",
+    "saveName": "Guardar nombre",
+    "language": "Idioma",
+    "locale": {
+      "en": "English",
+      "es": "Español"
+    },
+    "deleteAccount": "Eliminar cuenta",
+    "deactivateTitle": "Desactivar cuenta",
+    "deactivateHint": "Tus datos se conservan pero tu cuenta deja de funcionar. Puedes contactar soporte para restaurarla.",
+    "deactivateAction": "Desactivar",
+    "permanentTitle": "Eliminar todo permanentemente",
+    "permanentHint": "Elimina tu cuenta y todas tus comidas, entrenos, medidas, fotos e insights. No se puede deshacer.",
+    "passwordConfirm": "Confirma con tu contraseña",
+    "permanentAction": "Eliminar todo"
   }
 }

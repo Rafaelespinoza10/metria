@@ -10,7 +10,6 @@ import { MacroBar } from '../../../components/MacroBar';
 import { PressableScale } from '../../../components/PressableScale';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
 import type { AppStackParamList } from '../../../navigation/types';
-import { useLogout } from '../../auth/hooks';
 import { formatDelta, isImprovement } from '../../progress/helpers';
 import { useBodyProgress, useProgressScore, useTodayPanel } from '../../progress/hooks';
 import type { BodyWindow } from '../../progress/types';
@@ -241,7 +240,6 @@ function BodySection() {
 export function HomeScreen({ navigation }: Props) {
   const { t } = useTranslation();
   const user = useAuthStore((state) => state.user);
-  const logoutMutation = useLogout();
 
   return (
     <SafeAreaView className="flex-1 bg-ink-950">
@@ -256,12 +254,16 @@ export function HomeScreen({ navigation }: Props) {
               <Text className="mt-1 text-3xl font-bold text-content-primary">{user?.name}</Text>
             </View>
             <PressableScale
-              onPress={() => logoutMutation.mutate()}
+              onPress={() => navigation.navigate('Settings')}
               accessibilityRole="button"
-              accessibilityLabel={t('home.logout')}
+              accessibilityLabel={t('settings.title')}
               className="h-11 w-11 items-center justify-center rounded-full bg-ink-800"
             >
-              <Ionicons name="log-out-outline" size={22} color={theme.colors.content.secondary} />
+              <Ionicons
+                name="person-circle-outline"
+                size={24}
+                color={theme.colors.content.secondary}
+              />
             </PressableScale>
           </Animated.View>
 

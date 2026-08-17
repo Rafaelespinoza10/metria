@@ -19,6 +19,8 @@ import { ReviewAnalysisScreen } from '../features/nutrition/screens/ReviewAnalys
 import { ScanMealScreen } from '../features/nutrition/screens/ScanMealScreen';
 import { AchievementsScreen } from '../features/gamification/screens/AchievementsScreen';
 import { InsightsScreen } from '../features/insights/screens/InsightsScreen';
+import { DeleteAccountScreen } from '../features/settings/screens/DeleteAccountScreen';
+import { SettingsScreen } from '../features/settings/screens/SettingsScreen';
 import { LogSleepScreen } from '../features/sleep/screens/LogSleepScreen';
 import { SleepScreen } from '../features/sleep/screens/SleepScreen';
 import { SleepTargetScreen } from '../features/sleep/screens/SleepTargetScreen';
@@ -86,6 +88,8 @@ export function RootNavigator() {
           <AppStack.Screen name="SleepTarget" component={SleepTargetScreen} />
           <AppStack.Screen name="Insights" component={InsightsScreen} />
           <AppStack.Screen name="Achievements" component={AchievementsScreen} />
+          <AppStack.Screen name="Settings" component={SettingsScreen} />
+          <AppStack.Screen name="DeleteAccount" component={DeleteAccountScreen} />
         </AppStack.Navigator>
       ) : (
         <AuthStack.Navigator screenOptions={{ headerShown: false }}>

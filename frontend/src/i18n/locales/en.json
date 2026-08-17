@@ -269,5 +269,24 @@
         "description": "Improve a body measurement for the first time."
       }
     }
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "name": "Name",
+    "saveName": "Save name",
+    "language": "Language",
+    "locale": {
+      "en": "English",
+      "es": "Español"
+    },
+    "deleteAccount": "Delete account",
+    "deactivateTitle": "Deactivate account",
+    "deactivateHint": "Your data stays stored but your account stops working. You can contact support to restore it.",
+    "deactivateAction": "Deactivate",
+    "permanentTitle": "Delete everything permanently",
+    "permanentHint": "Removes your account and every meal, workout, measurement, photo, and insight. This cannot be undone.",
+    "passwordConfirm": "Confirm with your password",
+    "permanentAction": "Delete everything"
   }
 }
