@@ -55,7 +55,7 @@ The numbers the user already tracks become an understandable story about their h
 
 ## Frontend tasks
 
-- [ ] `features/insights`: screen with daily + weekly cards (content, key numbers,
+- [x] `features/insights`: screen with daily + weekly cards (content, key numbers,
       designed loading/unavailable states); Home quick action; en/es strings; Jest test
       for the week-start helper.
 
@@ -97,4 +97,4 @@ isolation. Frontend Jest: Monday-of-week helper.
 
 ## Definition of done
 
-- [ ] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
+- [x] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
