@@ -65,10 +65,10 @@ Secure, private access to personal wellness data; full control over account dele
 
 (Second PR of this workflow.)
 
-- [ ] Secure token storage (expo-secure-store) + Zustand auth store (real client state).
-- [ ] `features/auth`: Login and Register screens, TanStack Query mutations, profile query.
-- [ ] Navigation split: auth stack (Login/Register) vs app stack (Home) by auth state.
-- [ ] Logout from Home; en/es strings for all auth UI.
+- [x] Secure token storage (expo-secure-store) + Zustand auth store (real client state).
+- [x] `features/auth`: Login and Register screens, TanStack Query mutations, profile query.
+- [x] Navigation split: auth stack (Login/Register) vs app stack (Home) by auth state.
+- [x] Logout from Home; en/es strings for all auth UI.
 
 ## API contracts
 
@@ -129,5 +129,5 @@ Integration (HTTP-level, real DB; skipped only when `DATABASE_URL` is absent):
 
 ## Definition of done
 
-- [ ] All acceptance criteria pass locally and in CI.
-- [ ] Checklists updated; summary reported; next workflow stated.
+- [x] All acceptance criteria pass locally and in CI.
+- [x] Checklists updated; summary reported; next workflow stated.
