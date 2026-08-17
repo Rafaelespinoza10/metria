@@ -24,3 +24,14 @@ export interface AlternativesInput {
 export interface MealAlternativesPort {
   suggestAlternatives(input: AlternativesInput): Promise<unknown>;
 }
+
+export interface InsightAggregatesInput {
+  period: 'daily' | 'weekly';
+  locale: string;
+  /** Pre-computed deterministic aggregates. Code calculates; AI interprets. */
+  aggregates: Record<string, unknown>;
+}
+
+export interface InsightsPort {
+  generateInsight(input: InsightAggregatesInput): Promise<unknown>;
+}

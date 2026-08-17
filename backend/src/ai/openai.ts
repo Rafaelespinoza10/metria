@@ -3,6 +3,8 @@ import { env } from '../config/env.js';
 import { AppError } from '../shared/errors/app-error.js';
 import type {
   AlternativesInput,
+  InsightAggregatesInput,
+  InsightsPort,
   MealAlternativesPort,
   MealImageInput,
   MealVisionPort,
@@ -68,6 +70,26 @@ export class OpenAIMealAlternatives implements MealAlternativesPort {
           meal: input.mealName,
           items: input.items,
           activeGoals: input.goals,
+        }),
+      },
+    ]);
+  }
+}
+
+const INSIGHTS_SYSTEM_PROMPT = `You interpret pre-computed wellness aggregates for a personal tracking app.
+Respond ONLY with JSON: {"content":string}.
+Rules: 2-4 short sentences in the requested language; interpret trends and patterns from the provided numbers ONLY — never recalculate, never invent values; calm, specific, encouraging tone without exclamation marks; suggest at most one small lifestyle adjustment; never give medical advice, diagnoses, or prescriptions.`;
+
+export class OpenAIInsights implements InsightsPort {
+  async generateInsight(input: InsightAggregatesInput): Promise<unknown> {
+    const client = requireClient();
+    return completeJson(client, INSIGHTS_SYSTEM_PROMPT, [
+      {
+        type: 'text',
+        text: JSON.stringify({
+          language: input.locale,
+          period: input.period,
+          aggregates: input.aggregates,
         }),
       },
     ]);
