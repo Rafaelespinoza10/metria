@@ -9,4 +9,7 @@ export type AppStackParamList = {
   CreateGoal: undefined;
   Measurements: undefined;
   LogMeasurement: undefined;
+  Nutrition: undefined;
+  AddMeal: undefined;
+  NutritionTargets: undefined;
 };

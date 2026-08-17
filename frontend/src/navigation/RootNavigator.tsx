@@ -10,6 +10,9 @@ import { CreateGoalScreen } from '../features/goals/screens/CreateGoalScreen';
 import { GoalsScreen } from '../features/goals/screens/GoalsScreen';
 import { LogMeasurementScreen } from '../features/measurements/screens/LogMeasurementScreen';
 import { MeasurementsScreen } from '../features/measurements/screens/MeasurementsScreen';
+import { AddMealScreen } from '../features/nutrition/screens/AddMealScreen';
+import { NutritionScreen } from '../features/nutrition/screens/NutritionScreen';
+import { NutritionTargetsScreen } from '../features/nutrition/screens/NutritionTargetsScreen';
 import { useAuthStore } from '../store/auth';
 import { theme } from '../theme';
 import type { AppStackParamList, AuthStackParamList } from './types';
@@ -58,6 +61,9 @@ export function RootNavigator() {
           <AppStack.Screen name="CreateGoal" component={CreateGoalScreen} />
           <AppStack.Screen name="Measurements" component={MeasurementsScreen} />
           <AppStack.Screen name="LogMeasurement" component={LogMeasurementScreen} />
+          <AppStack.Screen name="Nutrition" component={NutritionScreen} />
+          <AppStack.Screen name="AddMeal" component={AddMealScreen} />
+          <AppStack.Screen name="NutritionTargets" component={NutritionTargetsScreen} />
         </AppStack.Navigator>
       ) : (
         <AuthStack.Navigator screenOptions={{ headerShown: false }}>
