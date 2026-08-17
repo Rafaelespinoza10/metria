@@ -1,4 +1,6 @@
+import cors from 'cors';
 import express from 'express';
+import helmet from 'helmet';
 import { OpenAIInsights, OpenAIMealAlternatives, OpenAIMealVision } from './ai/openai.js';
 import type { InsightsPort, MealAlternativesPort, MealVisionPort } from './ai/ports.js';
 import { env } from './config/env.js';
@@ -44,6 +46,10 @@ import { UsersRepository } from './modules/users/users.repository.js';
 import { createUsersRoutes } from './modules/users/users.routes.js';
 import { UsersService } from './modules/users/users.service.js';
 import { createAuthMiddleware } from './shared/middlewares/auth.js';
+import {
+  createAuthRateLimiter,
+  type AuthRateLimitOptions,
+} from './shared/middlewares/rate-limit.js';
 import { errorHandler } from './shared/middlewares/error-handler.js';
 import { notFound } from './shared/middlewares/not-found.js';
 import { LocalStorageService } from './shared/storage/local-storage.service.js';
@@ -58,12 +64,21 @@ export interface AppDependencies {
   mealVision?: MealVisionPort;
   mealAlternatives?: MealAlternativesPort;
   insightsPort?: InsightsPort;
+  /** Injectable in tests (limits are off under NODE_ENV=test otherwise). */
+  authRateLimit?: AuthRateLimitOptions;
 }
 
 export function createApp(deps: AppDependencies = {}): express.Express {
   const app = express();
 
   app.disable('x-powered-by');
+  // JSON API: no HTML is served, so CSP adds nothing here.
+  app.use(helmet({ contentSecurityPolicy: false }));
+  app.use(
+    cors({
+      origin: env.CORS_ORIGIN === '*' ? true : env.CORS_ORIGIN.split(','),
+    }),
+  );
   app.use(express.json({ limit: '1mb' }));
 
   // Composition root: manual constructor injection, one instance per app.
@@ -149,6 +164,7 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   const authMiddleware = createAuthMiddleware({ usersRepository, tokenService });
 
   app.use('/api/health', createHealthRoutes());
+  app.use('/api/auth', createAuthRateLimiter(deps.authRateLimit));
   app.use('/api/auth', createAuthRoutes({ authService, authMiddleware }));
   app.use('/api/users', createUsersRoutes({ usersService, authMiddleware }));
   app.use('/api/goals', createGoalsRoutes({ goalsService, authMiddleware }));
