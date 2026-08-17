@@ -45,7 +45,7 @@ export async function seed(): Promise<void> {
     .onConflictDoNothing();
 }
 
-const isDirectRun = process.argv[1]?.endsWith('seed.ts') ?? false;
+const isDirectRun = process.argv[1]?.endsWith('/seed.ts') ?? false;
 if (isDirectRun) {
   seed()
     .then(async () => {

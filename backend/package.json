@@ -14,7 +14,8 @@
     "test": "vitest run",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
-    "db:seed": "tsx src/database/seed.ts"
+    "db:seed": "tsx src/database/seed.ts",
+    "db:demo": "tsx src/database/demo-seed.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
