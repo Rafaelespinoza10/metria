@@ -58,13 +58,13 @@ The core "track my body" loop: set an objective, measure, and keep visual eviden
 
 ## Frontend tasks
 
-- [ ] `features/goals`: list screen (status chips, designed empty state) + create screen
+- [x] `features/goals`: list screen (status chips, designed empty state) + create screen
       (category/metric selectors, values) with TanStack Query.
-- [ ] `features/measurements`: overview (latest per type), log entry screen, photos
+- [x] `features/measurements`: overview (latest per type), log entry screen, photos
       section (picker → upload → grid).
-- [ ] Home quick-actions rows navigating to Goals and Measurements.
-- [ ] `api()` support for FormData bodies (no manual Content-Type).
-- [ ] en/es strings for everything; Jest tests for new pure logic + a component.
+- [x] Home quick-actions rows navigating to Goals and Measurements.
+- [x] `api()` support for FormData bodies (no manual Content-Type).
+- [x] en/es strings for everything; Jest tests for new pure logic + a component.
 
 ## API contracts
 
@@ -132,4 +132,4 @@ component test.
 
 ## Definition of done
 
-- [ ] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
+- [x] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
