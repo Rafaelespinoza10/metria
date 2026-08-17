@@ -16,11 +16,17 @@ interface QuickAction {
   icon: keyof typeof Ionicons.glyphMap;
   titleKey: string;
   subtitleKey: string;
-  route: 'Goals' | 'Measurements';
+  route: 'Goals' | 'Measurements' | 'Nutrition';
 }
 
 const QUICK_ACTIONS: QuickAction[] = [
   { icon: 'flag-outline', titleKey: 'home.goals', subtitleKey: 'home.goalsHint', route: 'Goals' },
+  {
+    icon: 'restaurant-outline',
+    titleKey: 'home.nutrition',
+    subtitleKey: 'home.nutritionHint',
+    route: 'Nutrition',
+  },
   {
     icon: 'body-outline',
     titleKey: 'home.measurements',

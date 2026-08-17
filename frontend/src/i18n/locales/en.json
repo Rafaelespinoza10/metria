@@ -38,7 +38,9 @@
     "goals": "Goals",
     "goalsHint": "Set and review your objectives",
     "measurements": "Measurements",
-    "measurementsHint": "Body metrics and progress photos"
+    "measurementsHint": "Body metrics and progress photos",
+    "nutrition": "Nutrition",
+    "nutritionHint": "Meals, macros, and targets"
   },
   "goals": {
     "title": "Goals",
@@ -105,6 +107,37 @@
       "right_thigh": "Right thigh",
       "left_calf": "Left calf",
       "right_calf": "Right calf"
+    }
+  },
+  "nutrition": {
+    "title": "Nutrition",
+    "today": "Today",
+    "meals": "Meals",
+    "addMeal": "Add meal",
+    "saveMeal": "Save meal",
+    "empty": "Log your first meal of the day.",
+    "selectCategory": "Category",
+    "mealName": "Meal name",
+    "mealNamePlaceholder": "Chicken and rice",
+    "addItem": "Add food",
+    "addItemAction": "Add to meal",
+    "removeItem": "Remove item",
+    "itemName": "Food",
+    "itemNamePlaceholder": "Grilled chicken breast",
+    "grams": "Grams",
+    "calories": "Calories",
+    "protein": "Protein",
+    "carbohydrates": "Carbs",
+    "fats": "Fats",
+    "totalLabel": "Total:",
+    "targets": "Daily targets",
+    "saveTargets": "Save targets",
+    "targetsHint": "Targets apply from today onward; earlier days keep their history.",
+    "category": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner",
+      "snack": "Snack"
     }
   }
 }

@@ -38,7 +38,9 @@
     "goals": "Metas",
     "goalsHint": "Define y revisa tus objetivos",
     "measurements": "Medidas",
-    "measurementsHint": "Métricas corporales y fotos de progreso"
+    "measurementsHint": "Métricas corporales y fotos de progreso",
+    "nutrition": "Nutrición",
+    "nutritionHint": "Comidas, macros y objetivos"
   },
   "goals": {
     "title": "Metas",
@@ -105,6 +107,37 @@
       "right_thigh": "Muslo der.",
       "left_calf": "Pantorrilla izq.",
       "right_calf": "Pantorrilla der."
+    }
+  },
+  "nutrition": {
+    "title": "Nutrición",
+    "today": "Hoy",
+    "meals": "Comidas",
+    "addMeal": "Agregar comida",
+    "saveMeal": "Guardar comida",
+    "empty": "Registra tu primera comida del día.",
+    "selectCategory": "Categoría",
+    "mealName": "Nombre de la comida",
+    "mealNamePlaceholder": "Pollo con arroz",
+    "addItem": "Agregar alimento",
+    "addItemAction": "Agregar a la comida",
+    "removeItem": "Quitar alimento",
+    "itemName": "Alimento",
+    "itemNamePlaceholder": "Pechuga de pollo a la plancha",
+    "grams": "Gramos",
+    "calories": "Calorías",
+    "protein": "Proteína",
+    "carbohydrates": "Carbohidratos",
+    "fats": "Grasas",
+    "totalLabel": "Total:",
+    "targets": "Objetivos diarios",
+    "saveTargets": "Guardar objetivos",
+    "targetsHint": "Los objetivos aplican desde hoy; los días anteriores conservan su historial.",
+    "category": {
+      "breakfast": "Desayuno",
+      "lunch": "Comida",
+      "dinner": "Cena",
+      "snack": "Snack"
     }
   }
 }
