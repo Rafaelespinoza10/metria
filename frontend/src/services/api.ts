@@ -1,4 +1,4 @@
-const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
+export const API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
 
 interface OkEnvelope<T> {
   ok: true;
@@ -34,8 +34,10 @@ export function setAuthToken(token: string | null): void {
 }
 
 export async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
+  // FormData sets its own multipart boundary — never send a manual Content-Type for it.
+  const isFormData = options.body instanceof FormData;
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
+    ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
     ...(options.headers as Record<string, string> | undefined),
   };
   if (authToken !== null) {

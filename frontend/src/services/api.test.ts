@@ -56,6 +56,16 @@ describe('api client', () => {
     expect((options.headers as Record<string, string>).Authorization).toBeUndefined();
   });
 
+  it('does not set Content-Type for FormData bodies', async () => {
+    mockFetchOnce({ ok: true, data: {} });
+    const formData = new FormData();
+    await api('/api/measurements/photos', { method: 'POST', body: formData });
+
+    const [, options] = (globalThis.fetch as jest.Mock).mock.calls[0] as [string, RequestInit];
+    expect((options.headers as Record<string, string>)['Content-Type']).toBeUndefined();
+    expect(options.body).toBe(formData);
+  });
+
   it('exposes ApiError as an Error subclass', () => {
     const error = new ApiError('NOT_FOUND', 'missing', 404);
     expect(error).toBeInstanceOf(Error);
