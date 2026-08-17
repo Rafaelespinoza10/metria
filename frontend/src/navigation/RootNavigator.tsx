@@ -15,6 +15,8 @@ import { ActivityTargetsScreen } from '../features/activity/screens/ActivityTarg
 import { AddMealScreen } from '../features/nutrition/screens/AddMealScreen';
 import { NutritionScreen } from '../features/nutrition/screens/NutritionScreen';
 import { NutritionTargetsScreen } from '../features/nutrition/screens/NutritionTargetsScreen';
+import { ReviewAnalysisScreen } from '../features/nutrition/screens/ReviewAnalysisScreen';
+import { ScanMealScreen } from '../features/nutrition/screens/ScanMealScreen';
 import { LogSleepScreen } from '../features/sleep/screens/LogSleepScreen';
 import { SleepScreen } from '../features/sleep/screens/SleepScreen';
 import { SleepTargetScreen } from '../features/sleep/screens/SleepTargetScreen';
@@ -71,6 +73,8 @@ export function RootNavigator() {
           <AppStack.Screen name="Nutrition" component={NutritionScreen} />
           <AppStack.Screen name="AddMeal" component={AddMealScreen} />
           <AppStack.Screen name="NutritionTargets" component={NutritionTargetsScreen} />
+          <AppStack.Screen name="ScanMeal" component={ScanMealScreen} />
+          <AppStack.Screen name="ReviewAnalysis" component={ReviewAnalysisScreen} />
           <AppStack.Screen name="Activity" component={ActivityScreen} />
           <AppStack.Screen name="ActivityTargets" component={ActivityTargetsScreen} />
           <AppStack.Screen name="Workouts" component={WorkoutsScreen} />

@@ -11,6 +11,8 @@ export type AppStackParamList = {
   LogMeasurement: undefined;
   Nutrition: undefined;
   AddMeal: undefined;
+  ScanMeal: undefined;
+  ReviewAnalysis: { analysisId: string };
   NutritionTargets: undefined;
   Activity: undefined;
   ActivityTargets: undefined;
