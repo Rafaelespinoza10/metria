@@ -23,4 +23,6 @@ export type AppStackParamList = {
   SleepTarget: undefined;
   Insights: undefined;
   Achievements: undefined;
+  Settings: undefined;
+  DeleteAccount: undefined;
 };
