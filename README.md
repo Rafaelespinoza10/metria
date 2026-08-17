@@ -43,6 +43,11 @@ All changes reach `develop` and `main` **only through pull requests** with green
 periodic release PRs from `develop` to `main` with per-app GitHub releases. The full
 process lives in `.claude/skills/pr-flow/SKILL.md`.
 
+## Demo
+
+`npm run db:demo` (backend) creates `demo@metria.app` with two weeks of realistic data —
+see `docs/DEMO.md` for the two-minute walkthrough of the full acceptance flow.
+
 ## Development process
 
 Work proceeds strictly workflow by workflow — see `docs/workflows/`. Start with
