@@ -16,11 +16,35 @@ interface QuickAction {
   icon: keyof typeof Ionicons.glyphMap;
   titleKey: string;
   subtitleKey: string;
-  route: 'Goals' | 'Measurements';
+  route: 'Goals' | 'Measurements' | 'Nutrition' | 'Activity' | 'Workouts' | 'Sleep';
 }
 
 const QUICK_ACTIONS: QuickAction[] = [
   { icon: 'flag-outline', titleKey: 'home.goals', subtitleKey: 'home.goalsHint', route: 'Goals' },
+  {
+    icon: 'restaurant-outline',
+    titleKey: 'home.nutrition',
+    subtitleKey: 'home.nutritionHint',
+    route: 'Nutrition',
+  },
+  {
+    icon: 'walk-outline',
+    titleKey: 'home.activity',
+    subtitleKey: 'home.activityHint',
+    route: 'Activity',
+  },
+  {
+    icon: 'barbell-outline',
+    titleKey: 'home.workouts',
+    subtitleKey: 'home.workoutsHint',
+    route: 'Workouts',
+  },
+  {
+    icon: 'moon-outline',
+    titleKey: 'home.sleep',
+    subtitleKey: 'home.sleepHint',
+    route: 'Sleep',
+  },
   {
     icon: 'body-outline',
     titleKey: 'home.measurements',

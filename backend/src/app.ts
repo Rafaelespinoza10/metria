@@ -1,5 +1,8 @@
 import express from 'express';
 import { env } from './config/env.js';
+import { ActivityRepository } from './modules/activity/activity.repository.js';
+import { createActivityRoutes } from './modules/activity/activity.routes.js';
+import { ActivityService } from './modules/activity/activity.service.js';
 import { createAuthRoutes } from './modules/auth/auth.routes.js';
 import { AuthService } from './modules/auth/auth.service.js';
 import { ConsolePasswordResetMailer, type PasswordResetMailer } from './modules/auth/mailer.js';
@@ -12,7 +15,17 @@ import { createHealthRoutes } from './modules/health/health.routes.js';
 import { createMeasurementsRoutes } from './modules/measurements/measurements.routes.js';
 import { MeasurementsRepository } from './modules/measurements/measurements.repository.js';
 import { MeasurementsService } from './modules/measurements/measurements.service.js';
+import { DailyTargetsRepository } from './modules/nutrition/daily-targets.repository.js';
+import { createNutritionRoutes } from './modules/nutrition/nutrition.routes.js';
+import { SleepRepository } from './modules/sleep/sleep.repository.js';
+import { createSleepRoutes } from './modules/sleep/sleep.routes.js';
+import { SleepService } from './modules/sleep/sleep.service.js';
+import { NutritionRepository } from './modules/nutrition/nutrition.repository.js';
+import { NutritionService } from './modules/nutrition/nutrition.service.js';
 import { createUploadsRoutes } from './modules/uploads/uploads.routes.js';
+import { WorkoutsRepository } from './modules/workouts/workouts.repository.js';
+import { createWorkoutsRoutes } from './modules/workouts/workouts.routes.js';
+import { WorkoutsService } from './modules/workouts/workouts.service.js';
 import { UsersRepository } from './modules/users/users.repository.js';
 import { createUsersRoutes } from './modules/users/users.routes.js';
 import { UsersService } from './modules/users/users.service.js';
@@ -49,9 +62,27 @@ export function createApp(deps: AppDependencies = {}): express.Express {
     tokenService,
     mailer,
   );
+  const nutritionRepository = new NutritionRepository();
+  const dailyTargetsRepository = new DailyTargetsRepository();
   const usersService = new UsersService(usersRepository, storage);
   const goalsService = new GoalsService(goalsRepository, measurementsRepository);
   const measurementsService = new MeasurementsService(measurementsRepository, storage);
+  const nutritionService = new NutritionService(
+    nutritionRepository,
+    dailyTargetsRepository,
+    usersRepository,
+  );
+  const activityService = new ActivityService(
+    new ActivityRepository(),
+    dailyTargetsRepository,
+    usersRepository,
+  );
+  const workoutsService = new WorkoutsService(new WorkoutsRepository(), usersRepository);
+  const sleepService = new SleepService(
+    new SleepRepository(),
+    dailyTargetsRepository,
+    usersRepository,
+  );
   const authMiddleware = createAuthMiddleware({ usersRepository, tokenService });
 
   app.use('/api/health', createHealthRoutes());
@@ -59,6 +90,10 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   app.use('/api/users', createUsersRoutes({ usersService, authMiddleware }));
   app.use('/api/goals', createGoalsRoutes({ goalsService, authMiddleware }));
   app.use('/api/measurements', createMeasurementsRoutes({ measurementsService, authMiddleware }));
+  app.use('/api/nutrition', createNutritionRoutes({ nutritionService, authMiddleware }));
+  app.use('/api/activity', createActivityRoutes({ activityService, authMiddleware }));
+  app.use('/api/workouts', createWorkoutsRoutes({ workoutsService, authMiddleware }));
+  app.use('/api/sleep', createSleepRoutes({ sleepService, authMiddleware }));
   app.use('/api/uploads', createUploadsRoutes({ storage, authMiddleware }));
 
   app.use(notFound);

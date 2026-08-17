@@ -10,6 +10,16 @@ import { CreateGoalScreen } from '../features/goals/screens/CreateGoalScreen';
 import { GoalsScreen } from '../features/goals/screens/GoalsScreen';
 import { LogMeasurementScreen } from '../features/measurements/screens/LogMeasurementScreen';
 import { MeasurementsScreen } from '../features/measurements/screens/MeasurementsScreen';
+import { ActivityScreen } from '../features/activity/screens/ActivityScreen';
+import { ActivityTargetsScreen } from '../features/activity/screens/ActivityTargetsScreen';
+import { AddMealScreen } from '../features/nutrition/screens/AddMealScreen';
+import { NutritionScreen } from '../features/nutrition/screens/NutritionScreen';
+import { NutritionTargetsScreen } from '../features/nutrition/screens/NutritionTargetsScreen';
+import { LogSleepScreen } from '../features/sleep/screens/LogSleepScreen';
+import { SleepScreen } from '../features/sleep/screens/SleepScreen';
+import { SleepTargetScreen } from '../features/sleep/screens/SleepTargetScreen';
+import { AddWorkoutScreen } from '../features/workouts/screens/AddWorkoutScreen';
+import { WorkoutsScreen } from '../features/workouts/screens/WorkoutsScreen';
 import { useAuthStore } from '../store/auth';
 import { theme } from '../theme';
 import type { AppStackParamList, AuthStackParamList } from './types';
@@ -58,6 +68,16 @@ export function RootNavigator() {
           <AppStack.Screen name="CreateGoal" component={CreateGoalScreen} />
           <AppStack.Screen name="Measurements" component={MeasurementsScreen} />
           <AppStack.Screen name="LogMeasurement" component={LogMeasurementScreen} />
+          <AppStack.Screen name="Nutrition" component={NutritionScreen} />
+          <AppStack.Screen name="AddMeal" component={AddMealScreen} />
+          <AppStack.Screen name="NutritionTargets" component={NutritionTargetsScreen} />
+          <AppStack.Screen name="Activity" component={ActivityScreen} />
+          <AppStack.Screen name="ActivityTargets" component={ActivityTargetsScreen} />
+          <AppStack.Screen name="Workouts" component={WorkoutsScreen} />
+          <AppStack.Screen name="AddWorkout" component={AddWorkoutScreen} />
+          <AppStack.Screen name="Sleep" component={SleepScreen} />
+          <AppStack.Screen name="LogSleep" component={LogSleepScreen} />
+          <AppStack.Screen name="SleepTarget" component={SleepTargetScreen} />
         </AppStack.Navigator>
       ) : (
         <AuthStack.Navigator screenOptions={{ headerShown: false }}>
