@@ -17,6 +17,7 @@ import { NutritionScreen } from '../features/nutrition/screens/NutritionScreen';
 import { NutritionTargetsScreen } from '../features/nutrition/screens/NutritionTargetsScreen';
 import { ReviewAnalysisScreen } from '../features/nutrition/screens/ReviewAnalysisScreen';
 import { ScanMealScreen } from '../features/nutrition/screens/ScanMealScreen';
+import { InsightsScreen } from '../features/insights/screens/InsightsScreen';
 import { LogSleepScreen } from '../features/sleep/screens/LogSleepScreen';
 import { SleepScreen } from '../features/sleep/screens/SleepScreen';
 import { SleepTargetScreen } from '../features/sleep/screens/SleepTargetScreen';
@@ -82,6 +83,7 @@ export function RootNavigator() {
           <AppStack.Screen name="Sleep" component={SleepScreen} />
           <AppStack.Screen name="LogSleep" component={LogSleepScreen} />
           <AppStack.Screen name="SleepTarget" component={SleepTargetScreen} />
+          <AppStack.Screen name="Insights" component={InsightsScreen} />
         </AppStack.Navigator>
       ) : (
         <AuthStack.Navigator screenOptions={{ headerShown: false }}>

@@ -46,7 +46,9 @@
     "workouts": "Workouts",
     "workoutsHint": "Gym sessions and sets",
     "sleep": "Sleep",
-    "sleepHint": "Nights, quality, and target"
+    "sleepHint": "Nights, quality, and target",
+    "insights": "Insights",
+    "insightsHint": "What your week says about you"
   },
   "goals": {
     "title": "Goals",
@@ -210,5 +212,16 @@
     "saveTarget": "Save target",
     "hoursPerNight": "Hours per night",
     "targetHint": "Your nightly duration goal, e.g. 8 hours."
+  },
+  "insights": {
+    "title": "Insights",
+    "daily": "Today",
+    "weekly": "This week",
+    "unavailable": "Insights aren't available right now. Your data is safe — try again later.",
+    "disclaimer": "AI interpretation of your own tracked numbers. Not medical advice.",
+    "avgSteps": "Avg. steps",
+    "avgSleep": "Avg. sleep",
+    "proteinGoal": "Protein goal met",
+    "workouts": "Workouts"
   }
 }

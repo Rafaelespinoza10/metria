@@ -21,4 +21,5 @@ export type AppStackParamList = {
   Sleep: undefined;
   LogSleep: undefined;
   SleepTarget: undefined;
+  Insights: undefined;
 };
