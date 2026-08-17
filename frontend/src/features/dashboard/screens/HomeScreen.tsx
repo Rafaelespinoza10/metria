@@ -23,7 +23,15 @@ interface QuickAction {
   icon: keyof typeof Ionicons.glyphMap;
   titleKey: string;
   subtitleKey: string;
-  route: 'Goals' | 'Measurements' | 'Nutrition' | 'Activity' | 'Workouts' | 'Sleep' | 'Insights';
+  route:
+    | 'Goals'
+    | 'Measurements'
+    | 'Nutrition'
+    | 'Activity'
+    | 'Workouts'
+    | 'Sleep'
+    | 'Insights'
+    | 'Achievements';
 }
 
 const QUICK_ACTIONS: QuickAction[] = [
@@ -58,6 +66,12 @@ const QUICK_ACTIONS: QuickAction[] = [
     titleKey: 'home.insights',
     subtitleKey: 'home.insightsHint',
     route: 'Insights',
+  },
+  {
+    icon: 'trophy-outline',
+    titleKey: 'home.achievements',
+    subtitleKey: 'home.achievementsHint',
+    route: 'Achievements',
   },
 ];
 

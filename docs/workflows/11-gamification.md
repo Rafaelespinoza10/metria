@@ -49,7 +49,7 @@ Visible momentum: streaks reward showing up daily; badges mark real milestones.
 
 ## Frontend tasks
 
-- [ ] `features/gamification`: achievements screen (streak hero, badge grid with locked
+- [x] `features/gamification`: achievements screen (streak hero, badge grid with locked
       states); Home quick action; en/es strings; Jest test for the consecutive-days
       helper if extracted client-side (otherwise API-driven only).
 
@@ -84,4 +84,4 @@ improvement badge; idempotent double-fetch; cross-user isolation.
 
 ## Definition of done
 
-- [ ] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
+- [x] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
