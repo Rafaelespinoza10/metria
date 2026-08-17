@@ -12,4 +12,8 @@ export type AppStackParamList = {
   Nutrition: undefined;
   AddMeal: undefined;
   NutritionTargets: undefined;
+  Activity: undefined;
+  ActivityTargets: undefined;
+  Workouts: undefined;
+  AddWorkout: undefined;
 };
