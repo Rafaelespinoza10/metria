@@ -14,6 +14,7 @@ const envSchema = z.object({
     .int()
     .positive()
     .default(7 * 24 * 60 * 60),
+  STORAGE_DIR: z.string().min(1).default('storage'),
 });
 
 export type Env = z.infer<typeof envSchema>;
