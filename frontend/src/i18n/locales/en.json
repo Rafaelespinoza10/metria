@@ -48,7 +48,20 @@
     "sleep": "Sleep",
     "sleepHint": "Nights, quality, and target",
     "insights": "Insights",
-    "insightsHint": "What your week says about you"
+    "insightsHint": "What your week says about you",
+    "today": "Today",
+    "vsLastWeek": "{{delta}} vs last week",
+    "bodyProgress": "Body progress",
+    "workoutCount": "Workouts",
+    "prevWindow": "prev. {{count}}",
+    "window": {
+      "week": "Week",
+      "7d": "7d",
+      "30d": "30d",
+      "90d": "90d"
+    },
+    "achievements": "Achievements",
+    "achievementsHint": "Streaks and milestones"
   },
   "goals": {
     "title": "Goals",
@@ -223,5 +236,57 @@
     "avgSleep": "Avg. sleep",
     "proteinGoal": "Protein goal met",
     "workouts": "Workouts"
+  },
+  "gamification": {
+    "title": "Achievements",
+    "badges": "Milestones",
+    "trackingStreak": "Tracking streak",
+    "sleepStreak": "Sleep streak",
+    "longest": "Longest: {{count}} days",
+    "badge": {
+      "tracking_7_days": {
+        "title": "7 days tracking",
+        "description": "Log anything for 7 days in a row."
+      },
+      "tracking_30_days": {
+        "title": "30 days tracking",
+        "description": "Log anything for 30 days in a row."
+      },
+      "sleep_goal_7_consecutive": {
+        "title": "Sleep week",
+        "description": "Meet your sleep goal 7 nights in a row."
+      },
+      "workouts_10": {
+        "title": "10 workouts",
+        "description": "Register 10 gym sessions."
+      },
+      "steps_100k_total": {
+        "title": "100k steps",
+        "description": "Reach 100,000 total steps."
+      },
+      "first_measurement_improvement": {
+        "title": "First progress",
+        "description": "Improve a body measurement for the first time."
+      }
+    }
+  },
+  "settings": {
+    "title": "Settings",
+    "profile": "Profile",
+    "name": "Name",
+    "saveName": "Save name",
+    "language": "Language",
+    "locale": {
+      "en": "English",
+      "es": "Español"
+    },
+    "deleteAccount": "Delete account",
+    "deactivateTitle": "Deactivate account",
+    "deactivateHint": "Your data stays stored but your account stops working. You can contact support to restore it.",
+    "deactivateAction": "Deactivate",
+    "permanentTitle": "Delete everything permanently",
+    "permanentHint": "Removes your account and every meal, workout, measurement, photo, and insight. This cannot be undone.",
+    "passwordConfirm": "Confirm with your password",
+    "permanentAction": "Delete everything"
   }
 }

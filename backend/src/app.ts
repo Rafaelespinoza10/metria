@@ -9,7 +9,13 @@ import { createAuthRoutes } from './modules/auth/auth.routes.js';
 import { AuthService } from './modules/auth/auth.service.js';
 import { ConsolePasswordResetMailer, type PasswordResetMailer } from './modules/auth/mailer.js';
 import { PasswordResetRepository } from './modules/auth/password-reset.repository.js';
+import { ProgressScoreService } from './modules/progress/progress-score.service.js';
+import { createProgressRoutes } from './modules/progress/progress.routes.js';
+import { ProgressService } from './modules/progress/progress.service.js';
 import { TokenService } from './modules/auth/token.service.js';
+import { GamificationRepository } from './modules/gamification/gamification.repository.js';
+import { createGamificationRoutes } from './modules/gamification/gamification.routes.js';
+import { GamificationService } from './modules/gamification/gamification.service.js';
 import { createGoalsRoutes } from './modules/goals/goals.routes.js';
 import { GoalsRepository } from './modules/goals/goals.repository.js';
 import { GoalsService } from './modules/goals/goals.service.js';
@@ -111,6 +117,29 @@ export function createApp(deps: AppDependencies = {}): express.Express {
     measurementsRepository,
     dailyTargetsRepository,
   );
+  const progressService = new ProgressService(
+    new ProgressScoreService(
+      nutritionRepository,
+      activityRepository,
+      sleepRepository,
+      workoutsRepository,
+      dailyTargetsRepository,
+    ),
+    aggregatesService,
+    measurementsRepository,
+    workoutsRepository,
+    usersRepository,
+  );
+  const gamificationService = new GamificationService(
+    new GamificationRepository(),
+    nutritionRepository,
+    activityRepository,
+    sleepRepository,
+    workoutsRepository,
+    measurementsRepository,
+    dailyTargetsRepository,
+    usersRepository,
+  );
   const insightsService = new InsightsService(
     new InsightsRepository(),
     aggregatesService,
@@ -132,6 +161,8 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   app.use('/api/workouts', createWorkoutsRoutes({ workoutsService, authMiddleware }));
   app.use('/api/sleep', createSleepRoutes({ sleepService, authMiddleware }));
   app.use('/api/insights', createInsightsRoutes({ insightsService, authMiddleware }));
+  app.use('/api/progress', createProgressRoutes({ progressService, authMiddleware }));
+  app.use('/api/gamification', createGamificationRoutes({ gamificationService, authMiddleware }));
   app.use('/api/uploads', createUploadsRoutes({ storage, authMiddleware }));
 
   app.use(notFound);

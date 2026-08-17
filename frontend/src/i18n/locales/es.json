@@ -48,7 +48,20 @@
     "sleep": "Sueño",
     "sleepHint": "Noches, calidad y objetivo",
     "insights": "Insights",
-    "insightsHint": "Lo que tu semana dice de ti"
+    "insightsHint": "Lo que tu semana dice de ti",
+    "today": "Hoy",
+    "vsLastWeek": "{{delta}} vs semana pasada",
+    "bodyProgress": "Progreso corporal",
+    "workoutCount": "Entrenos",
+    "prevWindow": "prev. {{count}}",
+    "window": {
+      "week": "Semana",
+      "7d": "7d",
+      "30d": "30d",
+      "90d": "90d"
+    },
+    "achievements": "Logros",
+    "achievementsHint": "Rachas y hitos"
   },
   "goals": {
     "title": "Metas",
@@ -223,5 +236,57 @@
     "avgSleep": "Sueño prom.",
     "proteinGoal": "Meta de proteína",
     "workouts": "Entrenos"
+  },
+  "gamification": {
+    "title": "Logros",
+    "badges": "Hitos",
+    "trackingStreak": "Racha de registro",
+    "sleepStreak": "Racha de sueño",
+    "longest": "Máxima: {{count}} días",
+    "badge": {
+      "tracking_7_days": {
+        "title": "7 días registrando",
+        "description": "Registra algo 7 días seguidos."
+      },
+      "tracking_30_days": {
+        "title": "30 días registrando",
+        "description": "Registra algo 30 días seguidos."
+      },
+      "sleep_goal_7_consecutive": {
+        "title": "Semana de sueño",
+        "description": "Cumple tu meta de sueño 7 noches seguidas."
+      },
+      "workouts_10": {
+        "title": "10 entrenos",
+        "description": "Registra 10 sesiones de gym."
+      },
+      "steps_100k_total": {
+        "title": "100k pasos",
+        "description": "Alcanza 100,000 pasos totales."
+      },
+      "first_measurement_improvement": {
+        "title": "Primer progreso",
+        "description": "Mejora una medida corporal por primera vez."
+      }
+    }
+  },
+  "settings": {
+    "title": "Ajustes",
+    "profile": "Perfil",
+    "name": "Nombre",
+    "saveName": "Guardar nombre",
+    "language": "Idioma",
+    "locale": {
+      "en": "English",
+      "es": "Español"
+    },
+    "deleteAccount": "Eliminar cuenta",
+    "deactivateTitle": "Desactivar cuenta",
+    "deactivateHint": "Tus datos se conservan pero tu cuenta deja de funcionar. Puedes contactar soporte para restaurarla.",
+    "deactivateAction": "Desactivar",
+    "permanentTitle": "Eliminar todo permanentemente",
+    "permanentHint": "Elimina tu cuenta y todas tus comidas, entrenos, medidas, fotos e insights. No se puede deshacer.",
+    "passwordConfirm": "Confirma con tu contraseña",
+    "permanentAction": "Eliminar todo"
   }
 }
