@@ -36,6 +36,7 @@ export type AppStackParamList = {
   Settings: undefined;
   DeleteAccount: undefined;
   ExerciseBrowser: { picker?: boolean } | undefined;
+  WorkoutDetail: { id: string };
 };
 
 /** Props for tab screens: tab navigation plus the parent stack's routes. */

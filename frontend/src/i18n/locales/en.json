@@ -241,7 +241,22 @@
       "fullBody": "Full body",
       "upper": "Upper body",
       "lower": "Lower body"
-    }
+    },
+    "searchLabel": "Search",
+    "searchPlaceholder": "Workout or exercise name…",
+    "range": {
+      "all": "All",
+      "7d": "7d",
+      "30d": "30d",
+      "90d": "90d"
+    },
+    "results": "{{count}} results",
+    "noResults": "Nothing matches your search.",
+    "loadMore": "Load more",
+    "detailTitle": "Workout",
+    "notesLabel": "Notes",
+    "deleteWorkout": "Delete workout",
+    "confirmDelete": "Tap again to confirm"
   },
   "sleep": {
     "title": "Sleep",
