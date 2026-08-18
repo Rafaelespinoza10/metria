@@ -46,17 +46,17 @@ None (static vendored dataset; no new tables).
 
 ## Backend tasks
 
-- [ ] Vendor dataset + license note; region map; `modules/exercises/` service,
+- [x] Vendor dataset + license note; region map; `modules/exercises/` service,
       controller, routes (list capped at 50, detail with instructions + image URLs).
-- [ ] Integration tests: regions/counts, region filter + search + level, detail, invalid
+- [x] Integration tests: regions/counts, region filter + search + level, detail, invalid
       region 400, auth required.
 
 ## Frontend tasks
 
-- [ ] `BodyMap` SVG component (front/back, tappable regions, brand fill) + helpers.
-- [ ] `ExerciseBrowser` screen (map → list → expandable detail); Home quick action;
+- [x] `BodyMap` SVG component (front/back, tappable regions, brand fill) + helpers.
+- [x] `ExerciseBrowser` screen (map → list → expandable detail); Workouts entry points;
       en/es strings; Jest tests for the region map helper.
-- [ ] Phase 2: AddWorkout integration (blocked on the parallel redesign PR).
+- [x] Phase 2: AddWorkout integration (picker mode prefills name + muscle group).
 
 ## API contracts
 
@@ -91,5 +91,6 @@ Backend integration listed above. Frontend: region-map helper units.
 
 ## Definition of done
 
-- [ ] Phase 1 (catalog + browser) merged green; Phase 2 integration merged after the
-      parallel Workouts redesign lands; checklists updated.
+- [x] Phase 1 (catalog + browser) merged green; Phase 2 integration merged after the
+      parallel Workouts redesign landed; checklists updated. (Home quick action ceded
+      to the parallel Home-redesign session; entry points live in Workouts.)

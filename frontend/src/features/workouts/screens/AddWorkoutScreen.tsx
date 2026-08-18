@@ -39,7 +39,7 @@ interface ExerciseDraft extends WorkoutExerciseInput {
 
 const EMPTY_SET: SetDraft = { reps: '', weight: '', rpe: '' };
 
-export function AddWorkoutScreen({ navigation }: Props) {
+export function AddWorkoutScreen({ navigation, route }: Props) {
   const { t } = useTranslation();
   const createMutation = useCreateWorkout();
   const [name, setName] = useState('');
@@ -51,6 +51,17 @@ export function AddWorkoutScreen({ navigation }: Props) {
   const [setDrafts, setSetDrafts] = useState<Record<number, SetDraft>>({});
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
+
+  const pickedExercise = route.params?.pickedExercise;
+
+  const addPickedExercise = () => {
+    if (!pickedExercise) return;
+    setExercises((current) => [
+      ...current,
+      { name: pickedExercise.name, muscleGroup: pickedExercise.muscleGroup, sets: [] },
+    ]);
+    navigation.setParams({ pickedExercise: undefined });
+  };
 
   const addExercise = () => {
     if (exerciseName.trim() === '') return;
@@ -291,6 +302,48 @@ export function AddWorkoutScreen({ navigation }: Props) {
             <Text className="mb-2 text-xs font-semibold uppercase tracking-widest text-content-tertiary">
               {t('workouts.addExercise')}
             </Text>
+
+            {pickedExercise ? (
+              <View className="mb-4 flex-row items-center gap-3 rounded-3xl border border-brand/30 bg-brand-soft p-4">
+                <View className="flex-1">
+                  <Text className="text-base font-semibold text-content-primary">
+                    {pickedExercise.name}
+                  </Text>
+                  <Text className="mt-0.5 text-xs uppercase tracking-widest text-content-tertiary">
+                    {pickedExercise.muscleGroup}
+                  </Text>
+                </View>
+                <PressableScale
+                  onPress={addPickedExercise}
+                  accessibilityRole="button"
+                  className="rounded-2xl bg-charcoal px-4 py-2.5"
+                >
+                  <Text className="text-sm font-semibold text-white">
+                    {t('workouts.addPicked')}
+                  </Text>
+                </PressableScale>
+                <PressableScale
+                  onPress={() => navigation.setParams({ pickedExercise: undefined })}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('workouts.discardPicked')}
+                  className="h-9 w-9 items-center justify-center rounded-full bg-ink-900"
+                >
+                  <Ionicons name="close" size={16} color={theme.colors.content.secondary} />
+                </PressableScale>
+              </View>
+            ) : null}
+
+            <PressableScale
+              onPress={() => navigation.navigate('ExerciseBrowser', { picker: true })}
+              accessibilityRole="button"
+              className="mb-4 flex-row items-center justify-center gap-2 rounded-2xl border border-brand/40 py-3"
+            >
+              <Ionicons name="body-outline" size={18} color={theme.colors.brand.DEFAULT} />
+              <Text className="text-sm font-semibold text-brand">
+                {t('workouts.pickFromCatalog')}
+              </Text>
+            </PressableScale>
+
             <View className="gap-4 rounded-3xl border border-black/5 bg-ink-900 p-5">
               <AuthTextField
                 label={t('workouts.exerciseName')}
