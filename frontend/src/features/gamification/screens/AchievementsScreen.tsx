@@ -25,7 +25,7 @@ function BadgeTile({ badge }: { badge: BadgeState }) {
   return (
     <View
       className={`w-[48%] rounded-3xl border p-4 ${
-        earned ? 'border-brand/40 bg-ink-900' : 'border-white/5 bg-ink-900 opacity-50'
+        earned ? 'border-brand/40 bg-ink-900' : 'border-black/5 bg-ink-900 opacity-50'
       }`}
     >
       <View
@@ -71,7 +71,7 @@ export function AchievementsScreen() {
                 entering={FadeInDown.delay(60).springify()}
                 className="mt-8 flex-row gap-3"
               >
-                <View className="flex-1 rounded-3xl border border-white/5 bg-ink-900 p-5">
+                <View className="flex-1 rounded-3xl border border-black/5 bg-ink-900 p-5">
                   <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
                     {t('gamification.trackingStreak')}
                   </Text>
@@ -88,7 +88,7 @@ export function AchievementsScreen() {
                     {t('gamification.longest', { count: state.streaks.tracking.longest })}
                   </Text>
                 </View>
-                <View className="flex-1 rounded-3xl border border-white/5 bg-ink-900 p-5">
+                <View className="flex-1 rounded-3xl border border-black/5 bg-ink-900 p-5">
                   <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
                     {t('gamification.sleepStreak')}
                   </Text>

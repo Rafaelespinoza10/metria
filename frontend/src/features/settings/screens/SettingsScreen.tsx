@@ -37,7 +37,7 @@ export function SettingsScreen({ navigation }: Props) {
 
           <Animated.View
             entering={FadeInDown.delay(60).springify()}
-            className="mt-8 rounded-3xl border border-white/5 bg-ink-900 p-5"
+            className="mt-8 rounded-3xl border border-black/5 bg-ink-900 p-5"
           >
             <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
               {t('settings.profile')}
@@ -86,7 +86,7 @@ export function SettingsScreen({ navigation }: Props) {
             <PressableScale
               onPress={() => logoutMutation.mutate()}
               accessibilityRole="button"
-              className="flex-row items-center justify-center gap-2 rounded-2xl border border-white/5 bg-ink-900 py-4"
+              className="flex-row items-center justify-center gap-2 rounded-2xl border border-black/5 bg-ink-900 py-4"
             >
               <Ionicons name="log-out-outline" size={18} color={theme.colors.content.primary} />
               <Text className="text-base font-semibold text-content-primary">

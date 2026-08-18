@@ -59,7 +59,7 @@ export function ScanMealScreen({ navigation }: Props) {
           </Animated.View>
         ) : (
           <Animated.View entering={FadeInDown.delay(60).springify()} className="mt-8">
-            <View className="items-start rounded-3xl border border-white/5 bg-ink-900 p-5">
+            <View className="items-start rounded-3xl border border-black/5 bg-ink-900 p-5">
               <View className="h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft">
                 <Ionicons name="camera-outline" size={26} color={theme.colors.brand.DEFAULT} />
               </View>
@@ -80,9 +80,9 @@ export function ScanMealScreen({ navigation }: Props) {
               <PressableScale
                 onPress={() => void pickAndAnalyze()}
                 accessibilityRole="button"
-                className="rounded-2xl bg-brand py-4"
+                className="rounded-2xl bg-charcoal py-4"
               >
-                <Text className="text-center text-base font-semibold text-ink-950">
+                <Text className="text-center text-base font-semibold text-white">
                   {t('nutrition.pickPhoto')}
                 </Text>
               </PressableScale>

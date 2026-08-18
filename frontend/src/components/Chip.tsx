@@ -14,7 +14,7 @@ export function Chip({ label, selected, onPress }: ChipProps) {
       accessibilityRole="button"
       accessibilityState={{ selected }}
       className={`rounded-full border px-4 py-2 ${
-        selected ? 'border-brand bg-brand-soft' : 'border-white/5 bg-ink-900'
+        selected ? 'border-brand bg-brand-soft' : 'border-black/5 bg-ink-900'
       }`}
     >
       <Text

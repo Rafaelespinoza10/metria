@@ -53,7 +53,7 @@ function WeekNumbers({ current, previous }: { current: WeekSummary; previous: We
   ];
 
   return (
-    <View className="mt-4 border-t border-white/5">
+    <View className="mt-4 border-t border-black/5">
       {rows.map((row) => (
         <View key={row.label} className="flex-row items-center justify-between py-2.5">
           <Text className="text-sm text-content-secondary">{row.label}</Text>
@@ -91,7 +91,7 @@ function InsightCard({
   return (
     <Animated.View
       entering={FadeInDown.delay(delay).springify()}
-      className="mt-4 rounded-3xl border border-white/5 bg-ink-900 p-5"
+      className="mt-4 rounded-3xl border border-black/5 bg-ink-900 p-5"
     >
       <View className="flex-row items-center gap-2">
         <Ionicons name="sparkles-outline" size={14} color={theme.colors.brand.DEFAULT} />

@@ -19,7 +19,7 @@ function WorkoutCard({ workout, index }: { workout: Workout; index: number }) {
   return (
     <Animated.View
       entering={FadeInDown.delay(120 + index * 60).springify()}
-      className="mt-3 rounded-3xl border border-white/5 bg-ink-900 p-5"
+      className="mt-3 rounded-3xl border border-black/5 bg-ink-900 p-5"
     >
       <View className="flex-row items-baseline justify-between">
         <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
@@ -38,7 +38,7 @@ function WorkoutCard({ workout, index }: { workout: Workout; index: number }) {
           sets: totalSets(workout.exercises),
         })}
       </Text>
-      <View className="mt-3 border-t border-white/5 pt-3">
+      <View className="mt-3 border-t border-black/5 pt-3">
         {workout.exercises.slice(0, 3).map((exercise) => (
           <View key={exercise.id} className="flex-row items-baseline justify-between py-1">
             <Text className="flex-1 pr-3 text-sm text-content-primary" numberOfLines={1}>
@@ -81,7 +81,7 @@ export function WorkoutsScreen({ navigation }: Props) {
           ) : (
             <Animated.View
               entering={FadeInDown.delay(120).springify()}
-              className="mt-3 items-start rounded-3xl border border-white/5 bg-ink-900 p-5"
+              className="mt-3 items-start rounded-3xl border border-black/5 bg-ink-900 p-5"
             >
               <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
                 0
@@ -101,9 +101,9 @@ export function WorkoutsScreen({ navigation }: Props) {
           <PressableScale
             onPress={() => navigation.navigate('AddWorkout')}
             accessibilityRole="button"
-            className="rounded-2xl bg-brand py-4"
+            className="rounded-2xl bg-charcoal py-4"
           >
-            <Text className="text-center text-base font-semibold text-ink-950">
+            <Text className="text-center text-base font-semibold text-white">
               {t('workouts.new')}
             </Text>
           </PressableScale>

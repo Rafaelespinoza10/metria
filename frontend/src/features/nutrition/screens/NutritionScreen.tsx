@@ -22,7 +22,7 @@ const CATEGORY_ORDER: MealCategory[] = ['breakfast', 'lunch', 'dinner', 'snack']
 function MealRow({ meal, onSuggest }: { meal: Meal; onSuggest: (meal: Meal) => void }) {
   const { t } = useTranslation();
   return (
-    <View className="border-t border-white/5 py-3">
+    <View className="border-t border-black/5 py-3">
       <View className="flex-row items-center justify-between">
         <View className="flex-1 pr-3">
           <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
@@ -119,7 +119,7 @@ export function NutritionScreen({ navigation }: Props) {
           ) : (
             <Animated.View
               entering={FadeInDown.delay(80).springify()}
-              className="rounded-3xl border border-white/5 bg-ink-900 p-5"
+              className="rounded-3xl border border-black/5 bg-ink-900 p-5"
             >
               <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
                 {t('nutrition.calories')}
@@ -167,13 +167,13 @@ export function NutritionScreen({ navigation }: Props) {
             {mealsQuery.isPending ? (
               <SkeletonBlock className="mt-3 h-32 rounded-3xl" />
             ) : orderedMeals.length > 0 ? (
-              <View className="mt-3 rounded-3xl border border-white/5 bg-ink-900 px-5 pb-1 pt-2">
+              <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5 pb-1 pt-2">
                 {orderedMeals.map((meal) => (
                   <MealRow key={meal.id} meal={meal} onSuggest={requestAlternatives} />
                 ))}
               </View>
             ) : (
-              <View className="mt-3 items-start rounded-3xl border border-white/5 bg-ink-900 p-5">
+              <View className="mt-3 items-start rounded-3xl border border-black/5 bg-ink-900 p-5">
                 <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
                   0
                 </Text>
@@ -196,11 +196,11 @@ export function NutritionScreen({ navigation }: Props) {
                   {t('nutrition.alternativesUnavailable')}
                 </Text>
               ) : (
-                <View className="mt-3 rounded-3xl border border-white/5 bg-ink-900 px-5">
+                <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5">
                   {(alternativesMutation.data?.suggestions ?? []).map((suggestion, index) => (
                     <View
                       key={suggestion.title}
-                      className={`py-4 ${index > 0 ? 'border-t border-white/5' : ''}`}
+                      className={`py-4 ${index > 0 ? 'border-t border-black/5' : ''}`}
                     >
                       <Text className="text-base font-semibold text-content-primary">
                         {suggestion.title}
@@ -225,9 +225,9 @@ export function NutritionScreen({ navigation }: Props) {
             <PressableScale
               onPress={() => navigation.navigate('AddMeal')}
               accessibilityRole="button"
-              className="rounded-2xl bg-brand py-4"
+              className="rounded-2xl bg-charcoal py-4"
             >
-              <Text className="text-center text-base font-semibold text-ink-950">
+              <Text className="text-center text-base font-semibold text-white">
                 {t('nutrition.addMeal')}
               </Text>
             </PressableScale>

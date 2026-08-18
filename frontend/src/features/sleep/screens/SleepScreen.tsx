@@ -22,7 +22,7 @@ function QualityDots({ quality }: { quality: number | null }) {
       {[1, 2, 3, 4, 5].map((dot) => (
         <View
           key={dot}
-          className={`h-1.5 w-1.5 rounded-full ${dot <= quality ? 'bg-metric-sleep' : 'bg-white/10'}`}
+          className={`h-1.5 w-1.5 rounded-full ${dot <= quality ? 'bg-metric-sleep' : 'bg-black/10'}`}
         />
       ))}
     </View>
@@ -62,7 +62,7 @@ export function SleepScreen({ navigation }: Props) {
           ) : latest ? (
             <Animated.View
               entering={FadeInDown.delay(80).springify()}
-              className="rounded-3xl border border-white/5 bg-ink-900 p-5"
+              className="rounded-3xl border border-black/5 bg-ink-900 p-5"
             >
               <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
                 {t('sleep.lastNight')}
@@ -90,7 +90,7 @@ export function SleepScreen({ navigation }: Props) {
           ) : (
             <Animated.View
               entering={FadeInDown.delay(80).springify()}
-              className="items-start rounded-3xl border border-white/5 bg-ink-900 p-5"
+              className="items-start rounded-3xl border border-black/5 bg-ink-900 p-5"
             >
               <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
                 0h
@@ -106,12 +106,12 @@ export function SleepScreen({ navigation }: Props) {
               <Text className="text-lg font-semibold text-content-primary">
                 {t('sleep.recent')}
               </Text>
-              <View className="mt-3 rounded-3xl border border-white/5 bg-ink-900 px-5">
+              <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5">
                 {entries.slice(0, 7).map((entry, index) => (
                   <View
                     key={entry.id}
                     className={`flex-row items-center justify-between py-4 ${
-                      index > 0 ? 'border-t border-white/5' : ''
+                      index > 0 ? 'border-t border-black/5' : ''
                     }`}
                   >
                     <View>
@@ -138,11 +138,9 @@ export function SleepScreen({ navigation }: Props) {
           <PressableScale
             onPress={() => navigation.navigate('LogSleep')}
             accessibilityRole="button"
-            className="rounded-2xl bg-brand py-4"
+            className="rounded-2xl bg-charcoal py-4"
           >
-            <Text className="text-center text-base font-semibold text-ink-950">
-              {t('sleep.log')}
-            </Text>
+            <Text className="text-center text-base font-semibold text-white">{t('sleep.log')}</Text>
           </PressableScale>
         </Animated.View>
       </View>
