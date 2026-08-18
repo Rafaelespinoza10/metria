@@ -61,7 +61,20 @@
       "90d": "90d"
     },
     "achievements": "Achievements",
-    "achievementsHint": "Streaks and milestones"
+    "achievementsHint": "Streaks and milestones",
+    "streak": "Day streak",
+    "workoutsWeek": "Workouts · week",
+    "activeToday": "Active min today",
+    "trends": "Trends",
+    "trendWindow": {
+      "7": "7d",
+      "14": "14d",
+      "30": "30d"
+    },
+    "average": "Average",
+    "target": "Target",
+    "trendsEmpty": "Log meals, steps, or sleep to see your trend.",
+    "dayInitials": "SMTWTFS"
   },
   "goals": {
     "title": "Goals",
@@ -309,7 +322,18 @@
     "permanentTitle": "Delete everything permanently",
     "permanentHint": "Removes your account and every meal, workout, measurement, photo, and insight. This cannot be undone.",
     "passwordConfirm": "Confirm with your password",
-    "permanentAction": "Delete everything"
+    "permanentAction": "Delete everything",
+    "memberSince": "Member since {{date}}",
+    "stats": {
+      "streak": "Day streak",
+      "longest": "Longest streak",
+      "badges": "Badges"
+    },
+    "data": "Data",
+    "account": "Account",
+    "exportPdf": "Progress report (PDF)",
+    "exportPdfHint": "Last 30 days, ready to share",
+    "exportError": "The report could not be generated. Try again."
   },
   "exercises": {
     "title": "Exercise library",
@@ -339,5 +363,20 @@
       "calves": "Calves",
       "neck": "Neck"
     }
+  },
+  "report": {
+    "title": "Progress report",
+    "preparedFor": "Prepared for",
+    "dailyAverages": "Daily averages (last 30 days)",
+    "metric": "Metric",
+    "start": "Start",
+    "end": "End",
+    "change": "Change",
+    "consistency": "Consistency (30 days)",
+    "trackedDays": "Tracked days",
+    "currentStreak": "Current streak",
+    "badges": "Badges",
+    "generatedOn": "Generated on {{date}}",
+    "disclaimer": "Data logged in Metria. Informational only — not medical advice."
   }
 }
