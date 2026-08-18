@@ -206,7 +206,13 @@
     "weight": "Kg",
     "rpe": "RPE",
     "addSet": "Add set",
-    "setLabel": "Set {{number}}"
+    "setLabel": "Set {{number}}",
+    "weekKicker": "Last 7 days",
+    "weekWorkouts": "workouts",
+    "weekSets": "sets",
+    "weekMinutes": "minutes",
+    "addPhoto": "Add exercise photo",
+    "changePhoto": "Change exercise photo"
   },
   "sleep": {
     "title": "Sleep",
