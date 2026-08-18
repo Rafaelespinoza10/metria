@@ -14,6 +14,8 @@ export interface MacroTotals {
 
 export interface MealResponse extends MealWithItems {
   totals: MacroTotals;
+  /** Auth-gated URL of the analyzed photo, when confirmed from an AI scan. */
+  imageUrl: string | null;
 }
 
 export interface NutritionTargets {
@@ -45,7 +47,11 @@ export function mealTotals(meal: MealWithItems): MacroTotals {
 }
 
 function withTotals(meal: MealWithItems): MealResponse {
-  return { ...meal, totals: mealTotals(meal) };
+  return {
+    ...meal,
+    totals: mealTotals(meal),
+    imageUrl: meal.imageKey ? `/api/uploads/${meal.imageKey}` : null,
+  };
 }
 
 export class NutritionService {

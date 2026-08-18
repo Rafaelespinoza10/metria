@@ -14,7 +14,12 @@ export function getDb(): Database {
     if (!env.DATABASE_URL) {
       throw new Error('DATABASE_URL is not set. Configure it in backend/.env (see .env.example).');
     }
-    pool = new pg.Pool({ connectionString: env.DATABASE_URL });
+    pool = new pg.Pool({
+      connectionString: env.DATABASE_URL,
+      // Vitest runs each suite in its own process with its own pool; keep the
+      // per-process cap low so 16 parallel suites stay under max_connections.
+      max: env.NODE_ENV === 'test' ? 4 : 10,
+    });
     db = drizzle(pool, { schema });
   }
   return db;

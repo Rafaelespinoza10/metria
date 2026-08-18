@@ -119,7 +119,11 @@ export class MealAnalysisService {
       analysisId: analysis.id,
     });
     await this.analysisRepository.setStatus(analysis.id, 'confirmed');
-    return { ...meal, totals: mealTotals(meal) };
+    return {
+      ...meal,
+      totals: mealTotals(meal),
+      imageUrl: `/api/uploads/${analysis.imageKey}`,
+    };
   }
 
   async discard(userId: string, id: string): Promise<MealAnalysisRow> {
