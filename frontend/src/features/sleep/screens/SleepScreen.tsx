@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { MacroBar } from '../../../components/MacroBar';
@@ -12,6 +12,7 @@ import type { AppStackParamList } from '../../../navigation/types';
 import { theme } from '../../../theme';
 import { formatMinutes } from '../helpers';
 import { useSleepEntries, useSleepTargets } from '../hooks';
+import { sectionImages } from '../../../theme/images';
 
 type Props = NativeStackScreenProps<AppStackParamList, 'Sleep'>;
 
@@ -90,12 +91,14 @@ export function SleepScreen({ navigation }: Props) {
           ) : (
             <Animated.View
               entering={FadeInDown.delay(80).springify()}
-              className="items-start rounded-3xl border border-black/5 bg-ink-900 p-5"
+              className="items-start overflow-hidden rounded-3xl border border-black/5 bg-ink-900"
             >
-              <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
-                0h
-              </Text>
-              <Text className="mt-3 text-sm leading-relaxed text-content-secondary">
+              <Image
+                source={sectionImages.sleep}
+                className="h-36 w-full bg-ink-800"
+                accessibilityIgnoresInvertColors
+              />
+              <Text className="p-5 text-sm leading-relaxed text-content-secondary">
                 {t('sleep.empty')}
               </Text>
             </Animated.View>

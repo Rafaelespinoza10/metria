@@ -1,7 +1,7 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Chip } from '../../../components/Chip';
@@ -12,6 +12,7 @@ import type { AppStackParamList } from '../../../navigation/types';
 import { goalCategoryKey, goalMetricKey, goalMetricUnit } from '../helpers';
 import { useGoals } from '../hooks';
 import type { Goal, GoalStatus } from '../types';
+import { sectionImages } from '../../../theme/images';
 
 type Props = NativeStackScreenProps<AppStackParamList, 'Goals'>;
 
@@ -82,12 +83,14 @@ export function GoalsScreen({ navigation }: Props) {
           ) : (
             <Animated.View
               entering={FadeInDown.delay(120).springify()}
-              className="mt-3 items-start rounded-3xl border border-black/5 bg-ink-900 p-5"
+              className="mt-3 items-start overflow-hidden rounded-3xl border border-black/5 bg-ink-900"
             >
-              <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
-                0
-              </Text>
-              <Text className="mt-3 text-sm leading-relaxed text-content-secondary">
+              <Image
+                source={sectionImages.goals}
+                className="h-36 w-full bg-ink-800"
+                accessibilityIgnoresInvertColors
+              />
+              <Text className="p-5 text-sm leading-relaxed text-content-secondary">
                 {t('goals.empty')}
               </Text>
             </Animated.View>
