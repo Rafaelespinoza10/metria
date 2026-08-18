@@ -1,29 +1,45 @@
 import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { MacroBar } from '../../../components/MacroBar';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
-import type { AppStackParamList } from '../../../navigation/types';
+import type { TabScreenProps } from '../../../navigation/types';
+import { API_URL } from '../../../services/api';
+import { useAuthStore } from '../../../store/auth';
 import { theme } from '../../../theme';
 import { addDays, todayISO } from '../helpers';
 import { useAlternatives, useDaySummary, useMeals } from '../hooks';
 import type { Meal, MealCategory } from '../types';
 
-type Props = NativeStackScreenProps<AppStackParamList, 'Nutrition'>;
+type Props = TabScreenProps<'Nutrition'>;
 
 const CATEGORY_ORDER: MealCategory[] = ['breakfast', 'lunch', 'dinner', 'snack'];
 
 function MealRow({ meal, onSuggest }: { meal: Meal; onSuggest: (meal: Meal) => void }) {
   const { t } = useTranslation();
+  const token = useAuthStore((state) => state.token);
   return (
     <View className="border-t border-black/5 py-3">
       <View className="flex-row items-center justify-between">
+        {meal.imageUrl ? (
+          <Image
+            source={{
+              uri: `${API_URL}${meal.imageUrl}`,
+              headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+            }}
+            className="mr-3 h-14 w-14 rounded-2xl bg-ink-800"
+            accessibilityIgnoresInvertColors
+          />
+        ) : (
+          <View className="mr-3 h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft">
+            <Ionicons name="restaurant-outline" size={20} color={theme.colors.brand.DEFAULT} />
+          </View>
+        )}
         <View className="flex-1 pr-3">
           <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
             {t(`nutrition.category.${meal.category}`)}
@@ -73,7 +89,6 @@ export function NutritionScreen({ navigation }: Props) {
     <SafeAreaView className="flex-1 bg-ink-950">
       <View className="flex-1 px-5">
         <ScreenHeader
-          showBack
           title={t('nutrition.title')}
           right={
             <PressableScale

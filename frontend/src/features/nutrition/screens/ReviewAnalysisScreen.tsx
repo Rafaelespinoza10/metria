@@ -1,7 +1,7 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Chip } from '../../../components/Chip';
@@ -123,6 +123,15 @@ export function ReviewAnalysisScreen({ navigation, route }: Props) {
       <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
         <View className="px-5 pb-12">
           <ScreenHeader showBack title={t('nutrition.reviewTitle')} />
+          {route.params.photoUri ? (
+            <Animated.View entering={FadeInDown.delay(30).springify()}>
+              <Image
+                source={{ uri: route.params.photoUri }}
+                className="mt-6 h-48 w-full rounded-3xl bg-ink-800"
+                accessibilityIgnoresInvertColors
+              />
+            </Animated.View>
+          ) : null}
           {analysisQuery.isPending ? (
             <View className="mt-8 gap-4">
               <SkeletonBlock className="h-20 rounded-2xl" />
@@ -132,7 +141,7 @@ export function ReviewAnalysisScreen({ navigation, route }: Props) {
             <ReviewForm
               analysisId={analysis.id}
               estimation={analysis.result}
-              onConfirmed={() => navigation.navigate('Nutrition')}
+              onConfirmed={() => navigation.navigate('Tabs', { screen: 'Nutrition' })}
             />
           ) : (
             <Animated.View

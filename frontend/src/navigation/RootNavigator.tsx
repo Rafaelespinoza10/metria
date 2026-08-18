@@ -1,3 +1,4 @@
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { DefaultTheme, NavigationContainer, type Theme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View } from 'react-native';
@@ -28,7 +29,8 @@ import { AddWorkoutScreen } from '../features/workouts/screens/AddWorkoutScreen'
 import { WorkoutsScreen } from '../features/workouts/screens/WorkoutsScreen';
 import { useAuthStore } from '../store/auth';
 import { theme } from '../theme';
-import type { AppStackParamList, AuthStackParamList } from './types';
+import { TabBar } from './TabBar';
+import type { AppStackParamList, AuthStackParamList, TabParamList } from './types';
 
 const navigationTheme: Theme = {
   ...DefaultTheme,
@@ -44,6 +46,19 @@ const navigationTheme: Theme = {
 
 const AuthStack = createNativeStackNavigator<AuthStackParamList>();
 const AppStack = createNativeStackNavigator<AppStackParamList>();
+const Tab = createBottomTabNavigator<TabParamList>();
+
+function Tabs() {
+  return (
+    <Tab.Navigator screenOptions={{ headerShown: false }} tabBar={(props) => <TabBar {...props} />}>
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Nutrition" component={NutritionScreen} />
+      <Tab.Screen name="ScanMeal" component={ScanMealScreen} />
+      <Tab.Screen name="Workouts" component={WorkoutsScreen} />
+      <Tab.Screen name="Insights" component={InsightsScreen} />
+    </Tab.Navigator>
+  );
+}
 
 /** Shown while the stored session is being restored — shaped like the Home layout. */
 function HydrationSkeleton() {
@@ -69,24 +84,20 @@ export function RootNavigator() {
         <HydrationSkeleton />
       ) : status === 'signedIn' ? (
         <AppStack.Navigator screenOptions={{ headerShown: false }}>
-          <AppStack.Screen name="Home" component={HomeScreen} />
+          <AppStack.Screen name="Tabs" component={Tabs} />
           <AppStack.Screen name="Goals" component={GoalsScreen} />
           <AppStack.Screen name="CreateGoal" component={CreateGoalScreen} />
           <AppStack.Screen name="Measurements" component={MeasurementsScreen} />
           <AppStack.Screen name="LogMeasurement" component={LogMeasurementScreen} />
-          <AppStack.Screen name="Nutrition" component={NutritionScreen} />
           <AppStack.Screen name="AddMeal" component={AddMealScreen} />
           <AppStack.Screen name="NutritionTargets" component={NutritionTargetsScreen} />
-          <AppStack.Screen name="ScanMeal" component={ScanMealScreen} />
           <AppStack.Screen name="ReviewAnalysis" component={ReviewAnalysisScreen} />
           <AppStack.Screen name="Activity" component={ActivityScreen} />
           <AppStack.Screen name="ActivityTargets" component={ActivityTargetsScreen} />
-          <AppStack.Screen name="Workouts" component={WorkoutsScreen} />
           <AppStack.Screen name="AddWorkout" component={AddWorkoutScreen} />
           <AppStack.Screen name="Sleep" component={SleepScreen} />
           <AppStack.Screen name="LogSleep" component={LogSleepScreen} />
           <AppStack.Screen name="SleepTarget" component={SleepTargetScreen} />
-          <AppStack.Screen name="Insights" component={InsightsScreen} />
           <AppStack.Screen name="Achievements" component={AchievementsScreen} />
           <AppStack.Screen name="Settings" component={SettingsScreen} />
           <AppStack.Screen name="DeleteAccount" component={DeleteAccountScreen} />

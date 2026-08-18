@@ -1,4 +1,3 @@
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,12 +5,12 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
-import type { AppStackParamList } from '../../../navigation/types';
+import type { TabScreenProps } from '../../../navigation/types';
 import { formatSet, totalSets } from '../helpers';
 import { useWorkouts } from '../hooks';
 import type { Workout } from '../types';
 
-type Props = NativeStackScreenProps<AppStackParamList, 'Workouts'>;
+type Props = TabScreenProps<'Workouts'>;
 
 function WorkoutCard({ workout, index }: { workout: Workout; index: number }) {
   const { t } = useTranslation();
@@ -66,7 +65,7 @@ export function WorkoutsScreen({ navigation }: Props) {
   return (
     <SafeAreaView className="flex-1 bg-ink-950">
       <View className="flex-1 px-5">
-        <ScreenHeader showBack title={t('workouts.title')} />
+        <ScreenHeader title={t('workouts.title')} />
 
         <ScrollView className="mt-4 flex-1" showsVerticalScrollIndicator={false}>
           {workoutsQuery.isPending ? (

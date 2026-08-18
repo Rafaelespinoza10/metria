@@ -123,7 +123,7 @@ export function InsightsScreen() {
     <SafeAreaView className="flex-1 bg-ink-950">
       <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
         <View className="px-5 pb-12">
-          <ScreenHeader showBack title={t('insights.title')} />
+          <ScreenHeader title={t('insights.title')} />
 
           <InsightCard
             kicker={t('insights.daily')}
