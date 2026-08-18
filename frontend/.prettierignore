@@ -2,3 +2,4 @@
 dist/
 assets/
 package-lock.json
+pnpm-lock.yaml
