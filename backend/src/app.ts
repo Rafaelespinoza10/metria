@@ -21,6 +21,8 @@ import { GamificationService } from './modules/gamification/gamification.service
 import { createGoalsRoutes } from './modules/goals/goals.routes.js';
 import { GoalsRepository } from './modules/goals/goals.repository.js';
 import { GoalsService } from './modules/goals/goals.service.js';
+import { ExerciseCatalog } from './modules/exercises/exercises.catalog.js';
+import { createExercisesRoutes } from './modules/exercises/exercises.routes.js';
 import { createHealthRoutes } from './modules/health/health.routes.js';
 import { AggregatesService } from './modules/insights/aggregates.service.js';
 import { InsightsRepository } from './modules/insights/insights.repository.js';
@@ -162,6 +164,7 @@ export function createApp(deps: AppDependencies = {}): express.Express {
     deps.insightsPort ?? new OpenAIInsights(),
   );
   const authMiddleware = createAuthMiddleware({ usersRepository, tokenService });
+  const exerciseCatalog = new ExerciseCatalog();
 
   app.use('/api/health', createHealthRoutes());
   app.use('/api/auth', createAuthRateLimiter(deps.authRateLimit));
@@ -179,6 +182,7 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   app.use('/api/insights', createInsightsRoutes({ insightsService, authMiddleware }));
   app.use('/api/progress', createProgressRoutes({ progressService, authMiddleware }));
   app.use('/api/gamification', createGamificationRoutes({ gamificationService, authMiddleware }));
+  app.use('/api/exercises', createExercisesRoutes({ catalog: exerciseCatalog, authMiddleware }));
   app.use('/api/uploads', createUploadsRoutes({ storage, authMiddleware }));
 
   app.use(notFound);
