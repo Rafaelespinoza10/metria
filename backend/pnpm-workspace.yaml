@@ -1,0 +1,9 @@
+# pnpm project config (single package).
+# Supply-chain hardening:
+# - No dependency lifecycle scripts run. esbuild works without its postinstall
+#   (platform binaries ship as optionalDependencies).
+allowBuilds:
+  esbuild: false
+# - Never resolve versions published less than 3 days ago (4320 minutes), so
+#   freshly compromised releases age out before they can be installed.
+minimumReleaseAge: 4320
