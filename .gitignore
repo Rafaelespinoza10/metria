@@ -24,3 +24,6 @@ backend/storage/
 # OS / editor
 .DS_Store
 *.log
+
+# Parallel-session git worktrees
+.claude/worktrees/
