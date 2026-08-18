@@ -19,6 +19,7 @@ export const workoutSetSchema = z.object({
 export const workoutExerciseSchema = z.object({
   name: z.string().min(1).max(120),
   muscleGroup: z.string().max(60).optional(),
+  imageKey: z.string().min(1).max(255).optional(),
   sets: z.array(workoutSetSchema).min(1).max(30),
 });
 

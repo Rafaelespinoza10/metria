@@ -49,6 +49,7 @@ async function insertExerciseTree(
         workoutId,
         name: exercise.name,
         muscleGroup: exercise.muscleGroup ?? null,
+        imageKey: exercise.imageKey ?? null,
         position,
       })
       .returning();
