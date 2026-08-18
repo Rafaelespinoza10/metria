@@ -47,5 +47,6 @@
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
-  "private": true
+  "private": true,
+  "packageManager": "pnpm@11.22.0"
 }
