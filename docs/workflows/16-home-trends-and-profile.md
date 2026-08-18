@@ -68,21 +68,21 @@ user_streaks, badges, user_badges. No migrations.
 
 ## Backend tasks
 
-- [ ] `AggregatesService.dailySeries(userId, from, to)` — per-day calories/steps/sleep
+- [x] `AggregatesService.dailySeries(userId, from, to)` — per-day calories/steps/sleep
       + `tracked` flag (includes workout days).
-- [ ] `ProgressService.trends(userId, days)` and `ProgressService.report(userId)`
+- [x] `ProgressService.trends(userId, days)` and `ProgressService.report(userId)`
       (gains the `GamificationRepository` dependency for streaks/badges).
-- [ ] Routes/controller: `GET /api/progress/trends`, `GET /api/progress/report`.
-- [ ] Integration tests with hand-computed expectations (see Tests).
+- [x] Routes/controller: `GET /api/progress/trends`, `GET /api/progress/report`.
+- [x] Integration tests with hand-computed expectations (see Tests).
 
 ## Frontend tasks
 
-- [ ] `progress` feature: trends + report types, API functions, hooks.
-- [ ] `TrendChart` SVG component (bars + dashed target line), pure scaling helpers.
-- [ ] Home: stat row + trends section, skeletons shaped like the layout, en/es strings.
-- [ ] Settings/profile: identity card, stat tiles, PDF export action (`expo-print`,
+- [x] `progress` feature: trends + report types, API functions, hooks.
+- [x] `TrendChart` SVG component (bars + dashed target line), pure scaling helpers.
+- [x] Home: stat row + trends section, skeletons shaped like the layout, en/es strings.
+- [x] Settings/profile: identity card, stat tiles, PDF export action (`expo-print`,
       `expo-sharing`), pure `buildReportHtml` helper.
-- [ ] Jest tests for chart scaling helpers and the report HTML builder.
+- [x] Jest tests for chart scaling helpers and the report HTML builder.
 
 ## API contracts
 
@@ -141,4 +141,4 @@ values, omits target rows when null, escapes user-provided names).
 
 ## Definition of done
 
-- [ ] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
+- [x] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
