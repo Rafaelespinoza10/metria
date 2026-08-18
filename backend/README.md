@@ -13,8 +13,8 @@ pnpm run db:seed             # idempotent: system measurement types + badge keys
 
 ## Scripts
 
-| Script                                                 | Purpose                                             |
-| ------------------------------------------------------ | --------------------------------------------------- |
+| Script                                                  | Purpose                                             |
+| ------------------------------------------------------- | --------------------------------------------------- |
 | `pnpm run dev`                                          | Dev server with reload (`tsx watch`)                |
 | `pnpm run build` / `start`                              | Compile to `dist/` and run                          |
 | `pnpm run typecheck` / `lint` / `format:check` / `test` | The CI gate                                         |
