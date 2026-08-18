@@ -80,6 +80,7 @@ function TargetsForm({ initial, onSaved }: { initial: NutritionTargets; onSaved:
         <AuthSubmitButton
           label={t('nutrition.saveTargets')}
           loading={putTargetsMutation.isPending}
+          disabled={!canSubmit}
           onPress={submit}
         />
       </View>

@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
+import { Button } from '../../../components/Button';
 import { PressableScale } from '../../../components/PressableScale';
 import { theme } from '../../../theme';
 import { AuthTextField } from '../../auth/components/AuthTextField';
@@ -82,6 +83,7 @@ export function MealItemsEditor({ items, onChange, confidences }: MealItemsEdito
                 onPress={() => onChange(items.filter((_, i) => i !== index))}
                 accessibilityRole="button"
                 accessibilityLabel={t('nutrition.removeItem')}
+                hitSlop={8}
                 className="h-9 w-9 items-center justify-center rounded-full bg-ink-800"
               >
                 <Ionicons name="close" size={16} color={theme.colors.content.secondary} />
@@ -162,16 +164,12 @@ export function MealItemsEditor({ items, onChange, confidences }: MealItemsEdito
             />
           </View>
         </View>
-        <PressableScale
-          onPress={addItem}
+        <Button
+          label={t('nutrition.addItemAction')}
+          variant="secondary"
           disabled={!draftValid}
-          accessibilityRole="button"
-          className={`rounded-2xl border border-brand/40 py-3 ${draftValid ? '' : 'opacity-40'}`}
-        >
-          <Text className="text-center text-sm font-semibold text-brand">
-            {t('nutrition.addItemAction')}
-          </Text>
-        </PressableScale>
+          onPress={addItem}
+        />
       </View>
     </>
   );

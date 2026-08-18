@@ -379,6 +379,7 @@ export function AddWorkoutScreen({ navigation, route }: Props) {
               <AuthSubmitButton
                 label={t('workouts.save')}
                 loading={saving}
+                disabled={!canSubmit}
                 onPress={() => void submit()}
               />
             </View>

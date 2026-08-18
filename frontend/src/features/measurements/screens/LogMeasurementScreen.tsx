@@ -88,6 +88,7 @@ export function LogMeasurementScreen({ navigation }: Props) {
               <AuthSubmitButton
                 label={t('measurements.save')}
                 loading={logMutation.isPending}
+                disabled={!canSubmit}
                 onPress={submit}
               />
             </View>

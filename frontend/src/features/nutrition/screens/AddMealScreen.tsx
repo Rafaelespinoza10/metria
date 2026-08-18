@@ -79,6 +79,7 @@ export function AddMealScreen({ navigation }: Props) {
               <AuthSubmitButton
                 label={t('nutrition.saveMeal')}
                 loading={createMealMutation.isPending}
+                disabled={!canSubmit}
                 onPress={submit}
               />
             </View>

@@ -48,6 +48,7 @@ function TargetForm({ initialMinutes, onSaved }: { initialMinutes?: number; onSa
         <AuthSubmitButton
           label={t('sleep.saveTarget')}
           loading={putMutation.isPending}
+          disabled={!canSubmit}
           onPress={submit}
         />
       </View>

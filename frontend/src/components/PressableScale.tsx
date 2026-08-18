@@ -7,7 +7,10 @@ interface PressableScaleProps extends PressableProps {
   children?: React.ReactNode;
 }
 
-/** Standard press feedback: springs to 0.97 scale. Use for every tappable card/button. */
+// Stiff spring so the press-in reads as immediate; the release keeps a hint of bounce.
+const PRESS_SPRING = { damping: 26, stiffness: 520 };
+
+/** Standard press feedback: springs to 0.96 scale. Use for every tappable card/button. */
 export function PressableScale({ className, children, ...props }: PressableScaleProps) {
   const scale = useSharedValue(1);
   const animatedStyle = useAnimatedStyle(() => ({ transform: [{ scale: scale.value }] }));
@@ -16,11 +19,11 @@ export function PressableScale({ className, children, ...props }: PressableScale
     <Pressable
       {...props}
       onPressIn={(event) => {
-        scale.set(withSpring(0.97, { damping: 20, stiffness: 300 }));
+        scale.set(withSpring(0.96, PRESS_SPRING));
         props.onPressIn?.(event);
       }}
       onPressOut={(event) => {
-        scale.set(withSpring(1, { damping: 20, stiffness: 300 }));
+        scale.set(withSpring(1, PRESS_SPRING));
         props.onPressOut?.(event);
       }}
     >

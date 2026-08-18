@@ -104,6 +104,7 @@ export function RegisterScreen({ navigation }: Props) {
               <AuthSubmitButton
                 label={t('auth.createAccount')}
                 loading={registerMutation.isPending}
+                disabled={!canSubmit}
                 onPress={submit}
               />
               <View className="mt-6 flex-row items-center gap-1.5">

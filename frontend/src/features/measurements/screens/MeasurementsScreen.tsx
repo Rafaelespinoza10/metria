@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Button } from '../../../components/Button';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
@@ -121,15 +122,10 @@ export function MeasurementsScreen({ navigation }: Props) {
           </Animated.View>
 
           <Animated.View entering={FadeInDown.delay(180).springify()} className="mt-10">
-            <PressableScale
+            <Button
+              label={t('measurements.log')}
               onPress={() => navigation.navigate('LogMeasurement')}
-              accessibilityRole="button"
-              className="rounded-2xl bg-charcoal py-4"
-            >
-              <Text className="text-center text-base font-semibold text-white">
-                {t('measurements.log')}
-              </Text>
-            </PressableScale>
+            />
           </Animated.View>
         </View>
       </ScrollView>

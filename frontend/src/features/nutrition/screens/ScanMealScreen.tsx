@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Image, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { PressableScale } from '../../../components/PressableScale';
+import { Button } from '../../../components/Button';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
 import type { TabScreenProps } from '../../../navigation/types';
@@ -103,15 +103,7 @@ export function ScanMealScreen({ navigation }: Props) {
             </View>
 
             <View className="mt-8">
-              <PressableScale
-                onPress={() => void pickAndAnalyze()}
-                accessibilityRole="button"
-                className="rounded-2xl bg-charcoal py-4"
-              >
-                <Text className="text-center text-base font-semibold text-white">
-                  {t('nutrition.pickPhoto')}
-                </Text>
-              </PressableScale>
+              <Button label={t('nutrition.pickPhoto')} onPress={() => void pickAndAnalyze()} />
             </View>
           </Animated.View>
         )}
