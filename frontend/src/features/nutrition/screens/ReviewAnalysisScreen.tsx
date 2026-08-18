@@ -106,6 +106,7 @@ function ReviewForm({
         <AuthSubmitButton
           label={t('nutrition.confirmMeal')}
           loading={confirmMutation.isPending}
+          disabled={!canSubmit}
           onPress={submit}
         />
       </View>

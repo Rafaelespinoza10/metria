@@ -90,6 +90,7 @@ export function LoginScreen({ navigation }: Props) {
               <AuthSubmitButton
                 label={t('auth.signIn')}
                 loading={loginMutation.isPending}
+                disabled={!canSubmit}
                 onPress={submit}
               />
               <View className="mt-6 flex-row items-center gap-1.5">

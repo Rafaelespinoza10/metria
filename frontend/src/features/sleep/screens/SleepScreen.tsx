@@ -5,6 +5,7 @@ import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { MacroBar } from '../../../components/MacroBar';
+import { Button } from '../../../components/Button';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
@@ -138,13 +139,7 @@ export function SleepScreen({ navigation }: Props) {
           entering={FadeInDown.delay(200).springify()}
           className="absolute inset-x-5 bottom-6"
         >
-          <PressableScale
-            onPress={() => navigation.navigate('LogSleep')}
-            accessibilityRole="button"
-            className="rounded-2xl bg-charcoal py-4"
-          >
-            <Text className="text-center text-base font-semibold text-white">{t('sleep.log')}</Text>
-          </PressableScale>
+          <Button label={t('sleep.log')} onPress={() => navigation.navigate('LogSleep')} />
         </Animated.View>
       </View>
     </SafeAreaView>

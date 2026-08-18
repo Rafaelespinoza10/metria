@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Button } from '../../../components/Button';
 import { Chip } from '../../../components/Chip';
-import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
 import type { AppStackParamList } from '../../../navigation/types';
@@ -66,6 +66,7 @@ export function GoalsScreen({ navigation }: Props) {
               label={t(`goals.status.${item}`)}
               selected={status === item}
               onPress={() => setStatus(item)}
+              className="flex-1"
             />
           ))}
         </Animated.View>
@@ -102,15 +103,7 @@ export function GoalsScreen({ navigation }: Props) {
           entering={FadeInDown.delay(180).springify()}
           className="absolute inset-x-5 bottom-6"
         >
-          <PressableScale
-            onPress={() => navigation.navigate('CreateGoal')}
-            accessibilityRole="button"
-            className="rounded-2xl bg-charcoal py-4"
-          >
-            <Text className="text-center text-base font-semibold text-white">
-              {t('goals.newGoal')}
-            </Text>
-          </PressableScale>
+          <Button label={t('goals.newGoal')} onPress={() => navigation.navigate('CreateGoal')} />
         </Animated.View>
       </View>
     </SafeAreaView>

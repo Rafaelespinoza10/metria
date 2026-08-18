@@ -5,6 +5,7 @@ import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { MacroBar } from '../../../components/MacroBar';
+import { Button } from '../../../components/Button';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
@@ -54,6 +55,7 @@ function MealRow({ meal, onSuggest }: { meal: Meal; onSuggest: (meal: Meal) => v
             onPress={() => onSuggest(meal)}
             accessibilityRole="button"
             accessibilityLabel={t('nutrition.suggestAlternatives')}
+            hitSlop={8}
             className="h-9 w-9 items-center justify-center rounded-full bg-ink-800"
           >
             <Ionicons name="sparkles-outline" size={16} color={theme.colors.brand.DEFAULT} />
@@ -112,6 +114,7 @@ export function NutritionScreen({ navigation }: Props) {
           <PressableScale
             onPress={() => setDate(addDays(date, -1))}
             accessibilityRole="button"
+            hitSlop={6}
             className="h-10 w-10 items-center justify-center rounded-full bg-ink-900"
           >
             <Ionicons name="chevron-back" size={18} color={theme.colors.content.secondary} />
@@ -123,6 +126,7 @@ export function NutritionScreen({ navigation }: Props) {
             onPress={() => setDate(addDays(date, 1))}
             disabled={isToday}
             accessibilityRole="button"
+            hitSlop={6}
             className={`h-10 w-10 items-center justify-center rounded-full bg-ink-900 ${
               isToday ? 'opacity-40' : ''
             }`}
@@ -242,15 +246,7 @@ export function NutritionScreen({ navigation }: Props) {
           className="absolute inset-x-5 bottom-6 flex-row gap-3"
         >
           <View className="flex-1">
-            <PressableScale
-              onPress={() => navigation.navigate('AddMeal')}
-              accessibilityRole="button"
-              className="rounded-2xl bg-charcoal py-4"
-            >
-              <Text className="text-center text-base font-semibold text-white">
-                {t('nutrition.addMeal')}
-              </Text>
-            </PressableScale>
+            <Button label={t('nutrition.addMeal')} onPress={() => navigation.navigate('AddMeal')} />
           </View>
           <PressableScale
             onPress={() => navigation.navigate('ScanMeal')}
