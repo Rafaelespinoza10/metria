@@ -1,4 +1,5 @@
 import type { Request, Response } from 'express';
+import { AppError } from '../../shared/errors/app-error.js';
 import { currentUser } from '../../shared/utils/current-user.js';
 import { ok } from '../../shared/utils/respond.js';
 import {
@@ -15,6 +16,15 @@ export class WorkoutsController {
     const input = createWorkoutSchema.parse(req.body);
     const workout = await this.workoutsService.create(currentUser(req).id, input);
     ok(res, { workout }, 201);
+  };
+
+  uploadExercisePhoto = async (req: Request, res: Response): Promise<void> => {
+    if (!req.file) throw AppError.validation('A "photo" file is required');
+    const photo = await this.workoutsService.saveExercisePhoto(currentUser(req).id, {
+      buffer: req.file.buffer,
+      mimetype: req.file.mimetype,
+    });
+    ok(res, { photo }, 201);
   };
 
   list = async (req: Request, res: Response): Promise<void> => {

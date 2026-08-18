@@ -1,10 +1,19 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from 'react-native';
+import {
+  Image,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import type { AuthStackParamList } from '../../../navigation/types';
+import { sectionImages } from '../../../theme/images';
 import { AuthSubmitButton } from '../components/AuthSubmitButton';
 import { AuthTextField } from '../components/AuthTextField';
 import { authErrorKey } from '../error-message';
@@ -33,11 +42,16 @@ export function LoginScreen({ navigation }: Props) {
       >
         <ScrollView keyboardShouldPersistTaps="handled" className="flex-1">
           <View className="px-5 pb-12">
-            <Animated.View entering={FadeInDown.springify()} className="mt-6">
-              <Text className="text-xs font-semibold uppercase tracking-widest text-brand">
+            <Animated.View entering={FadeInDown.springify()} className="mt-4">
+              <Image
+                source={sectionImages.authHero}
+                className="h-52 w-full rounded-3xl bg-ink-800"
+                accessibilityIgnoresInvertColors
+              />
+              <Text className="mt-6 text-xs font-semibold uppercase tracking-widest text-brand">
                 {t('common.appName')}
               </Text>
-              <Text className="mt-8 text-sm text-content-secondary">{t('auth.welcomeBack')}</Text>
+              <Text className="mt-3 text-sm text-content-secondary">{t('auth.welcomeBack')}</Text>
               <Text className="mt-1 text-3xl font-bold text-content-primary">
                 {t('auth.loginTitle')}
               </Text>

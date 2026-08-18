@@ -113,7 +113,7 @@ export function createApp(deps: AppDependencies = {}): express.Express {
     dailyTargetsRepository,
     usersRepository,
   );
-  const workoutsService = new WorkoutsService(workoutsRepository, usersRepository);
+  const workoutsService = new WorkoutsService(workoutsRepository, usersRepository, storage);
   const mealAnalysisService = new MealAnalysisService(
     new MealAnalysisRepository(),
     nutritionRepository,

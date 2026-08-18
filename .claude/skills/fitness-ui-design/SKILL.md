@@ -118,6 +118,25 @@ Every screen picks from these; don't invent flat lists of same-size boxes.
    (icon in `brand`), title + subtitle stack, trailing value or chevron.
    Divide with `border-b border-black/5`, not gaps.
 
+## Imagery
+
+Bundled photography lives in `frontend/assets/images/` and is exposed through
+`src/theme/images.ts` (`mealCategoryImages`, `sectionImages`). Warm, appetizing,
+editorial shots only (Unsplash License) — optimized to ~800 px / ~100 KB.
+
+- **Auth screens** open with the food hero (`sectionImages.authHero`) in a
+  full-width `rounded-3xl` block above the headline.
+- **Meal rows** show the user's analyzed photo when available, otherwise the
+  category image (`mealCategoryImages[category]`) as a `h-14 w-14 rounded-2xl`
+  thumbnail — never a bare icon tile for meals.
+- **Workout cards** carry a `h-24` image strip on top (`overflow-hidden` card).
+- **Empty states** lead with a `h-36 w-full` image from the set + one useful
+  line — never a dimmed numeral alone anymore.
+- Every `Image` sets a `bg-ink-800` placeholder and
+  `accessibilityIgnoresInvertColors`; user-content images pass the auth header.
+- Don't stretch tiny thumbnails into heroes or overlay long text on photos;
+  when text must sit on an image, use a solid card below it instead.
+
 ## Motion (Reanimated 4)
 
 Motion is part of the premium feel, but restrained:

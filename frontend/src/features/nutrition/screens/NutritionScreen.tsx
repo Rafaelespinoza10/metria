@@ -11,6 +11,7 @@ import { SkeletonBlock } from '../../../components/SkeletonBlock';
 import type { TabScreenProps } from '../../../navigation/types';
 import { API_URL } from '../../../services/api';
 import { useAuthStore } from '../../../store/auth';
+import { mealCategoryImages } from '../../../theme/images';
 import { theme } from '../../../theme';
 import { addDays, todayISO } from '../helpers';
 import { useAlternatives, useDaySummary, useMeals } from '../hooks';
@@ -36,9 +37,11 @@ function MealRow({ meal, onSuggest }: { meal: Meal; onSuggest: (meal: Meal) => v
             accessibilityIgnoresInvertColors
           />
         ) : (
-          <View className="mr-3 h-14 w-14 items-center justify-center rounded-2xl bg-brand-soft">
-            <Ionicons name="restaurant-outline" size={20} color={theme.colors.brand.DEFAULT} />
-          </View>
+          <Image
+            source={mealCategoryImages[meal.category]}
+            className="mr-3 h-14 w-14 rounded-2xl bg-ink-800"
+            accessibilityIgnoresInvertColors
+          />
         )}
         <View className="flex-1 pr-3">
           <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
@@ -188,11 +191,13 @@ export function NutritionScreen({ navigation }: Props) {
                 ))}
               </View>
             ) : (
-              <View className="mt-3 items-start rounded-3xl border border-black/5 bg-ink-900 p-5">
-                <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
-                  0
-                </Text>
-                <Text className="mt-3 text-sm leading-relaxed text-content-secondary">
+              <View className="mt-3 items-start overflow-hidden rounded-3xl border border-black/5 bg-ink-900">
+                <Image
+                  source={mealCategoryImages.breakfast}
+                  className="h-36 w-full bg-ink-800"
+                  accessibilityIgnoresInvertColors
+                />
+                <Text className="p-5 text-sm leading-relaxed text-content-secondary">
                   {t('nutrition.empty')}
                 </Text>
               </View>

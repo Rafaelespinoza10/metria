@@ -37,6 +37,7 @@ export const workoutExercises = pgTable('workout_exercises', {
     .references(() => workouts.id, { onDelete: 'cascade' }),
   name: text('name').notNull(),
   muscleGroup: text('muscle_group'),
+  imageKey: text('image_key'),
   position: integer('position').notNull(),
 });
 

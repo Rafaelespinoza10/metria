@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { PressableScale } from '../../../components/PressableScale';
@@ -8,6 +8,7 @@ import { SkeletonBlock } from '../../../components/SkeletonBlock';
 import type { TabScreenProps } from '../../../navigation/types';
 import { formatSet, totalSets } from '../helpers';
 import { useWorkouts } from '../hooks';
+import { sectionImages } from '../../../theme/images';
 import type { Workout } from '../types';
 
 type Props = TabScreenProps<'Workouts'>;
@@ -18,41 +19,48 @@ function WorkoutCard({ workout, index }: { workout: Workout; index: number }) {
   return (
     <Animated.View
       entering={FadeInDown.delay(120 + index * 60).springify()}
-      className="mt-3 rounded-3xl border border-black/5 bg-ink-900 p-5"
+      className="mt-3 overflow-hidden rounded-3xl border border-black/5 bg-ink-900"
     >
-      <View className="flex-row items-baseline justify-between">
-        <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
-          {workout.localDate}
-        </Text>
-        {workout.durationMinutes !== null ? (
-          <Text className="text-xs text-content-secondary">{workout.durationMinutes} min</Text>
-        ) : null}
-      </View>
-      <Text className="mt-2 text-2xl font-bold tracking-tight text-content-primary">
-        {workout.name}
-      </Text>
-      <Text className="mt-1 text-sm text-content-secondary">
-        {t('workouts.summary', {
-          exercises: workout.exercises.length,
-          sets: totalSets(workout.exercises),
-        })}
-      </Text>
-      <View className="mt-3 border-t border-black/5 pt-3">
-        {workout.exercises.slice(0, 3).map((exercise) => (
-          <View key={exercise.id} className="flex-row items-baseline justify-between py-1">
-            <Text className="flex-1 pr-3 text-sm text-content-primary" numberOfLines={1}>
-              {exercise.name}
-            </Text>
-            <Text className="text-xs text-content-secondary">
-              {exercise.sets.map((set) => formatSet(set)).join(' · ')}
-            </Text>
-          </View>
-        ))}
-        {workout.exercises.length > 3 ? (
-          <Text className="mt-1 text-xs text-content-tertiary">
-            +{workout.exercises.length - 3}
+      <Image
+        source={index % 2 === 0 ? sectionImages.goals : sectionImages.workout}
+        className="h-24 w-full bg-ink-800"
+        accessibilityIgnoresInvertColors
+      />
+      <View className="p-5 pt-4">
+        <View className="flex-row items-baseline justify-between">
+          <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
+            {workout.localDate}
           </Text>
-        ) : null}
+          {workout.durationMinutes !== null ? (
+            <Text className="text-xs text-content-secondary">{workout.durationMinutes} min</Text>
+          ) : null}
+        </View>
+        <Text className="mt-2 text-2xl font-bold tracking-tight text-content-primary">
+          {workout.name}
+        </Text>
+        <Text className="mt-1 text-sm text-content-secondary">
+          {t('workouts.summary', {
+            exercises: workout.exercises.length,
+            sets: totalSets(workout.exercises),
+          })}
+        </Text>
+        <View className="mt-3 border-t border-black/5 pt-3">
+          {workout.exercises.slice(0, 3).map((exercise) => (
+            <View key={exercise.id} className="flex-row items-baseline justify-between py-1">
+              <Text className="flex-1 pr-3 text-sm text-content-primary" numberOfLines={1}>
+                {exercise.name}
+              </Text>
+              <Text className="text-xs text-content-secondary">
+                {exercise.sets.map((set) => formatSet(set)).join(' · ')}
+              </Text>
+            </View>
+          ))}
+          {workout.exercises.length > 3 ? (
+            <Text className="mt-1 text-xs text-content-tertiary">
+              +{workout.exercises.length - 3}
+            </Text>
+          ) : null}
+        </View>
       </View>
     </Animated.View>
   );
@@ -80,12 +88,14 @@ export function WorkoutsScreen({ navigation }: Props) {
           ) : (
             <Animated.View
               entering={FadeInDown.delay(120).springify()}
-              className="mt-3 items-start rounded-3xl border border-black/5 bg-ink-900 p-5"
+              className="mt-3 items-start overflow-hidden rounded-3xl border border-black/5 bg-ink-900"
             >
-              <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
-                0
-              </Text>
-              <Text className="mt-3 text-sm leading-relaxed text-content-secondary">
+              <Image
+                source={sectionImages.workout}
+                className="h-36 w-full bg-ink-800"
+                accessibilityIgnoresInvertColors
+              />
+              <Text className="p-5 text-sm leading-relaxed text-content-secondary">
                 {t('workouts.empty')}
               </Text>
             </Animated.View>
