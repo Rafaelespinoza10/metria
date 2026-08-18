@@ -1,57 +1,38 @@
 import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Chip } from '../../../components/Chip';
+import { SegmentedArc } from '../../../components/SegmentedArc';
 import { MacroBar } from '../../../components/MacroBar';
 import { PressableScale } from '../../../components/PressableScale';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
-import type { AppStackParamList } from '../../../navigation/types';
+import type { TabScreenProps } from '../../../navigation/types';
 import { formatDelta, isImprovement } from '../../progress/helpers';
 import { useBodyProgress, useProgressScore, useTodayPanel } from '../../progress/hooks';
 import type { BodyWindow } from '../../progress/types';
 import { useAuthStore } from '../../../store/auth';
 import { theme } from '../../../theme';
 
-type Props = NativeStackScreenProps<AppStackParamList, 'Home'>;
+type Props = TabScreenProps<'Home'>;
 
 interface QuickAction {
   icon: keyof typeof Ionicons.glyphMap;
   titleKey: string;
   subtitleKey: string;
-  route:
-    | 'Goals'
-    | 'Measurements'
-    | 'Nutrition'
-    | 'Activity'
-    | 'Workouts'
-    | 'Sleep'
-    | 'Insights'
-    | 'Achievements';
+  route: 'Goals' | 'Measurements' | 'Activity' | 'Sleep' | 'Achievements';
 }
 
+// Nutrition, workouts, scanning, and insights live in the tab bar now.
 const QUICK_ACTIONS: QuickAction[] = [
   { icon: 'flag-outline', titleKey: 'home.goals', subtitleKey: 'home.goalsHint', route: 'Goals' },
-  {
-    icon: 'restaurant-outline',
-    titleKey: 'home.nutrition',
-    subtitleKey: 'home.nutritionHint',
-    route: 'Nutrition',
-  },
   {
     icon: 'walk-outline',
     titleKey: 'home.activity',
     subtitleKey: 'home.activityHint',
     route: 'Activity',
-  },
-  {
-    icon: 'barbell-outline',
-    titleKey: 'home.workouts',
-    subtitleKey: 'home.workoutsHint',
-    route: 'Workouts',
   },
   { icon: 'moon-outline', titleKey: 'home.sleep', subtitleKey: 'home.sleepHint', route: 'Sleep' },
   {
@@ -59,12 +40,6 @@ const QUICK_ACTIONS: QuickAction[] = [
     titleKey: 'home.measurements',
     subtitleKey: 'home.measurementsHint',
     route: 'Measurements',
-  },
-  {
-    icon: 'sparkles-outline',
-    titleKey: 'home.insights',
-    subtitleKey: 'home.insightsHint',
-    route: 'Insights',
   },
   {
     icon: 'trophy-outline',
@@ -93,12 +68,12 @@ function ScoreHero() {
   return (
     <Animated.View
       entering={FadeInDown.delay(60).springify()}
-      className="mt-8 rounded-3xl border border-black/5 bg-ink-900 p-5"
+      className="mt-8 items-center rounded-3xl border border-black/5 bg-ink-900 p-5"
     >
-      <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
-        {t('home.progressScore')}
-      </Text>
-      <View className="mt-1 flex-row items-end justify-between">
+      <SegmentedArc ratio={(score?.score ?? 0) / 100}>
+        <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
+          {t('home.progressScore')}
+        </Text>
         <Text
           className={`text-6xl font-extrabold tracking-tighter ${
             score && score.score > 0 ? 'text-content-primary' : 'text-content-tertiary'
@@ -106,22 +81,22 @@ function ScoreHero() {
         >
           {score?.score ?? 0}
         </Text>
-        {score && formatDelta(score.delta) !== null ? (
-          <View
-            className={`mb-2 rounded-full px-3 py-1 ${
-              score.delta > 0 ? 'bg-brand-soft' : 'bg-ink-800'
+      </SegmentedArc>
+      {score && formatDelta(score.delta) !== null ? (
+        <View
+          className={`mt-3 rounded-full px-3 py-1 ${
+            score.delta > 0 ? 'bg-brand-soft' : 'bg-ink-800'
+          }`}
+        >
+          <Text
+            className={`text-xs font-semibold ${
+              score.delta > 0 ? 'text-brand' : 'text-content-secondary'
             }`}
           >
-            <Text
-              className={`text-xs font-semibold ${
-                score.delta > 0 ? 'text-brand' : 'text-content-secondary'
-              }`}
-            >
-              {t('home.vsLastWeek', { delta: formatDelta(score.delta) })}
-            </Text>
-          </View>
-        ) : null}
-      </View>
+            {t('home.vsLastWeek', { delta: formatDelta(score.delta) })}
+          </Text>
+        </View>
+      ) : null}
       {score && score.score === 0 ? (
         <Text className="mt-3 text-sm leading-relaxed text-content-secondary">
           {t('home.emptyHint')}
