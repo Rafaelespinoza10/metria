@@ -26,7 +26,7 @@ export function DeleteAccountScreen(_props: Props) {
 
           <Animated.View
             entering={FadeInDown.delay(60).springify()}
-            className="mt-8 rounded-3xl border border-white/5 bg-ink-900 p-5"
+            className="mt-8 rounded-3xl border border-black/5 bg-ink-900 p-5"
           >
             <Text className="text-base font-semibold text-content-primary">
               {t('settings.deactivateTitle')}
@@ -38,7 +38,7 @@ export function DeleteAccountScreen(_props: Props) {
               onPress={() => softDeleteMutation.mutate()}
               disabled={softDeleteMutation.isPending}
               accessibilityRole="button"
-              className="mt-4 rounded-2xl border border-white/10 py-3.5"
+              className="mt-4 rounded-2xl border border-black/10 py-3.5"
             >
               <Text className="text-center text-sm font-semibold text-content-primary">
                 {t('settings.deactivateAction')}
@@ -78,7 +78,7 @@ export function DeleteAccountScreen(_props: Props) {
                 password.length === 0 ? 'opacity-40' : ''
               }`}
             >
-              <Text className="text-center text-sm font-semibold text-ink-950">
+              <Text className="text-center text-sm font-semibold text-white">
                 {t('settings.permanentAction')}
               </Text>
             </PressableScale>

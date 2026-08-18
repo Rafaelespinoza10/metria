@@ -19,7 +19,7 @@ export function AuthTextField({ label, ...props }: AuthTextFieldProps) {
         placeholderTextColor={theme.colors.content.tertiary}
         selectionColor={theme.colors.brand.DEFAULT}
         className={`rounded-2xl border bg-ink-900 px-4 py-4 text-base text-content-primary ${
-          focused ? 'border-brand' : 'border-white/5'
+          focused ? 'border-brand' : 'border-black/5'
         }`}
         onFocus={(event) => {
           setFocused(true);

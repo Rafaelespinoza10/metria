@@ -59,12 +59,12 @@ export function MealItemsEditor({ items, onChange, confidences }: MealItemsEdito
   return (
     <>
       {items.length > 0 ? (
-        <View className="mt-6 rounded-3xl border border-white/5 bg-ink-900 px-5">
+        <View className="mt-6 rounded-3xl border border-black/5 bg-ink-900 px-5">
           {items.map((item, index) => (
             <View
               key={`${item.name}-${index}`}
               className={`flex-row items-center justify-between py-3 ${
-                index > 0 ? 'border-t border-white/5' : ''
+                index > 0 ? 'border-t border-black/5' : ''
               }`}
             >
               <View className="flex-1 pr-3">
@@ -88,7 +88,7 @@ export function MealItemsEditor({ items, onChange, confidences }: MealItemsEdito
               </PressableScale>
             </View>
           ))}
-          <View className="border-t border-white/5 py-3">
+          <View className="border-t border-black/5 py-3">
             <Text className="text-sm text-content-secondary">
               {t('nutrition.totalLabel')}{' '}
               <Text className="font-bold text-content-primary">{totals.calories} kcal</Text>
@@ -106,7 +106,7 @@ export function MealItemsEditor({ items, onChange, confidences }: MealItemsEdito
       <Text className="mb-2 mt-8 text-xs font-semibold uppercase tracking-widest text-content-tertiary">
         {t('nutrition.addItem')}
       </Text>
-      <View className="gap-4 rounded-3xl border border-white/5 bg-ink-900 p-5">
+      <View className="gap-4 rounded-3xl border border-black/5 bg-ink-900 p-5">
         <AuthTextField
           label={t('nutrition.itemName')}
           placeholder={t('nutrition.itemNamePlaceholder')}

@@ -137,7 +137,7 @@ export function ReviewAnalysisScreen({ navigation, route }: Props) {
           ) : (
             <Animated.View
               entering={FadeInDown.delay(60).springify()}
-              className="mt-8 items-start rounded-3xl border border-white/5 bg-ink-900 p-5"
+              className="mt-8 items-start rounded-3xl border border-black/5 bg-ink-900 p-5"
             >
               <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
                 —

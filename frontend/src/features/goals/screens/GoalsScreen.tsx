@@ -24,7 +24,7 @@ function GoalCard({ goal, index }: { goal: Goal; index: number }) {
   return (
     <Animated.View
       entering={FadeInDown.delay(120 + index * 60).springify()}
-      className="mt-3 rounded-3xl border border-white/5 bg-ink-900 p-5"
+      className="mt-3 rounded-3xl border border-black/5 bg-ink-900 p-5"
     >
       <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
         {t(goalCategoryKey(goal.category))}
@@ -82,7 +82,7 @@ export function GoalsScreen({ navigation }: Props) {
           ) : (
             <Animated.View
               entering={FadeInDown.delay(120).springify()}
-              className="mt-3 items-start rounded-3xl border border-white/5 bg-ink-900 p-5"
+              className="mt-3 items-start rounded-3xl border border-black/5 bg-ink-900 p-5"
             >
               <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
                 0
@@ -102,9 +102,9 @@ export function GoalsScreen({ navigation }: Props) {
           <PressableScale
             onPress={() => navigation.navigate('CreateGoal')}
             accessibilityRole="button"
-            className="rounded-2xl bg-brand py-4"
+            className="rounded-2xl bg-charcoal py-4"
           >
-            <Text className="text-center text-base font-semibold text-ink-950">
+            <Text className="text-center text-base font-semibold text-white">
               {t('goals.newGoal')}
             </Text>
           </PressableScale>

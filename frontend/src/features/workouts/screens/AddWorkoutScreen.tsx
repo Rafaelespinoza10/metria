@@ -129,7 +129,7 @@ export function AddWorkoutScreen({ navigation }: Props) {
               <Animated.View
                 key={`${exercise.name}-${index}`}
                 entering={FadeInDown.springify()}
-                className="mt-6 rounded-3xl border border-white/5 bg-ink-900 p-5"
+                className="mt-6 rounded-3xl border border-black/5 bg-ink-900 p-5"
               >
                 <View className="flex-row items-center justify-between">
                   <View className="flex-1 pr-3">
@@ -153,7 +153,7 @@ export function AddWorkoutScreen({ navigation }: Props) {
                 </View>
 
                 {exercise.sets.length > 0 ? (
-                  <View className="mt-3 border-t border-white/5 pt-3">
+                  <View className="mt-3 border-t border-black/5 pt-3">
                     {exercise.sets.map((set, setIndex) => (
                       <Text key={setIndex} className="py-0.5 text-sm text-content-secondary">
                         {t('workouts.setLabel', { number: setIndex + 1 })} · {formatSet(set)}
@@ -222,7 +222,7 @@ export function AddWorkoutScreen({ navigation }: Props) {
             <Text className="mb-2 text-xs font-semibold uppercase tracking-widest text-content-tertiary">
               {t('workouts.addExercise')}
             </Text>
-            <View className="gap-4 rounded-3xl border border-white/5 bg-ink-900 p-5">
+            <View className="gap-4 rounded-3xl border border-black/5 bg-ink-900 p-5">
               <AuthTextField
                 label={t('workouts.exerciseName')}
                 placeholder={t('workouts.exerciseNamePlaceholder')}

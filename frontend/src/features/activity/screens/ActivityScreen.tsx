@@ -53,7 +53,7 @@ function DayEditor({
     <>
       <Animated.View
         entering={FadeInDown.delay(80).springify()}
-        className="rounded-3xl border border-white/5 bg-ink-900 p-5"
+        className="rounded-3xl border border-black/5 bg-ink-900 p-5"
       >
         <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
           {t('activity.steps')}

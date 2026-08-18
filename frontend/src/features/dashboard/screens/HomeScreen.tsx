@@ -93,7 +93,7 @@ function ScoreHero() {
   return (
     <Animated.View
       entering={FadeInDown.delay(60).springify()}
-      className="mt-8 rounded-3xl border border-white/5 bg-ink-900 p-5"
+      className="mt-8 rounded-3xl border border-black/5 bg-ink-900 p-5"
     >
       <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
         {t('home.progressScore')}
@@ -142,7 +142,7 @@ function TodaySection() {
   return (
     <Animated.View entering={FadeInDown.delay(120).springify()} className="mt-8">
       <Text className="text-lg font-semibold text-content-primary">{t('home.today')}</Text>
-      <View className="mt-3 gap-4 rounded-3xl border border-white/5 bg-ink-900 p-5">
+      <View className="mt-3 gap-4 rounded-3xl border border-black/5 bg-ink-900 p-5">
         <MacroBar
           label={t('nutrition.calories')}
           value={Math.round(today.calories.value)}
@@ -197,12 +197,12 @@ function BodySection() {
       {bodyQuery.isPending ? (
         <SkeletonBlock className="mt-3 h-40 rounded-3xl" />
       ) : bodyQuery.data ? (
-        <View className="mt-3 rounded-3xl border border-white/5 bg-ink-900 px-5">
+        <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5">
           {bodyQuery.data.metrics.map((metric, index) => (
             <View
               key={metric.key}
               className={`flex-row items-center justify-between py-3.5 ${
-                index > 0 ? 'border-t border-white/5' : ''
+                index > 0 ? 'border-t border-black/5' : ''
               }`}
             >
               <Text className="text-sm text-content-secondary">
@@ -221,7 +221,7 @@ function BodySection() {
               </Text>
             </View>
           ))}
-          <View className="flex-row items-center justify-between border-t border-white/5 py-3.5">
+          <View className="flex-row items-center justify-between border-t border-black/5 py-3.5">
             <Text className="text-sm text-content-secondary">{t('home.workoutCount')}</Text>
             <Text className="text-base font-bold text-content-primary">
               {bodyQuery.data.workouts.current}
@@ -273,14 +273,14 @@ export function HomeScreen({ navigation }: Props) {
 
           <Animated.View entering={FadeInDown.delay(240).springify()} className="mt-8">
             <Text className="text-lg font-semibold text-content-primary">{t('home.track')}</Text>
-            <View className="mt-3 rounded-3xl border border-white/5 bg-ink-900 px-5">
+            <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5">
               {QUICK_ACTIONS.map((action, index) => (
                 <PressableScale
                   key={action.route}
                   onPress={() => navigation.navigate(action.route)}
                   accessibilityRole="button"
                   className={`flex-row items-center gap-4 py-4 ${
-                    index > 0 ? 'border-t border-white/5' : ''
+                    index > 0 ? 'border-t border-black/5' : ''
                   }`}
                 >
                   <View className="h-11 w-11 items-center justify-center rounded-2xl bg-brand-soft">

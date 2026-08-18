@@ -53,12 +53,12 @@ export function MeasurementsScreen({ navigation }: Props) {
             {latestQuery.isPending ? (
               <SkeletonBlock className="mt-3 h-40 rounded-3xl" />
             ) : latestQuery.data && latestQuery.data.length > 0 ? (
-              <View className="mt-3 rounded-3xl border border-white/5 bg-ink-900 px-5">
+              <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5">
                 {latestQuery.data.map((entry, index) => (
                   <View
                     key={entry.type.id}
                     className={`flex-row items-center justify-between py-4 ${
-                      index > 0 ? 'border-t border-white/5' : ''
+                      index > 0 ? 'border-t border-black/5' : ''
                     }`}
                   >
                     <Text className="text-sm text-content-secondary">
@@ -76,7 +76,7 @@ export function MeasurementsScreen({ navigation }: Props) {
                 ))}
               </View>
             ) : (
-              <View className="mt-3 items-start rounded-3xl border border-white/5 bg-ink-900 p-5">
+              <View className="mt-3 items-start rounded-3xl border border-black/5 bg-ink-900 p-5">
                 <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
                   —
                 </Text>
@@ -97,7 +97,7 @@ export function MeasurementsScreen({ navigation }: Props) {
                   onPress={() => void pickAndUpload()}
                   accessibilityRole="button"
                   accessibilityLabel={t('measurements.addPhoto')}
-                  className="h-40 w-28 items-center justify-center rounded-3xl border border-white/5 bg-ink-900"
+                  className="h-40 w-28 items-center justify-center rounded-3xl border border-black/5 bg-ink-900"
                 >
                   {uploadMutation.isPending ? (
                     <ActivityIndicator color={theme.colors.brand.DEFAULT} />
@@ -124,9 +124,9 @@ export function MeasurementsScreen({ navigation }: Props) {
             <PressableScale
               onPress={() => navigation.navigate('LogMeasurement')}
               accessibilityRole="button"
-              className="rounded-2xl bg-brand py-4"
+              className="rounded-2xl bg-charcoal py-4"
             >
-              <Text className="text-center text-base font-semibold text-ink-950">
+              <Text className="text-center text-base font-semibold text-white">
                 {t('measurements.log')}
               </Text>
             </PressableScale>
