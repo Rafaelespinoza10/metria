@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,15 +7,94 @@ import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
 import type { TabScreenProps } from '../../../navigation/types';
-import { formatSet, totalSets } from '../helpers';
-import { useWorkouts } from '../hooks';
+import { API_URL } from '../../../services/api';
+import { useAuthStore } from '../../../store/auth';
+import { theme } from '../../../theme';
 import { sectionImages } from '../../../theme/images';
-import type { Workout } from '../types';
+import { firstExerciseImageUrl, formatSet, totalSets, weeklySummary } from '../helpers';
+import { useWorkouts } from '../hooks';
+import type { Workout, WorkoutExercise } from '../types';
 
 type Props = TabScreenProps<'Workouts'>;
 
+function authedSource(imageUrl: string, token: string | null) {
+  return {
+    uri: `${API_URL}${imageUrl}`,
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  };
+}
+
+function WeeklyHero({ workouts }: { workouts: Workout[] }) {
+  const { t } = useTranslation();
+  const summary = weeklySummary(workouts, new Date());
+
+  return (
+    <Animated.View
+      entering={FadeInDown.delay(60).springify()}
+      className="mt-3 rounded-3xl border border-black/5 bg-ink-900 p-5"
+    >
+      <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
+        {t('workouts.weekKicker')}
+      </Text>
+      <View className="mt-1 flex-row items-baseline gap-2">
+        <Text className="text-6xl font-extrabold tracking-tighter text-content-primary">
+          {summary.workouts}
+        </Text>
+        <Text className="text-base font-medium text-content-secondary">
+          {t('workouts.weekWorkouts')}
+        </Text>
+      </View>
+      <View className="mt-4 flex-row border-t border-black/5 pt-4">
+        <View className="flex-1 flex-row items-center gap-2">
+          <View className="h-2.5 w-2.5 rounded-full bg-metric-move" />
+          <Text className="text-lg font-bold text-content-primary">{summary.sets}</Text>
+          <Text className="text-xs text-content-secondary">{t('workouts.weekSets')}</Text>
+        </View>
+        <View className="flex-1 flex-row items-center gap-2">
+          <View className="h-2.5 w-2.5 rounded-full bg-metric-hydro" />
+          <Text className="text-lg font-bold text-content-primary">{summary.minutes}</Text>
+          <Text className="text-xs text-content-secondary">{t('workouts.weekMinutes')}</Text>
+        </View>
+      </View>
+    </Animated.View>
+  );
+}
+
+function ExerciseRow({ exercise, token }: { exercise: WorkoutExercise; token: string | null }) {
+  return (
+    <View className="flex-row items-center gap-3 py-1.5">
+      {exercise.imageUrl ? (
+        <Image
+          source={authedSource(exercise.imageUrl, token)}
+          className="h-9 w-9 rounded-xl bg-ink-800"
+          accessibilityIgnoresInvertColors
+        />
+      ) : (
+        <View className="h-9 w-9 items-center justify-center rounded-xl bg-brand-soft">
+          <Ionicons name="barbell-outline" size={16} color={theme.colors.brand.DEFAULT} />
+        </View>
+      )}
+      <Text className="flex-1 pr-3 text-sm text-content-primary" numberOfLines={1}>
+        {exercise.name}
+      </Text>
+      <Text className="text-xs text-content-secondary">
+        {exercise.sets.map((set) => formatSet(set)).join(' · ')}
+      </Text>
+    </View>
+  );
+}
+
 function WorkoutCard({ workout, index }: { workout: Workout; index: number }) {
   const { t } = useTranslation();
+  const token = useAuthStore((state) => state.token);
+  const photoUrl = firstExerciseImageUrl(workout);
+  const muscleGroups = [
+    ...new Set(
+      workout.exercises
+        .map((exercise) => exercise.muscleGroup)
+        .filter((group): group is string => group !== null),
+    ),
+  ].slice(0, 3);
 
   return (
     <Animated.View
@@ -22,7 +102,13 @@ function WorkoutCard({ workout, index }: { workout: Workout; index: number }) {
       className="mt-3 overflow-hidden rounded-3xl border border-black/5 bg-ink-900"
     >
       <Image
-        source={index % 2 === 0 ? sectionImages.goals : sectionImages.workout}
+        source={
+          photoUrl
+            ? authedSource(photoUrl, token)
+            : index % 2 === 0
+              ? sectionImages.goals
+              : sectionImages.workout
+        }
         className="h-24 w-full bg-ink-800"
         accessibilityIgnoresInvertColors
       />
@@ -32,7 +118,11 @@ function WorkoutCard({ workout, index }: { workout: Workout; index: number }) {
             {workout.localDate}
           </Text>
           {workout.durationMinutes !== null ? (
-            <Text className="text-xs text-content-secondary">{workout.durationMinutes} min</Text>
+            <View className="rounded-full bg-ink-800 px-2.5 py-1">
+              <Text className="text-xs font-semibold text-content-secondary">
+                {workout.durationMinutes} min
+              </Text>
+            </View>
           ) : null}
         </View>
         <Text className="mt-2 text-2xl font-bold tracking-tight text-content-primary">
@@ -44,16 +134,18 @@ function WorkoutCard({ workout, index }: { workout: Workout; index: number }) {
             sets: totalSets(workout.exercises),
           })}
         </Text>
-        <View className="mt-3 border-t border-black/5 pt-3">
+        {muscleGroups.length > 0 ? (
+          <View className="mt-3 flex-row flex-wrap gap-2">
+            {muscleGroups.map((group) => (
+              <View key={group} className="rounded-full bg-brand-soft px-3 py-1">
+                <Text className="text-xs font-semibold text-brand">{group}</Text>
+              </View>
+            ))}
+          </View>
+        ) : null}
+        <View className="mt-3 border-t border-black/5 pt-2">
           {workout.exercises.slice(0, 3).map((exercise) => (
-            <View key={exercise.id} className="flex-row items-baseline justify-between py-1">
-              <Text className="flex-1 pr-3 text-sm text-content-primary" numberOfLines={1}>
-                {exercise.name}
-              </Text>
-              <Text className="text-xs text-content-secondary">
-                {exercise.sets.map((set) => formatSet(set)).join(' · ')}
-              </Text>
-            </View>
+            <ExerciseRow key={exercise.id} exercise={exercise} token={token} />
           ))}
           {workout.exercises.length > 3 ? (
             <Text className="mt-1 text-xs text-content-tertiary">
@@ -78,13 +170,17 @@ export function WorkoutsScreen({ navigation }: Props) {
         <ScrollView className="mt-4 flex-1" showsVerticalScrollIndicator={false}>
           {workoutsQuery.isPending ? (
             <>
-              <SkeletonBlock className="mt-3 h-40 rounded-3xl" />
-              <SkeletonBlock className="mt-3 h-40 rounded-3xl" />
+              <SkeletonBlock className="mt-3 h-36 rounded-3xl" />
+              <SkeletonBlock className="mt-3 h-52 rounded-3xl" />
+              <SkeletonBlock className="mt-3 h-52 rounded-3xl" />
             </>
           ) : workoutsQuery.data && workoutsQuery.data.length > 0 ? (
-            workoutsQuery.data.map((workout, index) => (
-              <WorkoutCard key={workout.id} workout={workout} index={index} />
-            ))
+            <>
+              <WeeklyHero workouts={workoutsQuery.data} />
+              {workoutsQuery.data.map((workout, index) => (
+                <WorkoutCard key={workout.id} workout={workout} index={index} />
+              ))}
+            </>
           ) : (
             <Animated.View
               entering={FadeInDown.delay(120).springify()}

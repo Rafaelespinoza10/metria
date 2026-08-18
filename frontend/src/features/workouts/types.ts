@@ -7,7 +7,13 @@ export interface WorkoutSetInput {
 export interface WorkoutExerciseInput {
   name: string;
   muscleGroup?: string;
+  imageKey?: string;
   sets: WorkoutSetInput[];
+}
+
+export interface ExercisePhoto {
+  imageKey: string;
+  imageUrl: string;
 }
 
 export interface CreateWorkoutInput {
@@ -27,6 +33,7 @@ export interface WorkoutExercise {
   id: string;
   name: string;
   muscleGroup: string | null;
+  imageUrl: string | null;
   position: number;
   sets: WorkoutSet[];
 }

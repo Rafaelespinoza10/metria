@@ -1,8 +1,9 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { PressableScale } from '../../../components/PressableScale';
@@ -12,6 +13,7 @@ import { theme } from '../../../theme';
 import { AuthSubmitButton } from '../../auth/components/AuthSubmitButton';
 import { AuthTextField } from '../../auth/components/AuthTextField';
 import { parseDecimal } from '../../goals/helpers';
+import { uploadExercisePhoto } from '../api';
 import { formatSet, isDraftSubmittable } from '../helpers';
 import { useCreateWorkout } from '../hooks';
 import type { WorkoutExerciseInput } from '../types';
@@ -24,6 +26,17 @@ interface SetDraft {
   rpe: string;
 }
 
+interface PickedPhoto {
+  uri: string;
+  mimeType: string;
+  fileName: string;
+}
+
+/** Photos stay local until submit; they upload right before the workout is created. */
+interface ExerciseDraft extends WorkoutExerciseInput {
+  photo?: PickedPhoto;
+}
+
 const EMPTY_SET: SetDraft = { reps: '', weight: '', rpe: '' };
 
 export function AddWorkoutScreen({ navigation }: Props) {
@@ -31,11 +44,13 @@ export function AddWorkoutScreen({ navigation }: Props) {
   const createMutation = useCreateWorkout();
   const [name, setName] = useState('');
   const [duration, setDuration] = useState('');
-  const [exercises, setExercises] = useState<WorkoutExerciseInput[]>([]);
+  const [exercises, setExercises] = useState<ExerciseDraft[]>([]);
   const [exerciseName, setExerciseName] = useState('');
   const [muscleGroup, setMuscleGroup] = useState('');
   // Per-exercise set drafts, keyed by exercise index.
   const [setDrafts, setSetDrafts] = useState<Record<number, SetDraft>>({});
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
 
   const addExercise = () => {
     if (exerciseName.trim() === '') return;
@@ -53,6 +68,23 @@ export function AddWorkoutScreen({ navigation }: Props) {
 
   const removeExercise = (index: number) => {
     setExercises((current) => current.filter((_, i) => i !== index));
+  };
+
+  const pickPhoto = async (index: number) => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 0.8,
+    });
+    const asset = result.assets?.[0];
+    if (result.canceled || !asset) return;
+    const photo: PickedPhoto = {
+      uri: asset.uri,
+      mimeType: asset.mimeType ?? 'image/jpeg',
+      fileName: asset.fileName ?? 'exercise.jpg',
+    };
+    setExercises((current) =>
+      current.map((exercise, i) => (i === index ? { ...exercise, photo } : exercise)),
+    );
   };
 
   const setDraftFor = (index: number): SetDraft => setDrafts[index] ?? EMPTY_SET;
@@ -86,19 +118,34 @@ export function AddWorkoutScreen({ navigation }: Props) {
   const parsedDuration = duration.trim() === '' ? undefined : parseDecimal(duration);
   const canSubmit = isDraftSubmittable(name, exercises) && parsedDuration !== null;
 
-  const submit = () => {
-    if (!canSubmit || createMutation.isPending) return;
-    createMutation.mutate(
-      {
+  const submit = async () => {
+    if (!canSubmit || saving) return;
+    setSaving(true);
+    setSaveError(false);
+    try {
+      const payload: WorkoutExerciseInput[] = [];
+      for (const { photo, ...exercise } of exercises) {
+        if (photo) {
+          const uploaded = await uploadExercisePhoto(photo);
+          payload.push({ ...exercise, imageKey: uploaded.photo.imageKey });
+        } else {
+          payload.push(exercise);
+        }
+      }
+      await createMutation.mutateAsync({
         name: name.trim(),
         performedAt: new Date().toISOString(),
         ...(parsedDuration !== undefined
           ? { durationMinutes: Math.round(parsedDuration ?? 0) }
           : {}),
-        exercises,
-      },
-      { onSuccess: () => navigation.goBack() },
-    );
+        exercises: payload,
+      });
+      navigation.goBack();
+    } catch {
+      setSaveError(true);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -132,6 +179,28 @@ export function AddWorkoutScreen({ navigation }: Props) {
                 className="mt-6 rounded-3xl border border-black/5 bg-ink-900 p-5"
               >
                 <View className="flex-row items-center justify-between">
+                  <PressableScale
+                    onPress={() => void pickPhoto(index)}
+                    accessibilityRole="button"
+                    accessibilityLabel={t(
+                      exercise.photo ? 'workouts.changePhoto' : 'workouts.addPhoto',
+                    )}
+                    className="mr-3 h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-brand-soft"
+                  >
+                    {exercise.photo ? (
+                      <Image
+                        source={{ uri: exercise.photo.uri }}
+                        className="h-12 w-12 bg-ink-800"
+                        accessibilityIgnoresInvertColors
+                      />
+                    ) : (
+                      <Ionicons
+                        name="camera-outline"
+                        size={20}
+                        color={theme.colors.brand.DEFAULT}
+                      />
+                    )}
+                  </PressableScale>
                   <View className="flex-1 pr-3">
                     <Text className="text-base font-semibold text-content-primary">
                       {exercise.name}
@@ -249,15 +318,15 @@ export function AddWorkoutScreen({ navigation }: Props) {
               </PressableScale>
             </View>
 
-            {createMutation.isError ? (
+            {saveError ? (
               <Text className="mt-4 text-sm text-metric-heart">{t('common.error')}</Text>
             ) : null}
 
             <View className="mt-8">
               <AuthSubmitButton
                 label={t('workouts.save')}
-                loading={createMutation.isPending}
-                onPress={submit}
+                loading={saving}
+                onPress={() => void submit()}
               />
             </View>
           </Animated.View>
