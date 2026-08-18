@@ -215,7 +215,20 @@
     "changePhoto": "Cambiar foto del ejercicio",
     "pickFromCatalog": "Elegir de la biblioteca",
     "addPicked": "Agregar",
-    "discardPicked": "Descartar selección"
+    "discardPicked": "Descartar selección",
+    "exercisesLabel": "Ejercicios",
+    "setsLabel": "Series",
+    "volumeLabel": "Volumen (kg)",
+    "repeatSet": "Repetir última serie",
+    "removeSet": "Quitar serie",
+    "nameSuggestion": {
+      "push": "Día de empuje",
+      "pull": "Día de jalón",
+      "legs": "Día de pierna",
+      "fullBody": "Cuerpo completo",
+      "upper": "Tren superior",
+      "lower": "Tren inferior"
+    }
   },
   "sleep": {
     "title": "Sueño",

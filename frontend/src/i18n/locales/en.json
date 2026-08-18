@@ -215,7 +215,20 @@
     "changePhoto": "Change exercise photo",
     "pickFromCatalog": "Pick from exercise library",
     "addPicked": "Add",
-    "discardPicked": "Discard selection"
+    "discardPicked": "Discard selection",
+    "exercisesLabel": "Exercises",
+    "setsLabel": "Sets",
+    "volumeLabel": "Volume (kg)",
+    "repeatSet": "Repeat last set",
+    "removeSet": "Remove set",
+    "nameSuggestion": {
+      "push": "Push day",
+      "pull": "Pull day",
+      "legs": "Leg day",
+      "fullBody": "Full body",
+      "upper": "Upper body",
+      "lower": "Lower body"
+    }
   },
   "sleep": {
     "title": "Sleep",
