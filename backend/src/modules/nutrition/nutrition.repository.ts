@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, inArray, isNull } from 'drizzle-orm';
 import { getDb } from '../../database/client.js';
-import { mealItems, meals } from '../../database/schema/nutrition.js';
+import { mealAnalyses, mealItems, meals } from '../../database/schema/nutrition.js';
 import type { MealItemInput } from './nutrition.schema.js';
 
 export type MealRow = typeof meals.$inferSelect;
@@ -8,6 +8,8 @@ export type MealItemRow = typeof mealItems.$inferSelect;
 
 export interface MealWithItems extends MealRow {
   items: MealItemRow[];
+  /** Storage key of the analyzed photo, for meals confirmed from an AI scan. */
+  imageKey: string | null;
 }
 
 export interface CreateMealData {
@@ -59,7 +61,7 @@ export class NutritionRepository {
         .insert(mealItems)
         .values(itemValues(row.id, items))
         .returning();
-      return { ...row, items: insertedItems };
+      return { ...row, items: insertedItems, imageKey: null };
     });
   }
 
@@ -112,14 +114,14 @@ export class NutritionRepository {
       if (items) {
         await tx.delete(mealItems).where(eq(mealItems.mealId, row.id));
         const inserted = await tx.insert(mealItems).values(itemValues(row.id, items)).returning();
-        return { ...row, items: inserted };
+        return { ...row, items: inserted, imageKey: null };
       }
       const existing = await tx
         .select()
         .from(mealItems)
         .where(eq(mealItems.mealId, row.id))
         .orderBy(asc(mealItems.position));
-      return { ...row, items: existing };
+      return { ...row, items: existing, imageKey: null };
     });
   }
 
@@ -150,6 +152,25 @@ export class NutritionRepository {
       list.push(item);
       byMeal.set(item.mealId, list);
     }
-    return mealRows.map((meal) => ({ ...meal, items: byMeal.get(meal.id) ?? [] }));
+
+    const analysisIds = mealRows
+      .map((meal) => meal.analysisId)
+      .filter((id): id is string => id !== null);
+    const imageByAnalysis = new Map<string, string>();
+    if (analysisIds.length > 0) {
+      const analyses = await this.db
+        .select({ id: mealAnalyses.id, imageKey: mealAnalyses.imageKey })
+        .from(mealAnalyses)
+        .where(inArray(mealAnalyses.id, analysisIds));
+      for (const analysis of analyses) {
+        imageByAnalysis.set(analysis.id, analysis.imageKey);
+      }
+    }
+
+    return mealRows.map((meal) => ({
+      ...meal,
+      items: byMeal.get(meal.id) ?? [],
+      imageKey: meal.analysisId ? (imageByAnalysis.get(meal.analysisId) ?? null) : null,
+    }));
   }
 }

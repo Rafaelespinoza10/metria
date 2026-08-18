@@ -190,6 +190,16 @@ describe.skipIf(!hasDatabase)('AI meal analysis', () => {
     expect(confirmed.body.data.meal.items).toHaveLength(1);
     expect(confirmed.body.data.meal.totals.calories).toBe(330);
 
+    expect(confirmed.body.data.meal.imageUrl).toMatch(/^\/api\/uploads\/users\//);
+
+    const listed = await request(app)
+      .get('/api/nutrition/meals')
+      .set('Authorization', `Bearer ${token}`);
+    const listedMeal = (listed.body.data.meals as { id: string; imageUrl: string | null }[]).find(
+      (meal) => meal.id === confirmed.body.data.meal.id,
+    );
+    expect(listedMeal?.imageUrl).toMatch(/^\/api\/uploads\/users\//);
+
     const draft = await request(app)
       .get(`/api/nutrition/analyses/${analysisId}`)
       .set('Authorization', `Bearer ${token}`);
