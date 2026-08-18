@@ -134,6 +134,7 @@ export function createApp(deps: AppDependencies = {}): express.Express {
     measurementsRepository,
     dailyTargetsRepository,
   );
+  const gamificationRepository = new GamificationRepository();
   const progressService = new ProgressService(
     new ProgressScoreService(
       nutritionRepository,
@@ -146,9 +147,10 @@ export function createApp(deps: AppDependencies = {}): express.Express {
     measurementsRepository,
     workoutsRepository,
     usersRepository,
+    gamificationRepository,
   );
   const gamificationService = new GamificationService(
-    new GamificationRepository(),
+    gamificationRepository,
     nutritionRepository,
     activityRepository,
     sleepRepository,

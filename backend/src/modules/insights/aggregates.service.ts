@@ -60,6 +60,28 @@ export interface WeeklyAggregates {
   };
 }
 
+export interface SeriesMetrics {
+  calories: number | null;
+  protein: number | null;
+  steps: number | null;
+  sleepMinutes: number | null;
+}
+
+export interface DaySeriesEntry {
+  date: string;
+  calories: number;
+  steps: number;
+  sleepMinutes: number;
+  /** Whether the day has at least one log (meal, activity, sleep, or workout). */
+  tracked: boolean;
+}
+
+export interface DailySeries {
+  targets: SeriesMetrics;
+  averages: SeriesMetrics;
+  series: DaySeriesEntry[];
+}
+
 /** Deterministic aggregate math over range queries. Code calculates; AI interprets. */
 export class AggregatesService {
   constructor(
@@ -135,6 +157,60 @@ export class AggregatesService {
         avgSteps: average(previousDays(activity).map((entry) => entry.steps)),
         avgSleepMinutes: average(previousDays(sleep).map((entry) => entry.durationMinutes)),
       },
+    };
+  }
+
+  /**
+   * Per-day series over [from, to] (inclusive): one entry per calendar day with zeros
+   * where nothing was logged, plus effective targets (as of `to`) and tracked-day
+   * averages. Averages skip untracked days — zero-filling would fake adherence down.
+   */
+  async dailySeries(userId: string, from: string, to: string): Promise<DailySeries> {
+    const [macros, activity, sleep, workouts, targets] = await Promise.all([
+      this.dailyMacros(userId, from, to),
+      this.activityRepository.listRange(userId, from, to),
+      this.sleepRepository.listRange(userId, from, to),
+      this.workoutsRepository.listRange(userId, from, to),
+      this.dailyTargetsRepository.effectiveFor(
+        userId,
+        ['calories', 'protein', 'steps', 'sleep_minutes'],
+        to,
+      ),
+    ]);
+
+    const activityByDay = new Map(activity.map((entry) => [entry.localDate, entry]));
+    const sleepByDay = new Map(sleep.map((entry) => [entry.localDate, entry]));
+    const workoutDays = new Set(workouts.map((workout) => workout.localDate));
+
+    const series: DaySeriesEntry[] = [];
+    for (let date = from; date <= to; date = addDaysISO(date, 1)) {
+      const day = macros.get(date);
+      const dayActivity = activityByDay.get(date);
+      const daySleep = sleepByDay.get(date);
+      series.push({
+        date,
+        calories: day?.calories ?? 0,
+        steps: dayActivity?.steps ?? 0,
+        sleepMinutes: daySleep?.durationMinutes ?? 0,
+        tracked: Boolean(day || dayActivity || daySleep) || workoutDays.has(date),
+      });
+    }
+
+    const macroDays = [...macros.values()];
+    return {
+      targets: {
+        calories: targets.calories ?? null,
+        protein: targets.protein ?? null,
+        steps: targets.steps ?? null,
+        sleepMinutes: targets.sleep_minutes ?? null,
+      },
+      averages: {
+        calories: average(macroDays.map((day) => day.calories)),
+        protein: average(macroDays.map((day) => day.protein)),
+        steps: average(activity.map((entry) => entry.steps)),
+        sleepMinutes: average(sleep.map((entry) => entry.durationMinutes)),
+      },
+      series,
     };
   }
 
