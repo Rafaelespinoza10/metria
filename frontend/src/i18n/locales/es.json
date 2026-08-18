@@ -61,7 +61,20 @@
       "90d": "90d"
     },
     "achievements": "Logros",
-    "achievementsHint": "Rachas y hitos"
+    "achievementsHint": "Rachas y hitos",
+    "streak": "Racha (días)",
+    "workoutsWeek": "Entrenos · semana",
+    "activeToday": "Min activos hoy",
+    "trends": "Tendencias",
+    "trendWindow": {
+      "7": "7d",
+      "14": "14d",
+      "30": "30d"
+    },
+    "average": "Promedio",
+    "target": "Objetivo",
+    "trendsEmpty": "Registra comidas, pasos o sueño para ver tu tendencia.",
+    "dayInitials": "DLMXJVS"
   },
   "goals": {
     "title": "Metas",
@@ -296,7 +309,18 @@
     "permanentTitle": "Eliminar todo permanentemente",
     "permanentHint": "Elimina tu cuenta y todas tus comidas, entrenos, medidas, fotos e insights. No se puede deshacer.",
     "passwordConfirm": "Confirma con tu contraseña",
-    "permanentAction": "Eliminar todo"
+    "permanentAction": "Eliminar todo",
+    "memberSince": "Miembro desde {{date}}",
+    "stats": {
+      "streak": "Racha (días)",
+      "longest": "Mejor racha",
+      "badges": "Insignias"
+    },
+    "data": "Datos",
+    "account": "Cuenta",
+    "exportPdf": "Reporte de progreso (PDF)",
+    "exportPdfHint": "Últimos 30 días, listo para compartir",
+    "exportError": "No se pudo generar el reporte. Intenta de nuevo."
   },
   "exercises": {
     "title": "Biblioteca de ejercicios",
@@ -326,5 +350,20 @@
       "calves": "Pantorrillas",
       "neck": "Cuello"
     }
+  },
+  "report": {
+    "title": "Reporte de progreso",
+    "preparedFor": "Preparado para",
+    "dailyAverages": "Promedios diarios (últimos 30 días)",
+    "metric": "Métrica",
+    "start": "Inicio",
+    "end": "Fin",
+    "change": "Cambio",
+    "consistency": "Consistencia (30 días)",
+    "trackedDays": "Días registrados",
+    "currentStreak": "Racha actual",
+    "badges": "Insignias",
+    "generatedOn": "Generado el {{date}}",
+    "disclaimer": "Datos registrados en Metria. Solo informativo — no es consejo médico."
   }
 }
