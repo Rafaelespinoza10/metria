@@ -20,21 +20,21 @@ docs/       Product definition and development workflows (executed in order)
 ```bash
 cd backend
 cp .env.example .env
-npm install
-npm run dev        # API at http://localhost:3000/api/health
+pnpm install
+pnpm run dev        # API at http://localhost:3000/api/health
 ```
 
-Checks: `npm run typecheck` · `npm run lint` · `npm test`
+Checks: `pnpm run typecheck` · `pnpm run lint` · `pnpm test`
 
 ### Mobile app
 
 ```bash
 cd frontend
-npm install
-npm start          # Expo dev server; set EXPO_PUBLIC_API_URL to reach the API
+pnpm install
+pnpm start          # Expo dev server; set EXPO_PUBLIC_API_URL to reach the API
 ```
 
-Checks: `npm run typecheck` · `npm run lint`
+Checks: `pnpm run typecheck` · `pnpm run lint`
 
 ## Contributing flow
 
@@ -45,7 +45,7 @@ process lives in `.claude/skills/pr-flow/SKILL.md`.
 
 ## Demo
 
-`npm run db:demo` (backend) creates `demo@metria.app` with two weeks of realistic data —
+`pnpm run db:demo` (backend) creates `demo@metria.app` with two weeks of realistic data —
 see `docs/DEMO.md` for the two-minute walkthrough of the full acceptance flow.
 
 ## Development process
