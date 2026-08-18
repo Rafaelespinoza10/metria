@@ -87,6 +87,42 @@ describe.skipIf(!hasDatabase)('workouts', () => {
     expect(workout.exercises[0]?.sets[1]?.repetitions).toBe(6);
   });
 
+  it('searches by workout or exercise name and paginates with totals', async () => {
+    const { token: t2 } = await registerUser();
+    const auth = { Authorization: `Bearer ${t2}` };
+    const mk = (name: string, exercise: string) =>
+      request(app)
+        .post('/api/workouts')
+        .set(auth)
+        .send({
+          name,
+          performedAt: new Date().toISOString(),
+          exercises: [{ name: exercise, sets: [{ repetitions: 8, weightKg: 60 }] }],
+        });
+    await mk('Leg day', 'Back squat');
+    await mk('Push day', 'Bench press');
+    await mk('Pull day', 'Deadlift');
+
+    // Search hits the workout name…
+    const byName = await request(app).get('/api/workouts?search=push').set(auth);
+    expect(byName.body.data.total).toBe(1);
+    expect(byName.body.data.workouts[0].name).toBe('Push day');
+
+    // …and the exercise name.
+    const byExercise = await request(app).get('/api/workouts?search=deadlift').set(auth);
+    expect(byExercise.body.data.total).toBe(1);
+    expect(byExercise.body.data.workouts[0].name).toBe('Pull day');
+
+    // Pagination: page size 2 with a stable total.
+    const page1 = await request(app).get('/api/workouts?limit=2&offset=0').set(auth);
+    expect(page1.body.data.total).toBe(3);
+    expect(page1.body.data.workouts).toHaveLength(2);
+    const page2 = await request(app).get('/api/workouts?limit=2&offset=2').set(auth);
+    expect(page2.body.data.workouts).toHaveLength(1);
+    const page1Ids = (page1.body.data.workouts as { id: string }[]).map((w) => w.id);
+    expect(page1Ids).not.toContain(page2.body.data.workouts[0].id);
+  });
+
   it('lists workouts and filters by date range', async () => {
     const list = await request(app).get('/api/workouts').set('Authorization', `Bearer ${token}`);
     expect(list.status).toBe(200);
