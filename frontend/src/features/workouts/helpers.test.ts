@@ -3,6 +3,7 @@ import {
   formatSet,
   isDraftSubmittable,
   totalSets,
+  totalVolume,
   weeklySummary,
 } from './helpers';
 
@@ -23,6 +24,18 @@ describe('isDraftSubmittable', () => {
     expect(isDraftSubmittable('Push day', [{ name: 'Bench', sets: [] }])).toBe(false);
     expect(isDraftSubmittable('Push day', [{ name: '  ', sets: [set] }])).toBe(false);
     expect(isDraftSubmittable('Push day', [{ name: 'Bench', sets: [set] }])).toBe(true);
+  });
+});
+
+describe('totalVolume', () => {
+  it('sums reps times weight, skipping bodyweight sets', () => {
+    expect(
+      totalVolume([
+        { sets: [{ repetitions: 8, weightKg: 80 }, { repetitions: 10 }] },
+        { sets: [{ repetitions: 10, weightKg: 90.5 }] },
+      ]),
+    ).toBe(8 * 80 + 10 * 90.5);
+    expect(totalVolume([])).toBe(0);
   });
 });
 

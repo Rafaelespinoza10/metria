@@ -53,6 +53,15 @@ export function weeklySummary(
   };
 }
 
+/** Total lifted volume in kg (reps × weight; bodyweight sets add nothing). */
+export function totalVolume(exercises: { sets: WorkoutSetInput[] }[]): number {
+  return exercises.reduce(
+    (sum, exercise) =>
+      sum + exercise.sets.reduce((acc, set) => acc + set.repetitions * (set.weightKg ?? 0), 0),
+    0,
+  );
+}
+
 /** First exercise photo in the workout — used as the card's image strip. */
 export function firstExerciseImageUrl(workout: {
   exercises: { imageUrl: string | null }[];

@@ -6,6 +6,8 @@ import { useTranslation } from 'react-i18next';
 import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Button } from '../../../components/Button';
+import { Chip } from '../../../components/Chip';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import type { AppStackParamList } from '../../../navigation/types';
@@ -14,7 +16,7 @@ import { AuthSubmitButton } from '../../auth/components/AuthSubmitButton';
 import { AuthTextField } from '../../auth/components/AuthTextField';
 import { parseDecimal } from '../../goals/helpers';
 import { uploadExercisePhoto } from '../api';
-import { formatSet, isDraftSubmittable } from '../helpers';
+import { formatSet, isDraftSubmittable, totalSets, totalVolume } from '../helpers';
 import { useCreateWorkout } from '../hooks';
 import type { WorkoutExerciseInput } from '../types';
 
@@ -38,6 +40,9 @@ interface ExerciseDraft extends WorkoutExerciseInput {
 }
 
 const EMPTY_SET: SetDraft = { reps: '', weight: '', rpe: '' };
+
+const NAME_SUGGESTIONS = ['push', 'pull', 'legs', 'fullBody', 'upper', 'lower'] as const;
+const DURATION_SUGGESTIONS = [30, 45, 60, 90];
 
 export function AddWorkoutScreen({ navigation, route }: Props) {
   const { t } = useTranslation();
@@ -126,6 +131,27 @@ export function AddWorkoutScreen({ navigation, route }: Props) {
     setSetDrafts((current) => ({ ...current, [index]: EMPTY_SET }));
   };
 
+  const removeSet = (exerciseIndex: number, setIndex: number) => {
+    setExercises((current) =>
+      current.map((exercise, i) =>
+        i === exerciseIndex
+          ? { ...exercise, sets: exercise.sets.filter((_, j) => j !== setIndex) }
+          : exercise,
+      ),
+    );
+  };
+
+  const repeatLastSet = (exerciseIndex: number) => {
+    setExercises((current) =>
+      current.map((exercise, i) => {
+        const last = exercise.sets[exercise.sets.length - 1];
+        return i === exerciseIndex && last
+          ? { ...exercise, sets: [...exercise.sets, { ...last }] }
+          : exercise;
+      }),
+    );
+  };
+
   const parsedDuration = duration.trim() === '' ? undefined : parseDecimal(duration);
   const canSubmit = isDraftSubmittable(name, exercises) && parsedDuration !== null;
 
@@ -172,6 +198,16 @@ export function AddWorkoutScreen({ navigation, route }: Props) {
               value={name}
               onChangeText={setName}
             />
+            <View className="flex-row flex-wrap gap-2">
+              {NAME_SUGGESTIONS.map((suggestion) => (
+                <Chip
+                  key={suggestion}
+                  label={t(`workouts.nameSuggestion.${suggestion}`)}
+                  selected={name === t(`workouts.nameSuggestion.${suggestion}`)}
+                  onPress={() => setName(t(`workouts.nameSuggestion.${suggestion}`))}
+                />
+              ))}
+            </View>
             <AuthTextField
               label={t('workouts.duration')}
               placeholder="60"
@@ -179,7 +215,42 @@ export function AddWorkoutScreen({ navigation, route }: Props) {
               value={duration}
               onChangeText={setDuration}
             />
+            <View className="flex-row gap-2">
+              {DURATION_SUGGESTIONS.map((minutes) => (
+                <Chip
+                  key={minutes}
+                  label={`${minutes} min`}
+                  selected={duration === String(minutes)}
+                  onPress={() => setDuration(String(minutes))}
+                />
+              ))}
+            </View>
           </Animated.View>
+
+          {exercises.length > 0 ? (
+            <Animated.View
+              entering={FadeInDown.springify()}
+              className="mt-6 flex-row rounded-3xl border border-black/5 bg-ink-900 p-5"
+            >
+              {[
+                { label: t('workouts.exercisesLabel'), value: String(exercises.length) },
+                { label: t('workouts.setsLabel'), value: String(totalSets(exercises)) },
+                {
+                  label: t('workouts.volumeLabel'),
+                  value: totalVolume(exercises).toLocaleString(),
+                },
+              ].map((stat) => (
+                <View key={stat.label} className="flex-1 items-center">
+                  <Text className="text-3xl font-bold tracking-tight text-content-primary">
+                    {stat.value}
+                  </Text>
+                  <Text className="mt-1 text-xs font-semibold uppercase tracking-widest text-content-tertiary">
+                    {stat.label}
+                  </Text>
+                </View>
+              ))}
+            </Animated.View>
+          ) : null}
 
           {exercises.map((exercise, index) => {
             const draft = setDraftFor(index);
@@ -217,9 +288,11 @@ export function AddWorkoutScreen({ navigation, route }: Props) {
                       {exercise.name}
                     </Text>
                     {exercise.muscleGroup ? (
-                      <Text className="mt-0.5 text-xs uppercase tracking-widest text-content-tertiary">
-                        {exercise.muscleGroup}
-                      </Text>
+                      <View className="mt-1 self-start rounded-full bg-brand-soft px-2.5 py-0.5">
+                        <Text className="text-xs font-semibold text-brand">
+                          {exercise.muscleGroup}
+                        </Text>
+                      </View>
                     ) : null}
                   </View>
                   <PressableScale
@@ -233,12 +306,32 @@ export function AddWorkoutScreen({ navigation, route }: Props) {
                 </View>
 
                 {exercise.sets.length > 0 ? (
-                  <View className="mt-3 border-t border-black/5 pt-3">
+                  <View className="mt-3 border-t border-black/5 pt-2">
                     {exercise.sets.map((set, setIndex) => (
-                      <Text key={setIndex} className="py-0.5 text-sm text-content-secondary">
-                        {t('workouts.setLabel', { number: setIndex + 1 })} · {formatSet(set)}
-                      </Text>
+                      <View key={setIndex} className="flex-row items-center justify-between py-1.5">
+                        <Text className="text-sm text-content-secondary">
+                          {t('workouts.setLabel', { number: setIndex + 1 })} · {formatSet(set)}
+                        </Text>
+                        <PressableScale
+                          onPress={() => removeSet(index, setIndex)}
+                          accessibilityRole="button"
+                          accessibilityLabel={t('workouts.removeSet')}
+                          className="h-7 w-7 items-center justify-center rounded-full bg-ink-800"
+                        >
+                          <Ionicons name="close" size={13} color={theme.colors.content.secondary} />
+                        </PressableScale>
+                      </View>
                     ))}
+                    <PressableScale
+                      onPress={() => repeatLastSet(index)}
+                      accessibilityRole="button"
+                      className="mt-1 flex-row items-center gap-1.5 self-start rounded-full bg-ink-800 px-3 py-1.5"
+                    >
+                      <Ionicons name="copy-outline" size={13} color={theme.colors.brand.DEFAULT} />
+                      <Text className="text-xs font-semibold text-brand">
+                        {t('workouts.repeatSet')}
+                      </Text>
+                    </PressableScale>
                   </View>
                 ) : null}
 
@@ -357,18 +450,12 @@ export function AddWorkoutScreen({ navigation, route }: Props) {
                 value={muscleGroup}
                 onChangeText={setMuscleGroup}
               />
-              <PressableScale
-                onPress={addExercise}
+              <Button
+                label={t('workouts.addExerciseAction')}
+                variant="secondary"
                 disabled={exerciseName.trim() === ''}
-                accessibilityRole="button"
-                className={`rounded-2xl border border-brand/40 py-3 ${
-                  exerciseName.trim() === '' ? 'opacity-40' : ''
-                }`}
-              >
-                <Text className="text-center text-sm font-semibold text-brand">
-                  {t('workouts.addExerciseAction')}
-                </Text>
-              </PressableScale>
+                onPress={addExercise}
+              />
             </View>
 
             {saveError ? (
