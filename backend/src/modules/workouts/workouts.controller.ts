@@ -5,7 +5,7 @@ import { ok } from '../../shared/utils/respond.js';
 import {
   createWorkoutSchema,
   updateWorkoutSchema,
-  workoutsRangeQuerySchema,
+  workoutsListQuerySchema,
 } from './workouts.schema.js';
 import type { WorkoutsService } from './workouts.service.js';
 
@@ -28,9 +28,9 @@ export class WorkoutsController {
   };
 
   list = async (req: Request, res: Response): Promise<void> => {
-    const query = workoutsRangeQuerySchema.parse(req.query);
-    const workouts = await this.workoutsService.list(currentUser(req).id, query.from, query.to);
-    ok(res, { workouts });
+    const query = workoutsListQuerySchema.parse(req.query);
+    const page = await this.workoutsService.list(currentUser(req).id, query);
+    ok(res, page);
   };
 
   getById = async (req: Request, res: Response): Promise<void> => {

@@ -3,7 +3,11 @@ import type { StoragePort } from '../../shared/storage/storage.port.js';
 import { userKeyPrefix } from '../../shared/storage/storage.port.js';
 import { localDateFor } from '../../shared/utils/local-date.js';
 import type { UsersRepository } from '../users/users.repository.js';
-import type { CreateWorkoutInput, UpdateWorkoutInput } from './workouts.schema.js';
+import type {
+  CreateWorkoutInput,
+  UpdateWorkoutInput,
+  WorkoutsListQuery,
+} from './workouts.schema.js';
 import type {
   ExerciseWithSets,
   WorkoutWithExercises,
@@ -94,9 +98,22 @@ export class WorkoutsService {
     return toWorkoutResponse(workout);
   }
 
-  async list(userId: string, from?: string, to?: string): Promise<WorkoutResponse[]> {
-    const workouts = await this.workoutsRepository.listRange(userId, from, to);
-    return workouts.map(toWorkoutResponse);
+  async list(
+    userId: string,
+    query: WorkoutsListQuery,
+  ): Promise<{ workouts: WorkoutResponse[]; total: number; limit: number; offset: number }> {
+    const page = await this.workoutsRepository.list(
+      userId,
+      { from: query.from, to: query.to, search: query.search },
+      query.limit,
+      query.offset,
+    );
+    return {
+      workouts: page.workouts.map(toWorkoutResponse),
+      total: page.total,
+      limit: query.limit,
+      offset: query.offset,
+    };
   }
 
   async getById(userId: string, id: string): Promise<WorkoutResponse> {
