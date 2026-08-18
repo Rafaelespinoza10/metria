@@ -159,6 +159,152 @@ describe.skipIf(!hasDatabase)('progress', () => {
     expect(weight7?.delta).toBeNull();
   });
 
+  it('returns the 30-day series with per-day values, zeros on empty days, and averages', async () => {
+    const res = await request(app)
+      .get('/api/progress/trends?days=30')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    const data = res.body.data as {
+      days: number;
+      from: string;
+      to: string;
+      targets: Record<string, number | null>;
+      averages: Record<string, number | null>;
+      series: {
+        date: string;
+        calories: number;
+        steps: number;
+        sleepMinutes: number;
+        tracked: boolean;
+      }[];
+    };
+    expect(data.days).toBe(30);
+    expect(data.series).toHaveLength(30);
+    expect(data.series[0]?.date).toBe(data.from);
+    expect(data.series[29]?.date).toBe(data.to);
+
+    // The fully-logged anchor day.
+    const anchorEntry = data.series.find((entry) => entry.date === anchor);
+    expect(anchorEntry).toEqual({
+      date: anchor,
+      calories: 2000,
+      steps: 10000,
+      sleepMinutes: 480,
+      tracked: true,
+    });
+
+    // The steps-only day still counts as tracked; other metrics are zero, not gaps.
+    const stepsOnly = data.series.find((entry) => entry.date === addDaysISO(anchor, -7));
+    expect(stepsOnly).toEqual({
+      date: addDaysISO(anchor, -7),
+      calories: 0,
+      steps: 5000,
+      sleepMinutes: 0,
+      tracked: true,
+    });
+
+    // An untracked day is all zeros.
+    const empty = data.series.find((entry) => entry.date === addDaysISO(anchor, 1));
+    expect(empty).toEqual({
+      date: addDaysISO(anchor, 1),
+      calories: 0,
+      steps: 0,
+      sleepMinutes: 0,
+      tracked: false,
+    });
+
+    expect(data.targets).toEqual({ calories: 2000, protein: 100, steps: 10000, sleepMinutes: 480 });
+    // Tracked-day means: calories over 1 meal day, steps over 2 activity days.
+    expect(data.averages).toEqual({
+      calories: 2000,
+      protein: 100,
+      steps: 7500,
+      sleepMinutes: 480,
+    });
+  });
+
+  it('defaults trends to the empty last 7 days and rejects other windows', async () => {
+    const res = await request(app)
+      .get('/api/progress/trends')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.days).toBe(7);
+    expect(res.body.data.series).toHaveLength(7);
+    // Nothing was seeded in the last 7 days.
+    expect((res.body.data.series as { tracked: boolean }[]).every((entry) => !entry.tracked)).toBe(
+      true,
+    );
+    expect(res.body.data.averages).toEqual({
+      calories: null,
+      protein: null,
+      steps: null,
+      sleepMinutes: null,
+    });
+
+    const bad = await request(app)
+      .get('/api/progress/trends?days=10')
+      .set('Authorization', `Bearer ${token}`);
+    expect(bad.status).toBe(400);
+  });
+
+  it('builds the 30-day report from the seeded data', async () => {
+    const res = await request(app)
+      .get('/api/progress/report')
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(res.status).toBe(200);
+    const report = res.body.data as {
+      generatedAt: string;
+      period: { from: string; to: string };
+      user: { name: string; email: string; memberSince: string };
+      score: { score: number; previousScore: number; delta: number };
+      averages: Record<string, number | null>;
+      targets: Record<string, number | null>;
+      body: { metrics: { key: string; delta: number | null }[] };
+      tracking: { trackedDays: number; totalDays: number; streak: { current: number } };
+      badges: { earned: number; total: number };
+    };
+
+    expect(report.period.to).toBe(report.generatedAt);
+    expect(report.period.from).toBe(addDaysISO(report.period.to, -29));
+    expect(report.user.name).toBe('Progress Test');
+    expect(report.user.memberSince).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+    expect(report.averages).toEqual({
+      calories: 2000,
+      protein: 100,
+      steps: 7500,
+      sleepMinutes: 480,
+    });
+    expect(report.targets.calories).toBe(2000);
+    const weight = report.body.metrics.find((metric) => metric.key === 'weight');
+    expect(weight?.delta).toBe(-1.4);
+    // Anchor day + the steps-only day; measurements alone never count as tracked.
+    expect(report.tracking).toMatchObject({ trackedDays: 2, totalDays: 30 });
+    expect(report.badges.earned).toBe(0);
+  });
+
+  it('reports zeros and nulls for an empty account', async () => {
+    const fresh = await registerUser();
+    const res = await request(app)
+      .get('/api/progress/report')
+      .set('Authorization', `Bearer ${fresh.token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body.data.score.score).toBe(0);
+    expect(res.body.data.averages).toEqual({
+      calories: null,
+      protein: null,
+      steps: null,
+      sleepMinutes: null,
+    });
+    expect(res.body.data.tracking).toMatchObject({
+      trackedDays: 0,
+      streak: { current: 0, longest: 0 },
+    });
+  });
+
   it('rejects future dates and invalid windows', async () => {
     const future = addDaysISO(new Date().toISOString().slice(0, 10), 2);
     const badDate = await request(app)
