@@ -165,7 +165,19 @@ export function WorkoutsScreen({ navigation }: Props) {
   return (
     <SafeAreaView className="flex-1 bg-ink-950">
       <View className="flex-1 px-5">
-        <ScreenHeader title={t('workouts.title')} />
+        <ScreenHeader
+          title={t('workouts.title')}
+          right={
+            <PressableScale
+              onPress={() => navigation.navigate('ExerciseBrowser', {})}
+              accessibilityRole="button"
+              accessibilityLabel={t('exercises.title')}
+              className="h-11 w-11 items-center justify-center rounded-full bg-ink-900"
+            >
+              <Ionicons name="body-outline" size={20} color={theme.colors.brand.DEFAULT} />
+            </PressableScale>
+          }
+        />
 
         <ScrollView className="mt-4 flex-1" showsVerticalScrollIndicator={false}>
           {workoutsQuery.isPending ? (

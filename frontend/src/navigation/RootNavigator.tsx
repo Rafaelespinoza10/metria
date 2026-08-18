@@ -18,6 +18,7 @@ import { NutritionScreen } from '../features/nutrition/screens/NutritionScreen';
 import { NutritionTargetsScreen } from '../features/nutrition/screens/NutritionTargetsScreen';
 import { ReviewAnalysisScreen } from '../features/nutrition/screens/ReviewAnalysisScreen';
 import { ScanMealScreen } from '../features/nutrition/screens/ScanMealScreen';
+import { ExerciseBrowserScreen } from '../features/exercises/screens/ExerciseBrowserScreen';
 import { AchievementsScreen } from '../features/gamification/screens/AchievementsScreen';
 import { InsightsScreen } from '../features/insights/screens/InsightsScreen';
 import { DeleteAccountScreen } from '../features/settings/screens/DeleteAccountScreen';
@@ -101,6 +102,7 @@ export function RootNavigator() {
           <AppStack.Screen name="Achievements" component={AchievementsScreen} />
           <AppStack.Screen name="Settings" component={SettingsScreen} />
           <AppStack.Screen name="DeleteAccount" component={DeleteAccountScreen} />
+          <AppStack.Screen name="ExerciseBrowser" component={ExerciseBrowserScreen} />
         </AppStack.Navigator>
       ) : (
         <AuthStack.Navigator screenOptions={{ headerShown: false }}>

@@ -28,13 +28,14 @@ export type AppStackParamList = {
   ReviewAnalysis: { analysisId: string; photoUri?: string };
   Activity: undefined;
   ActivityTargets: undefined;
-  AddWorkout: undefined;
+  AddWorkout: { pickedExercise?: { name: string; muscleGroup: string } } | undefined;
   Sleep: undefined;
   LogSleep: undefined;
   SleepTarget: undefined;
   Achievements: undefined;
   Settings: undefined;
   DeleteAccount: undefined;
+  ExerciseBrowser: { picker?: boolean } | undefined;
 };
 
 /** Props for tab screens: tab navigation plus the parent stack's routes. */

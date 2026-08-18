@@ -212,7 +212,10 @@
     "weekSets": "sets",
     "weekMinutes": "minutes",
     "addPhoto": "Add exercise photo",
-    "changePhoto": "Change exercise photo"
+    "changePhoto": "Change exercise photo",
+    "pickFromCatalog": "Pick from exercise library",
+    "addPicked": "Add",
+    "discardPicked": "Discard selection"
   },
   "sleep": {
     "title": "Sleep",
@@ -294,5 +297,34 @@
     "permanentHint": "Removes your account and every meal, workout, measurement, photo, and insight. This cannot be undone.",
     "passwordConfirm": "Confirm with your password",
     "permanentAction": "Delete everything"
+  },
+  "exercises": {
+    "title": "Exercise library",
+    "front": "Front",
+    "back": "Back",
+    "tapHint": "Tap a muscle to see exercises",
+    "allLevels": "All",
+    "instructions": "How to do it",
+    "useExercise": "Use this exercise",
+    "empty": "No exercises match this filter.",
+    "level": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "expert": "Expert"
+    },
+    "region": {
+      "chest": "Chest",
+      "back": "Back",
+      "shoulders": "Shoulders",
+      "biceps": "Biceps",
+      "triceps": "Triceps",
+      "forearms": "Forearms",
+      "abs": "Abs",
+      "quads": "Quads",
+      "hamstrings": "Hamstrings",
+      "glutes": "Glutes",
+      "calves": "Calves",
+      "neck": "Neck"
+    }
   }
 }
