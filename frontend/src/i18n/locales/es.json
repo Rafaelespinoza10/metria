@@ -241,7 +241,22 @@
       "fullBody": "Cuerpo completo",
       "upper": "Tren superior",
       "lower": "Tren inferior"
-    }
+    },
+    "searchLabel": "Buscar",
+    "searchPlaceholder": "Nombre del entreno o ejercicio…",
+    "range": {
+      "all": "Todos",
+      "7d": "7d",
+      "30d": "30d",
+      "90d": "90d"
+    },
+    "results": "{{count}} resultados",
+    "noResults": "Nada coincide con tu búsqueda.",
+    "loadMore": "Cargar más",
+    "detailTitle": "Entreno",
+    "notesLabel": "Notas",
+    "deleteWorkout": "Eliminar entreno",
+    "confirmDelete": "Toca otra vez para confirmar"
   },
   "sleep": {
     "title": "Sueño",

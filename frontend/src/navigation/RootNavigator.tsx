@@ -27,6 +27,7 @@ import { LogSleepScreen } from '../features/sleep/screens/LogSleepScreen';
 import { SleepScreen } from '../features/sleep/screens/SleepScreen';
 import { SleepTargetScreen } from '../features/sleep/screens/SleepTargetScreen';
 import { AddWorkoutScreen } from '../features/workouts/screens/AddWorkoutScreen';
+import { WorkoutDetailScreen } from '../features/workouts/screens/WorkoutDetailScreen';
 import { WorkoutsScreen } from '../features/workouts/screens/WorkoutsScreen';
 import { useAuthStore } from '../store/auth';
 import { theme } from '../theme';
@@ -103,6 +104,7 @@ export function RootNavigator() {
           <AppStack.Screen name="Settings" component={SettingsScreen} />
           <AppStack.Screen name="DeleteAccount" component={DeleteAccountScreen} />
           <AppStack.Screen name="ExerciseBrowser" component={ExerciseBrowserScreen} />
+          <AppStack.Screen name="WorkoutDetail" component={WorkoutDetailScreen} />
         </AppStack.Navigator>
       ) : (
         <AuthStack.Navigator screenOptions={{ headerShown: false }}>
