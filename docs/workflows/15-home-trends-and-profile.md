@@ -90,10 +90,14 @@ All `(auth)`, standard envelope.
 
 ```text
 GET /api/progress/trends?days=7|14|30   200 → { days, from, to,
-                                          targets: { calories, steps, sleepMinutes },
+                                          targets: { calories, protein, steps,
+                                                     sleepMinutes },
+                                          averages: { calories, protein, steps,
+                                                      sleepMinutes },
                                           series: [{ date, calories, steps,
                                                      sleepMinutes, tracked }] }
-                                          (targets numbers | null; series has one entry
+                                          (targets/averages numbers | null; averages
+                                           over tracked days only; series has one entry
                                            per day, zeros when nothing logged)
 GET /api/progress/report                200 → { generatedAt, period: { from, to },
                                           user: { name, email, memberSince },
