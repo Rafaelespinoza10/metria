@@ -24,8 +24,19 @@
       "invalidCredentials": "El correo y la contraseña no coinciden.",
       "emailTaken": "Ya existe una cuenta con este correo.",
       "invalidInput": "Revisa los campos e inténtalo de nuevo.",
-      "generic": "Algo salió mal. Inténtalo de nuevo."
-    }
+      "generic": "Algo salió mal. Inténtalo de nuevo.",
+      "invalidReset": "El código no es válido o expiró. Pide uno nuevo."
+    },
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "forgotTitle": "Recuperar contraseña",
+    "forgotHint": "Escribe el correo de tu cuenta y te enviaremos un código de recuperación.",
+    "sendResetCode": "Enviar código",
+    "resetTitle": "Nueva contraseña",
+    "resetHint": "Pega el código que recibiste y elige una contraseña nueva de al menos 8 caracteres.",
+    "resetCode": "Código de recuperación",
+    "resetCodePlaceholder": "Pega tu código",
+    "newPassword": "Nueva contraseña",
+    "resetAction": "Actualizar contraseña"
   },
   "home": {
     "goodMorning": "Buenos días",
