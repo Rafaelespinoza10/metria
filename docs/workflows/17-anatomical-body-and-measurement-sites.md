@@ -77,24 +77,24 @@ migrations.
 
 ## Backend tasks
 
-- [ ] None — the seeded system measurement types already cover every anatomical site,
+- [x] None — the seeded system measurement types already cover every anatomical site,
       and `GET /api/measurements/types` + `/latest` already serve what the figure needs.
 
 ## Frontend tasks
 
-- [ ] `components/HumanBody.tsx`: anatomical paths, gradient/occlusion shading, front &
+- [x] `components/HumanBody.tsx`: anatomical paths, gradient/occlusion shading, front &
       back views, hotspot API with laterality, badges, press feedback per part.
-- [ ] `components/human-body-geometry.ts`: part table + pure helpers (visible parts per
+- [x] `components/human-body-geometry.ts`: part table + pure helpers (visible parts per
       side, badge anchor points, mirroring) with Jest tests.
-- [ ] `features/exercises`: point `ExerciseBrowserScreen` at the shared component,
+- [x] `features/exercises`: point `ExerciseBrowserScreen` at the shared component,
       collapsing laterality onto `BodyRegion`; delete the old `BodyMap.tsx`.
-- [ ] `features/measurements/measurement-sites.ts` + Jest test proving every anatomical
+- [x] `features/measurements/measurement-sites.ts` + Jest test proving every anatomical
       seeded type is reachable from exactly one (part, laterality) pair.
-- [ ] `MeasurementsScreen`: figure hero with latest-value badges, tap → log screen.
-- [ ] `LogMeasurementScreen`: `typeKey` param, figure as site picker, weight/body-fat
+- [x] `MeasurementsScreen`: figure hero with latest-value badges, tap → log screen.
+- [x] `LogMeasurementScreen`: `typeKey` param, figure as site picker, weight/body-fat
       chips.
-- [ ] `navigation/types.ts`: `LogMeasurement: { typeKey?: string } | undefined`.
-- [ ] en/es strings for the new labels and hints.
+- [x] `navigation/types.ts`: `LogMeasurement: { typeKey?: string } | undefined`.
+- [x] en/es strings for the new labels and hints.
 
 ## API contracts
 
@@ -129,4 +129,4 @@ exactly once, unmapped parts return null, left/right resolve to distinct keys);
 
 ## Definition of done
 
-- [ ] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
+- [x] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
