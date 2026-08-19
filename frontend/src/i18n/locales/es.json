@@ -5,7 +5,8 @@
     "error": "Algo salió mal",
     "retry": "Reintentar",
     "confirmDelete": "Toca de nuevo para eliminar",
-    "loadFailed": "No se pudo cargar. Revisa tu conexión."
+    "loadFailed": "No se pudo cargar. Revisa tu conexión.",
+    "continue": "Continuar"
   },
   "auth": {
     "welcomeBack": "Hola de nuevo",
@@ -127,7 +128,8 @@
     "markAchieved": "Marcar como lograda",
     "abandon": "Abandonar meta",
     "reactivate": "Reactivar meta",
-    "deleteGoal": "Eliminar meta"
+    "deleteGoal": "Eliminar meta",
+    "current": "Actual"
   },
   "measurements": {
     "title": "Medidas",
@@ -457,5 +459,19 @@
     "front": "Frente",
     "back": "Espalda",
     "selected": "Seleccionado"
+  },
+  "onboarding": {
+    "welcomeTitle": "Bienvenido, {{name}}",
+    "welcomeBody": "Metria conecta lo que comes, cómo te mueves y cómo duermes con los cambios de tu cuerpo. Dos minutos de configuración hacen útil cada pantalla desde el día uno.",
+    "start": "Configurar ahora",
+    "targetsTitle": "Tus objetivos diarios",
+    "targetsBody": "Alimentan tu puntaje de progreso y los anillos diarios. Llena lo que sepas — todo se puede cambiar después.",
+    "sleepHours": "Sueño (horas)",
+    "goalTitle": "Una primera meta",
+    "goalBody": "Opcional: define una meta de peso y Metria seguirá tu avance con cada medida que registres.",
+    "currentWeight": "Peso actual (kg)",
+    "targetWeight": "Peso objetivo (kg)",
+    "finish": "Terminar configuración",
+    "skip": "Omitir por ahora"
   }
 }
