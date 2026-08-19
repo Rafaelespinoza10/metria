@@ -7,7 +7,7 @@ import { env } from '../../config/env.js';
 
 export function errorHandler(
   err: unknown,
-  _req: Request,
+  req: Request,
   res: Response,
   // Express identifies error middleware by arity; the parameter must exist.
   _next: NextFunction,
@@ -32,7 +32,10 @@ export function errorHandler(
   }
 
   if (env.NODE_ENV !== 'test') {
-    console.error('Unhandled error:', err);
+    // pino-http attaches req.log (with the request id); fall back to console
+    // for the test-injected apps that skip the logging middleware.
+    if (req.log) req.log.error({ err }, 'Unhandled error');
+    else console.error('Unhandled error:', err);
   }
   fail(res, 'INTERNAL_ERROR', 'An unexpected error occurred', 500);
 }
