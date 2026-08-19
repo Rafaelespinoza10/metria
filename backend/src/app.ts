@@ -1,6 +1,9 @@
+import { randomUUID } from 'node:crypto';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
+import { pinoHttp } from 'pino-http';
+import { logger } from './shared/logger.js';
 import { OpenAIInsights, OpenAIMealAlternatives, OpenAIMealVision } from './ai/openai.js';
 import type { InsightsPort, MealAlternativesPort, MealVisionPort } from './ai/ports.js';
 import { env } from './config/env.js';
@@ -9,7 +12,11 @@ import { createActivityRoutes } from './modules/activity/activity.routes.js';
 import { ActivityService } from './modules/activity/activity.service.js';
 import { createAuthRoutes } from './modules/auth/auth.routes.js';
 import { AuthService } from './modules/auth/auth.service.js';
-import { ConsolePasswordResetMailer, type PasswordResetMailer } from './modules/auth/mailer.js';
+import {
+  ConsolePasswordResetMailer,
+  UnconfiguredPasswordResetMailer,
+  type PasswordResetMailer,
+} from './modules/auth/mailer.js';
 import { PasswordResetRepository } from './modules/auth/password-reset.repository.js';
 import { ProgressScoreService } from './modules/progress/progress-score.service.js';
 import { createProgressRoutes } from './modules/progress/progress.routes.js';
@@ -91,6 +98,15 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   }
   // JSON API: no HTML is served, so CSP adds nothing here.
   app.use(helmet({ contentSecurityPolicy: false }));
+  if (env.NODE_ENV !== 'test') {
+    app.use(
+      pinoHttp({
+        logger,
+        genReqId: () => randomUUID(),
+        autoLogging: { ignore: (req) => req.url?.startsWith('/api/health') ?? false },
+      }),
+    );
+  }
   app.use(
     cors({
       origin: env.CORS_ORIGIN === '*' ? true : env.CORS_ORIGIN.split(','),
@@ -106,7 +122,11 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   const goalsRepository = new GoalsRepository();
   const measurementsRepository = new MeasurementsRepository();
   const tokenService = new TokenService();
-  const mailer = deps.passwordResetMailer ?? new ConsolePasswordResetMailer(env.NODE_ENV);
+  const mailer =
+    deps.passwordResetMailer ??
+    (env.NODE_ENV === 'production'
+      ? new UnconfiguredPasswordResetMailer()
+      : new ConsolePasswordResetMailer(env.NODE_ENV));
   const authService = new AuthService(
     usersRepository,
     passwordResetRepository,

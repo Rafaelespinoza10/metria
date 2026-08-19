@@ -6,6 +6,7 @@ export const errorCodes = [
   'CONFLICT',
   'RATE_LIMITED',
   'AI_UNAVAILABLE',
+  'SERVICE_UNAVAILABLE',
   'INTERNAL_ERROR',
 ] as const;
 
