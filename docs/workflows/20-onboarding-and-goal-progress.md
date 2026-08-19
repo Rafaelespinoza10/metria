@@ -54,18 +54,18 @@ None — `progress` is computed on read.
 
 ## Backend tasks
 
-- [ ] `GoalsService` computes `progress` for measurement-backed goals via one
+- [x] `GoalsService` computes `progress` for measurement-backed goals via one
       `latestByType` pass; list and getById responses carry it — with tests
       (direction-agnostic percent, clamping, null for habit metrics and missing data).
 
 ## Frontend tasks
 
-- [ ] `justRegistered` flag in the auth store (set by useRegister, cleared on
+- [x] `justRegistered` flag in the auth store (set by useRegister, cleared on
       completion/sign-out) routing to the onboarding stack — with store tests.
-- [ ] Onboarding screen: welcome → targets → optional first weight goal, all
+- [x] Onboarding screen: welcome → targets → optional first weight goal, all
       skippable; saves through existing target/goal hooks — with a pure submit-plan
       helper and tests.
-- [ ] Goal progress bar + current value on `GoalCard` and `GoalDetail`; en/es locales
+- [x] Goal progress bar + current value on `GoalCard` and `GoalDetail`; en/es locales
       (`onboarding.*` namespace, additive `goals.*` keys).
 
 ## API contracts
