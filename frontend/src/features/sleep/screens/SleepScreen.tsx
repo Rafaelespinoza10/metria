@@ -112,8 +112,11 @@ export function SleepScreen({ navigation }: Props) {
               </Text>
               <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5">
                 {entries.slice(0, 7).map((entry, index) => (
-                  <View
+                  <PressableScale
                     key={entry.id}
+                    onPress={() => navigation.navigate('LogSleep', { entry })}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('sleep.edit')}
                     className={`flex-row items-center justify-between py-4 ${
                       index > 0 ? 'border-t border-black/5' : ''
                     }`}
@@ -127,7 +130,7 @@ export function SleepScreen({ navigation }: Props) {
                     <Text className="text-xl font-bold tracking-tight text-content-primary">
                       {formatMinutes(entry.durationMinutes)}
                     </Text>
-                  </View>
+                  </PressableScale>
                 ))}
               </View>
             </Animated.View>

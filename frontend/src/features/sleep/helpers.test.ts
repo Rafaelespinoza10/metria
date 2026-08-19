@@ -1,4 +1,10 @@
-import { formatMinutes, parseTime, sleepInstants } from './helpers';
+import {
+  editedSleepInstants,
+  formatMinutes,
+  parseTime,
+  sleepInstants,
+  toTimeText,
+} from './helpers';
 
 describe('formatMinutes', () => {
   it.each([
@@ -42,5 +48,29 @@ describe('sleepInstants', () => {
 
   it('returns null for invalid input', () => {
     expect(sleepInstants('25:00', '08:00', now)).toBeNull();
+  });
+});
+
+describe('editedSleepInstants', () => {
+  it('keeps the night anchored to the original wake-up day', () => {
+    const originalWake = new Date(2026, 7, 10, 6, 30).toISOString();
+    const result = editedSleepInstants(originalWake, '23:15', '07:05');
+    expect(result).not.toBeNull();
+    expect(result?.wakeTime.getFullYear()).toBe(2026);
+    expect(result?.wakeTime.getMonth()).toBe(7);
+    expect(result?.wakeTime.getDate()).toBe(10);
+    expect(result?.wakeTime.getHours()).toBe(7);
+    expect(result?.bedtime.getDate()).toBe(9); // bedtime after wake time-of-day → previous day
+  });
+
+  it('returns null for unparseable times', () => {
+    expect(editedSleepInstants(new Date().toISOString(), 'late', '07:00')).toBeNull();
+  });
+});
+
+describe('toTimeText', () => {
+  it('formats an instant as local HH:MM for edit prefills', () => {
+    const instant = new Date(2026, 7, 10, 6, 5).toISOString();
+    expect(toTimeText(instant)).toBe('06:05');
   });
 });

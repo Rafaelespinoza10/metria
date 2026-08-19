@@ -17,6 +17,25 @@ export function parseTime(text: string): { hours: number; minutes: number } | nu
   return { hours, minutes };
 }
 
+/** Builds bedtime/wake instants for EDITING an existing entry: times change but
+ *  the night stays anchored to the entry's original wake-up day, so editing an
+ *  old entry never moves it to today. */
+export function editedSleepInstants(
+  originalWakeTime: string,
+  bedText: string,
+  wakeText: string,
+): { bedtime: Date; wakeTime: Date } | null {
+  return sleepInstants(bedText, wakeText, new Date(originalWakeTime));
+}
+
+/** "2026-08-19T05:30:00.000Z" → "HH:MM" in device-local time, for edit prefills. */
+export function toTimeText(instantISO: string): string {
+  const date = new Date(instantISO);
+  const hours = `${date.getHours()}`.padStart(2, '0');
+  const minutes = `${date.getMinutes()}`.padStart(2, '0');
+  return `${hours}:${minutes}`;
+}
+
 /** Builds bedtime/wake instants from HH:MM strings. Wake time lands today (device
  *  clock); bedtime falls on yesterday when its time-of-day is at or after wake time. */
 export function sleepInstants(

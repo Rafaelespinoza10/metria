@@ -3,7 +3,8 @@
     "appName": "METRIA",
     "loading": "Cargando…",
     "error": "Algo salió mal",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "confirmDelete": "Toca de nuevo para eliminar"
   },
   "auth": {
     "welcomeBack": "Hola de nuevo",
@@ -120,7 +121,12 @@
       "sleep_minutes": "Sueño",
       "workout_frequency": "Frecuencia de entreno",
       "measurement": "Zona del cuerpo"
-    }
+    },
+    "detailTitle": "Meta",
+    "markAchieved": "Marcar como lograda",
+    "abandon": "Abandonar meta",
+    "reactivate": "Reactivar meta",
+    "deleteGoal": "Eliminar meta"
   },
   "measurements": {
     "title": "Medidas",
@@ -199,7 +205,11 @@
     "confirmMeal": "Confirmar y guardar",
     "suggestAlternatives": "Sugerir alternativas",
     "alternativesFor": "Alternativas a {{meal}}",
-    "alternativesUnavailable": "Las sugerencias no están disponibles ahora."
+    "alternativesUnavailable": "Las sugerencias no están disponibles ahora.",
+    "editMeal": "Editar comida",
+    "deleteMeal": "Eliminar comida",
+    "eatenAt": "Hora de la comida",
+    "discardAnalysis": "Descartar análisis"
   },
   "activity": {
     "title": "Actividad",
@@ -270,7 +280,8 @@
     "detailTitle": "Entreno",
     "notesLabel": "Notas",
     "deleteWorkout": "Eliminar entreno",
-    "confirmDelete": "Toca otra vez para confirmar"
+    "confirmDelete": "Toca otra vez para confirmar",
+    "performedAt": "Fecha del entreno"
   },
   "sleep": {
     "title": "Sueño",
@@ -288,7 +299,9 @@
     "target": "Objetivo de sueño",
     "saveTarget": "Guardar objetivo",
     "hoursPerNight": "Horas por noche",
-    "targetHint": "Tu meta de duración por noche, p. ej. 8 horas."
+    "targetHint": "Tu meta de duración por noche, p. ej. 8 horas.",
+    "edit": "Editar sueño",
+    "deleteEntry": "Eliminar registro"
   },
   "insights": {
     "title": "Insights",

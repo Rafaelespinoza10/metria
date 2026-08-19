@@ -18,3 +18,10 @@ export interface CreateSleepInput {
   quality?: number;
   notes?: string;
 }
+
+export interface UpdateSleepInput {
+  bedtime?: string;
+  wakeTime?: string;
+  quality?: number | null;
+  notes?: string | null;
+}
