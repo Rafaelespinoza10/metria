@@ -1,11 +1,13 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Image, ScrollView, Text, View } from 'react-native';
+import { Image, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Button } from '../../../components/Button';
 import { Chip } from '../../../components/Chip';
+import { ErrorState } from '../../../components/ErrorState';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
@@ -55,6 +57,14 @@ function GoalCard({ goal, index, onPress }: { goal: Goal; index: number; onPress
 
 export function GoalsScreen({ navigation }: Props) {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
+  const refresh = async () => {
+    setRefreshing(true);
+    await queryClient.refetchQueries({ type: 'active' });
+    setRefreshing(false);
+  };
+
   const [status, setStatus] = useState<GoalStatus>('active');
   const goalsQuery = useGoals(status);
 
@@ -75,12 +85,20 @@ export function GoalsScreen({ navigation }: Props) {
           ))}
         </Animated.View>
 
-        <ScrollView className="mt-2 flex-1" showsVerticalScrollIndicator={false}>
+        <ScrollView
+          className="mt-2 flex-1"
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={() => void refresh()} />
+          }
+        >
           {goalsQuery.isPending ? (
             <>
               <SkeletonBlock className="mt-3 h-32 rounded-3xl" />
               <SkeletonBlock className="mt-3 h-32 rounded-3xl" />
             </>
+          ) : goalsQuery.isError ? (
+            <ErrorState onRetry={() => void goalsQuery.refetch()} />
           ) : goalsQuery.data && goalsQuery.data.length > 0 ? (
             goalsQuery.data.map((goal, index) => (
               <GoalCard

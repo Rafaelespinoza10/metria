@@ -1,17 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useDeferredValue, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, FlatList, Image, RefreshControl, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
-import { Button } from '../../../components/Button';
+import { AuthedImage } from '../../../components/AuthedImage';
+import { ErrorState } from '../../../components/ErrorState';
 import { Chip } from '../../../components/Chip';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
 import type { TabScreenProps } from '../../../navigation/types';
-import { API_URL } from '../../../services/api';
-import { useAuthStore } from '../../../store/auth';
 import { theme } from '../../../theme';
 import { sectionImages } from '../../../theme/images';
 import { AuthTextField } from '../../auth/components/AuthTextField';
@@ -21,13 +20,6 @@ import { useWeeklyWorkouts, useWorkoutsPages } from '../hooks';
 import type { Workout, WorkoutExercise } from '../types';
 
 type Props = TabScreenProps<'Workouts'>;
-
-function authedSource(imageUrl: string, token: string | null) {
-  return {
-    uri: `${API_URL}${imageUrl}`,
-    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-  };
-}
 
 function WeeklyHero({ workouts }: { workouts: Workout[] }) {
   const { t } = useTranslation();
@@ -65,15 +57,11 @@ function WeeklyHero({ workouts }: { workouts: Workout[] }) {
   );
 }
 
-function ExerciseRow({ exercise, token }: { exercise: WorkoutExercise; token: string | null }) {
+function ExerciseRow({ exercise }: { exercise: WorkoutExercise }) {
   return (
     <View className="flex-row items-center gap-3 py-1.5">
       {exercise.imageUrl ? (
-        <Image
-          source={authedSource(exercise.imageUrl, token)}
-          className="h-9 w-9 rounded-xl bg-ink-800"
-          accessibilityIgnoresInvertColors
-        />
+        <AuthedImage url={exercise.imageUrl} className="h-9 w-9 rounded-xl bg-ink-800" />
       ) : (
         <View className="h-9 w-9 items-center justify-center rounded-xl bg-brand-soft">
           <Ionicons name="barbell-outline" size={16} color={theme.colors.brand.DEFAULT} />
@@ -99,7 +87,6 @@ function WorkoutCard({
   onPress: () => void;
 }) {
   const { t } = useTranslation();
-  const token = useAuthStore((state) => state.token);
   const photoUrl = firstExerciseImageUrl(workout);
   const muscleGroups = [
     ...new Set(
@@ -116,17 +103,15 @@ function WorkoutCard({
         accessibilityRole="button"
         className="mt-3 overflow-hidden rounded-3xl border border-black/5 bg-ink-900"
       >
-        <Image
-          source={
-            photoUrl
-              ? authedSource(photoUrl, token)
-              : index % 2 === 0
-                ? sectionImages.goals
-                : sectionImages.workout
-          }
-          className="h-24 w-full bg-ink-800"
-          accessibilityIgnoresInvertColors
-        />
+        {photoUrl ? (
+          <AuthedImage url={photoUrl} className="h-24 w-full bg-ink-800" />
+        ) : (
+          <Image
+            source={index % 2 === 0 ? sectionImages.goals : sectionImages.workout}
+            className="h-24 w-full bg-ink-800"
+            accessibilityIgnoresInvertColors
+          />
+        )}
         <View className="p-5 pt-4">
           <View className="flex-row items-baseline justify-between">
             <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
@@ -160,7 +145,7 @@ function WorkoutCard({
           ) : null}
           <View className="mt-3 border-t border-black/5 pt-2">
             {workout.exercises.slice(0, 3).map((exercise) => (
-              <ExerciseRow key={exercise.id} exercise={exercise} token={token} />
+              <ExerciseRow key={exercise.id} exercise={exercise} />
             ))}
             {workout.exercises.length > 3 ? (
               <Text className="mt-1 text-xs text-content-tertiary">
@@ -213,87 +198,101 @@ export function WorkoutsScreen({ navigation }: Props) {
           }
         />
 
-        <ScrollView
+        <FlatList
           className="mt-4 flex-1"
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-        >
-          {weeklyQuery.data && weeklyQuery.data.length > 0 ? (
-            <WeeklyHero workouts={weeklyQuery.data} />
-          ) : null}
-
-          <Animated.View entering={FadeInDown.delay(90).springify()} className="mt-4">
-            <AuthTextField
-              label={t('workouts.searchLabel')}
-              placeholder={t('workouts.searchPlaceholder')}
-              value={searchText}
-              onChangeText={setSearchText}
-              autoCapitalize="none"
+          data={pagesQuery.isPending ? [] : workouts}
+          keyExtractor={(workout) => workout.id}
+          renderItem={({ item, index }) => (
+            <WorkoutCard
+              workout={item}
+              index={index}
+              onPress={() => navigation.navigate('WorkoutDetail', { id: item.id })}
             />
-            <View className="mt-3 flex-row gap-2">
-              {RANGES.map((range) => (
-                <Chip
-                  key={range.key}
-                  label={t(`workouts.range.${range.key}`)}
-                  selected={rangeDays === range.days}
-                  onPress={() => setRangeDays(range.days)}
-                />
-              ))}
-            </View>
-            {filtering && !pagesQuery.isPending ? (
-              <Text className="mt-3 text-xs text-content-tertiary">
-                {t('workouts.results', { count: total })}
-              </Text>
-            ) : null}
-          </Animated.View>
-
-          {pagesQuery.isPending ? (
-            <>
-              <SkeletonBlock className="mt-3 h-52 rounded-3xl" />
-              <SkeletonBlock className="mt-3 h-52 rounded-3xl" />
-            </>
-          ) : workouts.length > 0 ? (
-            <>
-              {workouts.map((workout, index) => (
-                <WorkoutCard
-                  key={workout.id}
-                  workout={workout}
-                  index={index}
-                  onPress={() => navigation.navigate('WorkoutDetail', { id: workout.id })}
-                />
-              ))}
-              {pagesQuery.hasNextPage ? (
-                <View className="mt-4">
-                  <Button
-                    label={t('workouts.loadMore')}
-                    variant="secondary"
-                    loading={pagesQuery.isFetchingNextPage}
-                    onPress={() => void pagesQuery.fetchNextPage()}
-                  />
-                </View>
-              ) : null}
-            </>
-          ) : filtering ? (
-            <Text className="mt-6 text-sm leading-relaxed text-content-secondary">
-              {t('workouts.noResults')}
-            </Text>
-          ) : (
-            <Animated.View
-              entering={FadeInDown.delay(120).springify()}
-              className="mt-3 items-start overflow-hidden rounded-3xl border border-black/5 bg-ink-900"
-            >
-              <Image
-                source={sectionImages.workout}
-                className="h-36 w-full bg-ink-800"
-                accessibilityIgnoresInvertColors
-              />
-              <Text className="p-5 text-sm leading-relaxed text-content-secondary">
-                {t('workouts.empty')}
-              </Text>
-            </Animated.View>
           )}
-          <View className="h-28" />
-        </ScrollView>
+          onEndReachedThreshold={0.4}
+          onEndReached={() => {
+            if (pagesQuery.hasNextPage && !pagesQuery.isFetchingNextPage) {
+              void pagesQuery.fetchNextPage();
+            }
+          }}
+          refreshControl={
+            <RefreshControl
+              refreshing={pagesQuery.isRefetching && !pagesQuery.isFetchingNextPage}
+              onRefresh={() => {
+                void pagesQuery.refetch();
+                void weeklyQuery.refetch();
+              }}
+            />
+          }
+          ListHeaderComponent={
+            <>
+              {weeklyQuery.data && weeklyQuery.data.length > 0 ? (
+                <WeeklyHero workouts={weeklyQuery.data} />
+              ) : null}
+
+              <Animated.View entering={FadeInDown.delay(90).springify()} className="mt-4">
+                <AuthTextField
+                  label={t('workouts.searchLabel')}
+                  placeholder={t('workouts.searchPlaceholder')}
+                  value={searchText}
+                  onChangeText={setSearchText}
+                  autoCapitalize="none"
+                />
+                <View className="mt-3 flex-row gap-2">
+                  {RANGES.map((range) => (
+                    <Chip
+                      key={range.key}
+                      label={t(`workouts.range.${range.key}`)}
+                      selected={rangeDays === range.days}
+                      onPress={() => setRangeDays(range.days)}
+                    />
+                  ))}
+                </View>
+                {filtering && !pagesQuery.isPending ? (
+                  <Text className="mt-3 text-xs text-content-tertiary">
+                    {t('workouts.results', { count: total })}
+                  </Text>
+                ) : null}
+              </Animated.View>
+
+              {pagesQuery.isPending ? (
+                <>
+                  <SkeletonBlock className="mt-3 h-52 rounded-3xl" />
+                  <SkeletonBlock className="mt-3 h-52 rounded-3xl" />
+                </>
+              ) : null}
+              {pagesQuery.isError ? <ErrorState onRetry={() => void pagesQuery.refetch()} /> : null}
+            </>
+          }
+          ListEmptyComponent={
+            pagesQuery.isPending || pagesQuery.isError ? null : filtering ? (
+              <Text className="mt-6 text-sm leading-relaxed text-content-secondary">
+                {t('workouts.noResults')}
+              </Text>
+            ) : (
+              <Animated.View
+                entering={FadeInDown.delay(120).springify()}
+                className="mt-3 items-start overflow-hidden rounded-3xl border border-black/5 bg-ink-900"
+              >
+                <Image
+                  source={sectionImages.workout}
+                  className="h-36 w-full bg-ink-800"
+                  accessibilityIgnoresInvertColors
+                />
+                <Text className="p-5 text-sm leading-relaxed text-content-secondary">
+                  {t('workouts.empty')}
+                </Text>
+              </Animated.View>
+            )
+          }
+          ListFooterComponent={
+            <View className="h-28 items-center justify-start pt-4">
+              {pagesQuery.isFetchingNextPage ? <ActivityIndicator /> : null}
+            </View>
+          }
+        />
 
         <Animated.View
           entering={FadeInDown.delay(180).springify()}

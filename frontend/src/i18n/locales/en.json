@@ -4,7 +4,8 @@
     "loading": "Loading…",
     "error": "Something went wrong",
     "retry": "Retry",
-    "confirmDelete": "Tap again to delete"
+    "confirmDelete": "Tap again to delete",
+    "loadFailed": "Couldn't load this. Check your connection."
   },
   "auth": {
     "welcomeBack": "Welcome back",
