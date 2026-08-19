@@ -9,6 +9,8 @@ export interface PublicUser {
   name: string;
   locale: string;
   timezone: string;
+  birthDate: string | null;
+  heightCm: number | null;
   createdAt: Date;
 }
 
@@ -19,6 +21,8 @@ export function toPublicUser(row: UserRow): PublicUser {
     name: row.name,
     locale: row.locale,
     timezone: row.timezone,
+    birthDate: row.birthDate,
+    heightCm: row.heightCm,
     createdAt: row.createdAt,
   };
 }
