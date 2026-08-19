@@ -29,6 +29,13 @@
       "when": 1787154962794,
       "tag": "0003_rainy_khan",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1787156726542,
+      "tag": "0004_big_spot",
+      "breakpoints": true
     }
   ]
 }

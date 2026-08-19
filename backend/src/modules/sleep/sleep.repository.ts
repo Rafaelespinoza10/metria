@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull } from 'drizzle-orm';
+import { and, desc, eq, gte, isNull, lte } from 'drizzle-orm';
 import { getDb } from '../../database/client.js';
 import { sleepEntries } from '../../database/schema/sleep.js';
 
@@ -50,13 +50,20 @@ export class SleepRepository {
   }
 
   async listRange(userId: string, from?: string, to?: string): Promise<SleepEntryRow[]> {
-    const rows = await this.db
+    // Range in SQL: the old cap-then-filter silently returned nothing for old ranges.
+    return this.db
       .select()
       .from(sleepEntries)
-      .where(and(eq(sleepEntries.userId, userId), isNull(sleepEntries.deletedAt)))
+      .where(
+        and(
+          eq(sleepEntries.userId, userId),
+          isNull(sleepEntries.deletedAt),
+          from ? gte(sleepEntries.localDate, from) : undefined,
+          to ? lte(sleepEntries.localDate, to) : undefined,
+        ),
+      )
       .orderBy(desc(sleepEntries.localDate))
-      .limit(120);
-    return rows.filter((row) => (!from || row.localDate >= from) && (!to || row.localDate <= to));
+      .limit(from || to ? 400 : 120);
   }
 
   async update(

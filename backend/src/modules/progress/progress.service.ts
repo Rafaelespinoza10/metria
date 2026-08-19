@@ -1,6 +1,10 @@
 import { AppError } from '../../shared/errors/app-error.js';
 import { addDaysISO, mondayOf } from '../../shared/utils/date-range.js';
-import { localDateFor } from '../../shared/utils/local-date.js';
+import {
+  endOfDayInTimezone,
+  localDateFor,
+  startOfDayInTimezone,
+} from '../../shared/utils/local-date.js';
 import type { GamificationRepository } from '../gamification/gamification.repository.js';
 import type { MeasurementsRepository } from '../measurements/measurements.repository.js';
 import type {
@@ -144,19 +148,26 @@ export class ProgressService {
     };
   }
 
-  /** Values of a measurement type within [from, to], oldest → newest. */
-  private async valuesInRange(
+  /** Values per measurement type within [from, to] (user-timezone day bounds),
+   *  oldest → newest — one query instead of one per metric. */
+  private async valuesByTypeInRange(
     userId: string,
-    typeId: string,
     from: string,
     to: string,
-  ): Promise<number[]> {
+    timezone: string,
+  ): Promise<Map<string, number[]>> {
     const rows = await this.measurementsRepository.listByUser(userId, {
-      typeId,
-      from: new Date(`${from}T00:00:00.000Z`),
-      to: new Date(`${to}T23:59:59.999Z`),
+      from: startOfDayInTimezone(from, timezone),
+      to: endOfDayInTimezone(to, timezone),
     });
-    return rows.map((row) => row.value).reverse(); // repository returns newest first
+    const byType = new Map<string, number[]>();
+    // Repository returns newest first; unshift restores oldest → newest.
+    for (const row of rows) {
+      const list = byType.get(row.typeId) ?? [];
+      list.unshift(row.value);
+      byType.set(row.typeId, list);
+    }
+    return byType;
   }
 
   async body(userId: string, window: BodyWindow): Promise<BodyProgress> {
@@ -182,16 +193,24 @@ export class ProgressService {
       previousTo = addDaysISO(currentFrom, -1);
     }
 
+    const user = await this.usersRepository.findById(userId);
+    const timezone = user?.timezone ?? 'UTC';
+    const currentByType = await this.valuesByTypeInRange(userId, currentFrom, currentTo, timezone);
+    const previousByType =
+      window === 'week'
+        ? await this.valuesByTypeInRange(userId, previousFrom, previousTo, timezone)
+        : new Map<string, number[]>();
+
     const metrics: BodyMetricDelta[] = [];
     for (const key of BODY_METRIC_KEYS) {
       const type = types.find((candidate) => candidate.key === key);
       if (!type) continue;
-      const currentValues = await this.valuesInRange(userId, type.id, currentFrom, currentTo);
+      const currentValues = currentByType.get(type.id) ?? [];
 
       let start: number | null;
       let end: number | null;
       if (window === 'week') {
-        const previousValues = await this.valuesInRange(userId, type.id, previousFrom, previousTo);
+        const previousValues = previousByType.get(type.id) ?? [];
         start = previousValues[previousValues.length - 1] ?? null;
         end = currentValues[currentValues.length - 1] ?? null;
       } else {

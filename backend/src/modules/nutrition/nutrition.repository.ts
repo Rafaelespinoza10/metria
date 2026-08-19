@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, isNull } from 'drizzle-orm';
+import { and, asc, desc, eq, gte, inArray, isNull, lte } from 'drizzle-orm';
 import { getDb } from '../../database/client.js';
 import { mealAnalyses, mealItems, meals } from '../../database/schema/nutrition.js';
 import type { MealItemInput } from './nutrition.schema.js';
@@ -75,15 +75,21 @@ export class NutritionRepository {
   }
 
   async listByLocalDateRange(userId: string, from: string, to: string): Promise<MealWithItems[]> {
+    // This backs progress score, trends, insights, and gamification — the range
+    // must be a SQL predicate or every call scans the user's entire history.
     const mealRows = await this.db
       .select()
       .from(meals)
-      .where(and(eq(meals.userId, userId), isNull(meals.deletedAt)))
+      .where(
+        and(
+          eq(meals.userId, userId),
+          gte(meals.localDate, from),
+          lte(meals.localDate, to),
+          isNull(meals.deletedAt),
+        ),
+      )
       .orderBy(desc(meals.eatenAt));
-    // Range filtering in SQL when the progress workflows need it; per-day is the hot path.
-    return this.attachItems(
-      mealRows.filter((meal) => meal.localDate >= from && meal.localDate <= to),
-    );
+    return this.attachItems(mealRows);
   }
 
   async findByIdForUser(id: string, userId: string): Promise<MealWithItems | undefined> {
