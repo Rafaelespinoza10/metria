@@ -4,6 +4,8 @@ export interface AuthUser {
   name: string;
   locale: string;
   timezone: string;
+  birthDate: string | null;
+  heightCm: number | null;
   createdAt: string;
 }
 
