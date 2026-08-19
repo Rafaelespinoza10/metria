@@ -30,26 +30,49 @@ function requireClient(): OpenAI {
   return cachedClient;
 }
 
+/**
+ * Budget for one completion. Reasoning models bill their hidden reasoning against
+ * this same allowance — a meal photo spends ~400 of them before writing any JSON —
+ * so the ceiling has to leave room for both or the answer comes back truncated.
+ * Only tokens actually produced are billed, so a generous ceiling costs nothing.
+ */
+const MAX_COMPLETION_TOKENS = 3000;
+
+/** Request body for a JSON completion. Exported for tests; sends no request itself. */
+export function jsonCompletionParams(
+  system: string,
+  userContent: OpenAI.Chat.ChatCompletionContentPart[],
+): OpenAI.Chat.ChatCompletionCreateParamsNonStreaming {
+  return {
+    model: env.OPENAI_MODEL,
+    response_format: { type: 'json_object' },
+    // Not `max_tokens`: current models reject it outright with
+    // "Unsupported parameter: 'max_tokens' is not supported with this model".
+    max_completion_tokens: MAX_COMPLETION_TOKENS,
+    messages: [
+      { role: 'system', content: system },
+      { role: 'user', content: userContent },
+    ],
+  };
+}
+
 async function completeJson(
   client: OpenAI,
   system: string,
   userContent: OpenAI.Chat.ChatCompletionContentPart[],
 ): Promise<unknown> {
-  const response = await client.chat.completions.create({
-    model: env.OPENAI_MODEL,
-    response_format: { type: 'json_object' },
-    max_tokens: 1500,
-    messages: [
-      { role: 'system', content: system },
-      { role: 'user', content: userContent },
-    ],
-  });
-  const content = response.choices[0]?.message.content;
+  const response = await client.chat.completions.create(jsonCompletionParams(system, userContent));
+  const choice = response.choices[0];
+  const content = choice?.message.content;
   if (!content) throw new AppError('AI_UNAVAILABLE', 'Empty AI response', 503);
+  if (choice?.finish_reason === 'length') {
+    // Truncated JSON never parses; say so plainly instead of blaming the parse.
+    throw new AppError('AI_UNAVAILABLE', 'AI response exceeded the token budget', 503);
+  }
   try {
     return JSON.parse(content) as unknown;
   } catch {
-    // Truncated or malformed model output is an availability problem, not a 500.
+    // Malformed model output is an availability problem, not a 500.
     throw new AppError('AI_UNAVAILABLE', 'AI returned an unusable response', 503);
   }
 }
