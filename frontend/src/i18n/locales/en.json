@@ -351,7 +351,40 @@
     "account": "Account",
     "exportPdf": "Progress report (PDF)",
     "exportPdfHint": "Last 30 days, ready to share",
-    "exportError": "The report could not be generated. Try again."
+    "exportError": "The report could not be generated. Try again.",
+    "journey": "Your journey",
+    "journeyStats": {
+      "daysTracked": "Days tracked",
+      "meals": "Meals",
+      "workouts": "Workouts",
+      "nights": "Nights of sleep",
+      "measurements": "Measurements",
+      "steps": "Total steps"
+    },
+    "bodyData": "Body data",
+    "birthDate": "Date of birth",
+    "birthDatePlaceholder": "YYYY-MM-DD",
+    "height": "Height (cm)",
+    "heightPlaceholder": "178",
+    "saveBodyData": "Save body data",
+    "invalidBodyData": "Check the date (YYYY-MM-DD) and a height between 50 and 250 cm.",
+    "age": "{{years}} years",
+    "bmi": "BMI {{value}}",
+    "bmiHint": "Calculated from your latest weight and height.",
+    "bmiBand": {
+      "under": "Underweight",
+      "healthy": "Healthy range",
+      "over": "Overweight",
+      "obese": "Obese"
+    },
+    "exportData": "Backup (JSON)",
+    "exportDataHint": "Every log, ready to restore",
+    "importData": "Restore a backup",
+    "importDataHint": "Pick a Metria JSON file",
+    "importSummary": "Restored: {{meals}} meals, {{workouts}} workouts, {{sleep}} nights, {{measurements}} measurements.",
+    "importError": "That file is not a valid Metria backup.",
+    "about": "About",
+    "version": "Version {{version}}"
   },
   "exercises": {
     "title": "Exercise library",

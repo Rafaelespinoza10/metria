@@ -62,10 +62,10 @@ The profile becomes the identity + data-ownership center a serious health app ha
 
 ## Frontend tasks
 
-- [ ] Settings v2: journey stats grid, body-data editor (birth date, height) with live
+- [x] Settings v2: journey stats grid, body-data editor (birth date, height) with live
       age + BMI chips, export button (file → share sheet), import button (document
       picker → result summary), app-version row.
-- [ ] en/es strings; Jest test for the BMI/age helpers.
+- [x] en/es strings; Jest test for the BMI/age helpers.
 
 ## API contracts
 
@@ -109,4 +109,4 @@ re-import; invalid document 400. Frontend: BMI + age helper units.
 
 ## Definition of done
 
-- [ ] Acceptance criteria pass locally and in CI; checklists updated; summary reported.
+- [x] Acceptance criteria pass locally and in CI; checklists updated; summary reported.

@@ -8,6 +8,8 @@ const user: AuthUser = {
   name: 'Rafael',
   locale: 'es',
   timezone: 'America/Mexico_City',
+  birthDate: null,
+  heightCm: null,
   createdAt: '2026-08-16T00:00:00.000Z',
 };
 
