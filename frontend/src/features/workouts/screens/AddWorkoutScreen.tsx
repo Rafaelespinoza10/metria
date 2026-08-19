@@ -1,10 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import * as ImagePicker from 'expo-image-picker';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Button } from '../../../components/Button';
+import { Chip } from '../../../components/Chip';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import type { AppStackParamList } from '../../../navigation/types';
@@ -12,7 +15,8 @@ import { theme } from '../../../theme';
 import { AuthSubmitButton } from '../../auth/components/AuthSubmitButton';
 import { AuthTextField } from '../../auth/components/AuthTextField';
 import { parseDecimal } from '../../goals/helpers';
-import { formatSet, isDraftSubmittable } from '../helpers';
+import { uploadExercisePhoto } from '../api';
+import { formatSet, isDraftSubmittable, totalSets, totalVolume } from '../helpers';
 import { useCreateWorkout } from '../hooks';
 import type { WorkoutExerciseInput } from '../types';
 
@@ -24,18 +28,45 @@ interface SetDraft {
   rpe: string;
 }
 
+interface PickedPhoto {
+  uri: string;
+  mimeType: string;
+  fileName: string;
+}
+
+/** Photos stay local until submit; they upload right before the workout is created. */
+interface ExerciseDraft extends WorkoutExerciseInput {
+  photo?: PickedPhoto;
+}
+
 const EMPTY_SET: SetDraft = { reps: '', weight: '', rpe: '' };
 
-export function AddWorkoutScreen({ navigation }: Props) {
+const NAME_SUGGESTIONS = ['push', 'pull', 'legs', 'fullBody', 'upper', 'lower'] as const;
+const DURATION_SUGGESTIONS = [30, 45, 60, 90];
+
+export function AddWorkoutScreen({ navigation, route }: Props) {
   const { t } = useTranslation();
   const createMutation = useCreateWorkout();
   const [name, setName] = useState('');
   const [duration, setDuration] = useState('');
-  const [exercises, setExercises] = useState<WorkoutExerciseInput[]>([]);
+  const [exercises, setExercises] = useState<ExerciseDraft[]>([]);
   const [exerciseName, setExerciseName] = useState('');
   const [muscleGroup, setMuscleGroup] = useState('');
   // Per-exercise set drafts, keyed by exercise index.
   const [setDrafts, setSetDrafts] = useState<Record<number, SetDraft>>({});
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
+
+  const pickedExercise = route.params?.pickedExercise;
+
+  const addPickedExercise = () => {
+    if (!pickedExercise) return;
+    setExercises((current) => [
+      ...current,
+      { name: pickedExercise.name, muscleGroup: pickedExercise.muscleGroup, sets: [] },
+    ]);
+    navigation.setParams({ pickedExercise: undefined });
+  };
 
   const addExercise = () => {
     if (exerciseName.trim() === '') return;
@@ -53,6 +84,23 @@ export function AddWorkoutScreen({ navigation }: Props) {
 
   const removeExercise = (index: number) => {
     setExercises((current) => current.filter((_, i) => i !== index));
+  };
+
+  const pickPhoto = async (index: number) => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 0.8,
+    });
+    const asset = result.assets?.[0];
+    if (result.canceled || !asset) return;
+    const photo: PickedPhoto = {
+      uri: asset.uri,
+      mimeType: asset.mimeType ?? 'image/jpeg',
+      fileName: asset.fileName ?? 'exercise.jpg',
+    };
+    setExercises((current) =>
+      current.map((exercise, i) => (i === index ? { ...exercise, photo } : exercise)),
+    );
   };
 
   const setDraftFor = (index: number): SetDraft => setDrafts[index] ?? EMPTY_SET;
@@ -83,22 +131,58 @@ export function AddWorkoutScreen({ navigation }: Props) {
     setSetDrafts((current) => ({ ...current, [index]: EMPTY_SET }));
   };
 
+  const removeSet = (exerciseIndex: number, setIndex: number) => {
+    setExercises((current) =>
+      current.map((exercise, i) =>
+        i === exerciseIndex
+          ? { ...exercise, sets: exercise.sets.filter((_, j) => j !== setIndex) }
+          : exercise,
+      ),
+    );
+  };
+
+  const repeatLastSet = (exerciseIndex: number) => {
+    setExercises((current) =>
+      current.map((exercise, i) => {
+        const last = exercise.sets[exercise.sets.length - 1];
+        return i === exerciseIndex && last
+          ? { ...exercise, sets: [...exercise.sets, { ...last }] }
+          : exercise;
+      }),
+    );
+  };
+
   const parsedDuration = duration.trim() === '' ? undefined : parseDecimal(duration);
   const canSubmit = isDraftSubmittable(name, exercises) && parsedDuration !== null;
 
-  const submit = () => {
-    if (!canSubmit || createMutation.isPending) return;
-    createMutation.mutate(
-      {
+  const submit = async () => {
+    if (!canSubmit || saving) return;
+    setSaving(true);
+    setSaveError(false);
+    try {
+      const payload: WorkoutExerciseInput[] = [];
+      for (const { photo, ...exercise } of exercises) {
+        if (photo) {
+          const uploaded = await uploadExercisePhoto(photo);
+          payload.push({ ...exercise, imageKey: uploaded.photo.imageKey });
+        } else {
+          payload.push(exercise);
+        }
+      }
+      await createMutation.mutateAsync({
         name: name.trim(),
         performedAt: new Date().toISOString(),
         ...(parsedDuration !== undefined
           ? { durationMinutes: Math.round(parsedDuration ?? 0) }
           : {}),
-        exercises,
-      },
-      { onSuccess: () => navigation.goBack() },
-    );
+        exercises: payload,
+      });
+      navigation.goBack();
+    } catch {
+      setSaveError(true);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -114,6 +198,16 @@ export function AddWorkoutScreen({ navigation }: Props) {
               value={name}
               onChangeText={setName}
             />
+            <View className="flex-row flex-wrap gap-2">
+              {NAME_SUGGESTIONS.map((suggestion) => (
+                <Chip
+                  key={suggestion}
+                  label={t(`workouts.nameSuggestion.${suggestion}`)}
+                  selected={name === t(`workouts.nameSuggestion.${suggestion}`)}
+                  onPress={() => setName(t(`workouts.nameSuggestion.${suggestion}`))}
+                />
+              ))}
+            </View>
             <AuthTextField
               label={t('workouts.duration')}
               placeholder="60"
@@ -121,7 +215,42 @@ export function AddWorkoutScreen({ navigation }: Props) {
               value={duration}
               onChangeText={setDuration}
             />
+            <View className="flex-row gap-2">
+              {DURATION_SUGGESTIONS.map((minutes) => (
+                <Chip
+                  key={minutes}
+                  label={`${minutes} min`}
+                  selected={duration === String(minutes)}
+                  onPress={() => setDuration(String(minutes))}
+                />
+              ))}
+            </View>
           </Animated.View>
+
+          {exercises.length > 0 ? (
+            <Animated.View
+              entering={FadeInDown.springify()}
+              className="mt-6 flex-row rounded-3xl border border-black/5 bg-ink-900 p-5"
+            >
+              {[
+                { label: t('workouts.exercisesLabel'), value: String(exercises.length) },
+                { label: t('workouts.setsLabel'), value: String(totalSets(exercises)) },
+                {
+                  label: t('workouts.volumeLabel'),
+                  value: totalVolume(exercises).toLocaleString(),
+                },
+              ].map((stat) => (
+                <View key={stat.label} className="flex-1 items-center">
+                  <Text className="text-3xl font-bold tracking-tight text-content-primary">
+                    {stat.value}
+                  </Text>
+                  <Text className="mt-1 text-xs font-semibold uppercase tracking-widest text-content-tertiary">
+                    {stat.label}
+                  </Text>
+                </View>
+              ))}
+            </Animated.View>
+          ) : null}
 
           {exercises.map((exercise, index) => {
             const draft = setDraftFor(index);
@@ -129,17 +258,41 @@ export function AddWorkoutScreen({ navigation }: Props) {
               <Animated.View
                 key={`${exercise.name}-${index}`}
                 entering={FadeInDown.springify()}
-                className="mt-6 rounded-3xl border border-white/5 bg-ink-900 p-5"
+                className="mt-6 rounded-3xl border border-black/5 bg-ink-900 p-5"
               >
                 <View className="flex-row items-center justify-between">
+                  <PressableScale
+                    onPress={() => void pickPhoto(index)}
+                    accessibilityRole="button"
+                    accessibilityLabel={t(
+                      exercise.photo ? 'workouts.changePhoto' : 'workouts.addPhoto',
+                    )}
+                    className="mr-3 h-12 w-12 items-center justify-center overflow-hidden rounded-2xl bg-brand-soft"
+                  >
+                    {exercise.photo ? (
+                      <Image
+                        source={{ uri: exercise.photo.uri }}
+                        className="h-12 w-12 bg-ink-800"
+                        accessibilityIgnoresInvertColors
+                      />
+                    ) : (
+                      <Ionicons
+                        name="camera-outline"
+                        size={20}
+                        color={theme.colors.brand.DEFAULT}
+                      />
+                    )}
+                  </PressableScale>
                   <View className="flex-1 pr-3">
                     <Text className="text-base font-semibold text-content-primary">
                       {exercise.name}
                     </Text>
                     {exercise.muscleGroup ? (
-                      <Text className="mt-0.5 text-xs uppercase tracking-widest text-content-tertiary">
-                        {exercise.muscleGroup}
-                      </Text>
+                      <View className="mt-1 self-start rounded-full bg-brand-soft px-2.5 py-0.5">
+                        <Text className="text-xs font-semibold text-brand">
+                          {exercise.muscleGroup}
+                        </Text>
+                      </View>
                     ) : null}
                   </View>
                   <PressableScale
@@ -153,12 +306,32 @@ export function AddWorkoutScreen({ navigation }: Props) {
                 </View>
 
                 {exercise.sets.length > 0 ? (
-                  <View className="mt-3 border-t border-white/5 pt-3">
+                  <View className="mt-3 border-t border-black/5 pt-2">
                     {exercise.sets.map((set, setIndex) => (
-                      <Text key={setIndex} className="py-0.5 text-sm text-content-secondary">
-                        {t('workouts.setLabel', { number: setIndex + 1 })} · {formatSet(set)}
-                      </Text>
+                      <View key={setIndex} className="flex-row items-center justify-between py-1.5">
+                        <Text className="text-sm text-content-secondary">
+                          {t('workouts.setLabel', { number: setIndex + 1 })} · {formatSet(set)}
+                        </Text>
+                        <PressableScale
+                          onPress={() => removeSet(index, setIndex)}
+                          accessibilityRole="button"
+                          accessibilityLabel={t('workouts.removeSet')}
+                          className="h-7 w-7 items-center justify-center rounded-full bg-ink-800"
+                        >
+                          <Ionicons name="close" size={13} color={theme.colors.content.secondary} />
+                        </PressableScale>
+                      </View>
                     ))}
+                    <PressableScale
+                      onPress={() => repeatLastSet(index)}
+                      accessibilityRole="button"
+                      className="mt-1 flex-row items-center gap-1.5 self-start rounded-full bg-ink-800 px-3 py-1.5"
+                    >
+                      <Ionicons name="copy-outline" size={13} color={theme.colors.brand.DEFAULT} />
+                      <Text className="text-xs font-semibold text-brand">
+                        {t('workouts.repeatSet')}
+                      </Text>
+                    </PressableScale>
                   </View>
                 ) : null}
 
@@ -222,7 +395,49 @@ export function AddWorkoutScreen({ navigation }: Props) {
             <Text className="mb-2 text-xs font-semibold uppercase tracking-widest text-content-tertiary">
               {t('workouts.addExercise')}
             </Text>
-            <View className="gap-4 rounded-3xl border border-white/5 bg-ink-900 p-5">
+
+            {pickedExercise ? (
+              <View className="mb-4 flex-row items-center gap-3 rounded-3xl border border-brand/30 bg-brand-soft p-4">
+                <View className="flex-1">
+                  <Text className="text-base font-semibold text-content-primary">
+                    {pickedExercise.name}
+                  </Text>
+                  <Text className="mt-0.5 text-xs uppercase tracking-widest text-content-tertiary">
+                    {pickedExercise.muscleGroup}
+                  </Text>
+                </View>
+                <PressableScale
+                  onPress={addPickedExercise}
+                  accessibilityRole="button"
+                  className="rounded-2xl bg-charcoal px-4 py-2.5"
+                >
+                  <Text className="text-sm font-semibold text-white">
+                    {t('workouts.addPicked')}
+                  </Text>
+                </PressableScale>
+                <PressableScale
+                  onPress={() => navigation.setParams({ pickedExercise: undefined })}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('workouts.discardPicked')}
+                  className="h-9 w-9 items-center justify-center rounded-full bg-ink-900"
+                >
+                  <Ionicons name="close" size={16} color={theme.colors.content.secondary} />
+                </PressableScale>
+              </View>
+            ) : null}
+
+            <PressableScale
+              onPress={() => navigation.navigate('ExerciseBrowser', { picker: true })}
+              accessibilityRole="button"
+              className="mb-4 flex-row items-center justify-center gap-2 rounded-2xl border border-brand/40 py-3"
+            >
+              <Ionicons name="body-outline" size={18} color={theme.colors.brand.DEFAULT} />
+              <Text className="text-sm font-semibold text-brand">
+                {t('workouts.pickFromCatalog')}
+              </Text>
+            </PressableScale>
+
+            <View className="gap-4 rounded-3xl border border-black/5 bg-ink-900 p-5">
               <AuthTextField
                 label={t('workouts.exerciseName')}
                 placeholder={t('workouts.exerciseNamePlaceholder')}
@@ -235,29 +450,24 @@ export function AddWorkoutScreen({ navigation }: Props) {
                 value={muscleGroup}
                 onChangeText={setMuscleGroup}
               />
-              <PressableScale
-                onPress={addExercise}
+              <Button
+                label={t('workouts.addExerciseAction')}
+                variant="secondary"
                 disabled={exerciseName.trim() === ''}
-                accessibilityRole="button"
-                className={`rounded-2xl border border-brand/40 py-3 ${
-                  exerciseName.trim() === '' ? 'opacity-40' : ''
-                }`}
-              >
-                <Text className="text-center text-sm font-semibold text-brand">
-                  {t('workouts.addExerciseAction')}
-                </Text>
-              </PressableScale>
+                onPress={addExercise}
+              />
             </View>
 
-            {createMutation.isError ? (
+            {saveError ? (
               <Text className="mt-4 text-sm text-metric-heart">{t('common.error')}</Text>
             ) : null}
 
             <View className="mt-8">
               <AuthSubmitButton
                 label={t('workouts.save')}
-                loading={createMutation.isPending}
-                onPress={submit}
+                loading={saving}
+                disabled={!canSubmit}
+                onPress={() => void submit()}
               />
             </View>
           </Animated.View>

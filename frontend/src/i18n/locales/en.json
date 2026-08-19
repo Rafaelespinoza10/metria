@@ -61,7 +61,20 @@
       "90d": "90d"
     },
     "achievements": "Achievements",
-    "achievementsHint": "Streaks and milestones"
+    "achievementsHint": "Streaks and milestones",
+    "streak": "Day streak",
+    "workoutsWeek": "Workouts · week",
+    "activeToday": "Active min today",
+    "trends": "Trends",
+    "trendWindow": {
+      "7": "7d",
+      "14": "14d",
+      "30": "30d"
+    },
+    "average": "Average",
+    "target": "Target",
+    "trendsEmpty": "Log meals, steps, or sleep to see your trend.",
+    "dayInitials": "SMTWTFS"
   },
   "goals": {
     "title": "Goals",
@@ -128,7 +141,10 @@
       "right_thigh": "Right thigh",
       "left_calf": "Left calf",
       "right_calf": "Right calf"
-    }
+    },
+    "bodyHint": "Tap a spot on the body to log a measurement there.",
+    "tapSite": "Or tap the site on the body",
+    "wholeBody": "Whole body"
   },
   "nutrition": {
     "title": "Nutrition",
@@ -206,7 +222,44 @@
     "weight": "Kg",
     "rpe": "RPE",
     "addSet": "Add set",
-    "setLabel": "Set {{number}}"
+    "setLabel": "Set {{number}}",
+    "weekKicker": "Last 7 days",
+    "weekWorkouts": "workouts",
+    "weekSets": "sets",
+    "weekMinutes": "minutes",
+    "addPhoto": "Add exercise photo",
+    "changePhoto": "Change exercise photo",
+    "pickFromCatalog": "Pick from exercise library",
+    "addPicked": "Add",
+    "discardPicked": "Discard selection",
+    "exercisesLabel": "Exercises",
+    "setsLabel": "Sets",
+    "volumeLabel": "Volume (kg)",
+    "repeatSet": "Repeat last set",
+    "removeSet": "Remove set",
+    "nameSuggestion": {
+      "push": "Push day",
+      "pull": "Pull day",
+      "legs": "Leg day",
+      "fullBody": "Full body",
+      "upper": "Upper body",
+      "lower": "Lower body"
+    },
+    "searchLabel": "Search",
+    "searchPlaceholder": "Workout or exercise name…",
+    "range": {
+      "all": "All",
+      "7d": "7d",
+      "30d": "30d",
+      "90d": "90d"
+    },
+    "results": "{{count}} results",
+    "noResults": "Nothing matches your search.",
+    "loadMore": "Load more",
+    "detailTitle": "Workout",
+    "notesLabel": "Notes",
+    "deleteWorkout": "Delete workout",
+    "confirmDelete": "Tap again to confirm"
   },
   "sleep": {
     "title": "Sleep",
@@ -287,6 +340,64 @@
     "permanentTitle": "Delete everything permanently",
     "permanentHint": "Removes your account and every meal, workout, measurement, photo, and insight. This cannot be undone.",
     "passwordConfirm": "Confirm with your password",
-    "permanentAction": "Delete everything"
+    "permanentAction": "Delete everything",
+    "memberSince": "Member since {{date}}",
+    "stats": {
+      "streak": "Day streak",
+      "longest": "Longest streak",
+      "badges": "Badges"
+    },
+    "data": "Data",
+    "account": "Account",
+    "exportPdf": "Progress report (PDF)",
+    "exportPdfHint": "Last 30 days, ready to share",
+    "exportError": "The report could not be generated. Try again."
+  },
+  "exercises": {
+    "title": "Exercise library",
+    "tapHint": "Tap a muscle to see exercises",
+    "allLevels": "All",
+    "instructions": "How to do it",
+    "useExercise": "Use this exercise",
+    "empty": "No exercises match this filter.",
+    "level": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "expert": "Expert"
+    },
+    "region": {
+      "chest": "Chest",
+      "back": "Back",
+      "shoulders": "Shoulders",
+      "biceps": "Biceps",
+      "triceps": "Triceps",
+      "forearms": "Forearms",
+      "abs": "Abs",
+      "quads": "Quads",
+      "hamstrings": "Hamstrings",
+      "glutes": "Glutes",
+      "calves": "Calves",
+      "neck": "Neck"
+    }
+  },
+  "report": {
+    "title": "Progress report",
+    "preparedFor": "Prepared for",
+    "dailyAverages": "Daily averages (last 30 days)",
+    "metric": "Metric",
+    "start": "Start",
+    "end": "End",
+    "change": "Change",
+    "consistency": "Consistency (30 days)",
+    "trackedDays": "Tracked days",
+    "currentStreak": "Current streak",
+    "badges": "Badges",
+    "generatedOn": "Generated on {{date}}",
+    "disclaimer": "Data logged in Metria. Informational only — not medical advice."
+  },
+  "body": {
+    "front": "Front",
+    "back": "Back",
+    "selected": "Selected"
   }
 }

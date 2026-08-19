@@ -1,0 +1,18 @@
+# pnpm project config (single package).
+# React Native/Metro tooling expects a flat node_modules — hoist instead of symlinking.
+nodeLinker: hoisted
+# Supply-chain hardening: no dependency lifecycle scripts run.
+allowBuilds:
+  esbuild: false
+  unrs-resolver: false
+# Never resolve versions published less than 3 days ago (4320 minutes)...
+minimumReleaseAge: 4320
+# ...except the official Expo ecosystem: its patches ship in lockstep with the
+# Expo Go build in the app stores, so a 3-day delay breaks Go compatibility.
+minimumReleaseAgeExclude:
+  - expo
+  - 'expo-*'
+  - '@expo/*'
+  - babel-preset-expo
+  - jest-expo
+  - react-native

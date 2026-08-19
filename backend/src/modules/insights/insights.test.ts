@@ -61,11 +61,17 @@ describe.skipIf(!hasDatabase)('AI insights', () => {
 
     // Previous week: two activity days (6000 / 7000 steps), one sleep night (400 min),
     // one meal with 80 g protein (below target), one weight 82.5.
-    await request(app).put(`/api/activity/entries/${prevWeek}`).set(auth).send({ steps: 6000 });
-    await request(app)
+    const seed1 = await request(app)
+      .put(`/api/activity/entries/${prevWeek}`)
+      .set(auth)
+      .send({ steps: 6000 });
+    const seed2 = await request(app)
       .put(`/api/activity/entries/${addDaysISO(prevWeek, 1)}`)
       .set(auth)
       .send({ steps: 7000 });
+    // Fail loudly if seeding ever breaks — silent seed failures make flaky asserts.
+    expect(seed1.status).toBe(200);
+    expect(seed2.status).toBe(200);
     await request(app)
       .post('/api/sleep')
       .set(auth)

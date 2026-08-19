@@ -40,7 +40,7 @@ export function MacroBar({ label, value, target, unit, color }: MacroBarProps) {
           {target !== undefined ? ` / ${target}` : ''} {unit}
         </Text>
       </View>
-      <View className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
+      <View className="mt-2 h-2 overflow-hidden rounded-full bg-black/10">
         <Animated.View
           style={[fillStyle, { backgroundColor: color }]}
           className="h-full rounded-full"

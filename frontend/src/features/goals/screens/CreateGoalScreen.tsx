@@ -146,6 +146,7 @@ export function CreateGoalScreen({ navigation }: Props) {
               <AuthSubmitButton
                 label={t('goals.create')}
                 loading={createGoalMutation.isPending}
+                disabled={!canSubmit}
                 onPress={submit}
               />
             </View>

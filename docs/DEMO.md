@@ -9,15 +9,15 @@ Two minutes from a fresh checkout to a living dashboard.
 cd backend
 docker compose up -d
 cp .env.example .env          # add OPENAI_API_KEY to enable AI features
-npm install
-npm run db:migrate && npm run db:seed
-npm run db:demo               # demo@metria.app / metria-demo-123 (local demos only)
-npm run dev                   # http://localhost:3000
+pnpm install
+pnpm run db:migrate && pnpm run db:seed
+pnpm run db:demo               # demo@metria.app / metria-demo-123 (local demos only)
+pnpm run dev                   # http://localhost:3000
 
 # Mobile app
 cd ../frontend
-npm install
-EXPO_PUBLIC_API_URL=http://<your-lan-ip>:3000 npm start
+pnpm install
+EXPO_PUBLIC_API_URL=http://<your-lan-ip>:3000 pnpm start
 ```
 
 The demo account ships with 14 days of meals, activity, sleep, 7 workouts, goals,

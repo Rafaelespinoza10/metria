@@ -1,13 +1,58 @@
 import { AppError } from '../../shared/errors/app-error.js';
+import type { StoragePort } from '../../shared/storage/storage.port.js';
+import { userKeyPrefix } from '../../shared/storage/storage.port.js';
 import { localDateFor } from '../../shared/utils/local-date.js';
 import type { UsersRepository } from '../users/users.repository.js';
-import type { CreateWorkoutInput, UpdateWorkoutInput } from './workouts.schema.js';
-import type { WorkoutWithExercises, WorkoutsRepository } from './workouts.repository.js';
+import type {
+  CreateWorkoutInput,
+  UpdateWorkoutInput,
+  WorkoutsListQuery,
+} from './workouts.schema.js';
+import type {
+  ExerciseWithSets,
+  WorkoutWithExercises,
+  WorkoutsRepository,
+} from './workouts.repository.js';
+
+const PHOTO_CONTENT_TYPES: Record<string, string> = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+};
+
+export interface UploadedImage {
+  buffer: Buffer;
+  mimetype: string;
+}
+
+export interface ExercisePhoto {
+  imageKey: string;
+  imageUrl: string;
+}
+
+export interface ExerciseResponse extends ExerciseWithSets {
+  imageUrl: string | null;
+}
+
+export interface WorkoutResponse extends Omit<WorkoutWithExercises, 'exercises'> {
+  exercises: ExerciseResponse[];
+}
+
+function toWorkoutResponse(workout: WorkoutWithExercises): WorkoutResponse {
+  return {
+    ...workout,
+    exercises: workout.exercises.map((exercise) => ({
+      ...exercise,
+      imageUrl: exercise.imageKey ? `/api/uploads/${exercise.imageKey}` : null,
+    })),
+  };
+}
 
 export class WorkoutsService {
   constructor(
     private readonly workoutsRepository: WorkoutsRepository,
     private readonly usersRepository: UsersRepository,
+    private readonly storage: StoragePort,
   ) {}
 
   private async userTimezone(userId: string): Promise<string> {
@@ -15,9 +60,33 @@ export class WorkoutsService {
     return user?.timezone ?? 'UTC';
   }
 
-  async create(userId: string, input: CreateWorkoutInput): Promise<WorkoutWithExercises> {
+  /** Image keys come from the client; only keys under the user's own prefix are accepted. */
+  private assertOwnImageKeys(userId: string, exercises: { imageKey?: string | undefined }[]): void {
+    const prefix = userKeyPrefix(userId);
+    for (const exercise of exercises) {
+      if (exercise.imageKey !== undefined && !exercise.imageKey.startsWith(prefix)) {
+        throw AppError.validation('imageKey does not belong to this user');
+      }
+    }
+  }
+
+  async saveExercisePhoto(userId: string, file: UploadedImage): Promise<ExercisePhoto> {
+    const extension = PHOTO_CONTENT_TYPES[file.mimetype];
+    if (!extension) throw AppError.validation('Only JPEG, PNG, or WebP images are allowed');
+    const stored = await this.storage.save({
+      userId,
+      folder: 'exercises',
+      extension,
+      contentType: file.mimetype,
+      data: file.buffer,
+    });
+    return { imageKey: stored.key, imageUrl: `/api/uploads/${stored.key}` };
+  }
+
+  async create(userId: string, input: CreateWorkoutInput): Promise<WorkoutResponse> {
+    this.assertOwnImageKeys(userId, input.exercises);
     const performedAt = new Date(input.performedAt);
-    return this.workoutsRepository.create({
+    const workout = await this.workoutsRepository.create({
       userId,
       name: input.name,
       performedAt,
@@ -26,23 +95,35 @@ export class WorkoutsService {
       notes: input.notes,
       exercises: input.exercises,
     });
+    return toWorkoutResponse(workout);
   }
 
-  async list(userId: string, from?: string, to?: string): Promise<WorkoutWithExercises[]> {
-    return this.workoutsRepository.listRange(userId, from, to);
+  async list(
+    userId: string,
+    query: WorkoutsListQuery,
+  ): Promise<{ workouts: WorkoutResponse[]; total: number; limit: number; offset: number }> {
+    const page = await this.workoutsRepository.list(
+      userId,
+      { from: query.from, to: query.to, search: query.search },
+      query.limit,
+      query.offset,
+    );
+    return {
+      workouts: page.workouts.map(toWorkoutResponse),
+      total: page.total,
+      limit: query.limit,
+      offset: query.offset,
+    };
   }
 
-  async getById(userId: string, id: string): Promise<WorkoutWithExercises> {
+  async getById(userId: string, id: string): Promise<WorkoutResponse> {
     const workout = await this.workoutsRepository.findByIdForUser(id, userId);
     if (!workout) throw AppError.notFound('Workout not found');
-    return workout;
+    return toWorkoutResponse(workout);
   }
 
-  async update(
-    userId: string,
-    id: string,
-    input: UpdateWorkoutInput,
-  ): Promise<WorkoutWithExercises> {
+  async update(userId: string, id: string, input: UpdateWorkoutInput): Promise<WorkoutResponse> {
+    if (input.exercises) this.assertOwnImageKeys(userId, input.exercises);
     const performedAt = input.performedAt ? new Date(input.performedAt) : undefined;
     const updated = await this.workoutsRepository.update(id, userId, {
       name: input.name,
@@ -54,7 +135,7 @@ export class WorkoutsService {
       notes: input.notes,
       exercises: input.exercises,
     });
-    if (updated) return updated;
+    if (updated) return toWorkoutResponse(updated);
     // Fields-only update (or missing row): refetch to disambiguate and return the tree.
     return this.getById(userId, id);
   }

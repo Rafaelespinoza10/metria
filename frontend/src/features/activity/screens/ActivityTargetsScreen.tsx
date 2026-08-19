@@ -63,6 +63,7 @@ function TargetsForm({ initial, onSaved }: { initial: ActivityTargets; onSaved: 
         <AuthSubmitButton
           label={t('activity.saveTargets')}
           loading={putMutation.isPending}
+          disabled={!canSubmit}
           onPress={submit}
         />
       </View>

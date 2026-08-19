@@ -19,6 +19,7 @@ export const workoutSetSchema = z.object({
 export const workoutExerciseSchema = z.object({
   name: z.string().min(1).max(120),
   muscleGroup: z.string().max(60).optional(),
+  imageKey: z.string().min(1).max(255).optional(),
   sets: z.array(workoutSetSchema).min(1).max(30),
 });
 
@@ -40,10 +41,16 @@ export const updateWorkoutSchema = z
   })
   .refine((data) => Object.keys(data).length > 0, { message: 'No fields to update' });
 
-export const workoutsRangeQuerySchema = z.object({
+export const workoutsListQuerySchema = z.object({
   from: z.string().date().optional(),
   to: z.string().date().optional(),
+  /** Matches the workout name OR any exercise name. */
+  search: z.string().max(60).optional(),
+  limit: z.coerce.number().int().min(1).max(50).default(20),
+  offset: z.coerce.number().int().min(0).default(0),
 });
+
+export type WorkoutsListQuery = z.infer<typeof workoutsListQuerySchema>;
 
 export type WorkoutSetInput = z.infer<typeof workoutSetSchema>;
 export type WorkoutExerciseInput = z.infer<typeof workoutExerciseSchema>;

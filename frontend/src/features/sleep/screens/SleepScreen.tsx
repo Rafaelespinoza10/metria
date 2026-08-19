@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { MacroBar } from '../../../components/MacroBar';
+import { Button } from '../../../components/Button';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
@@ -12,6 +13,7 @@ import type { AppStackParamList } from '../../../navigation/types';
 import { theme } from '../../../theme';
 import { formatMinutes } from '../helpers';
 import { useSleepEntries, useSleepTargets } from '../hooks';
+import { sectionImages } from '../../../theme/images';
 
 type Props = NativeStackScreenProps<AppStackParamList, 'Sleep'>;
 
@@ -22,7 +24,7 @@ function QualityDots({ quality }: { quality: number | null }) {
       {[1, 2, 3, 4, 5].map((dot) => (
         <View
           key={dot}
-          className={`h-1.5 w-1.5 rounded-full ${dot <= quality ? 'bg-metric-sleep' : 'bg-white/10'}`}
+          className={`h-1.5 w-1.5 rounded-full ${dot <= quality ? 'bg-metric-sleep' : 'bg-black/10'}`}
         />
       ))}
     </View>
@@ -62,7 +64,7 @@ export function SleepScreen({ navigation }: Props) {
           ) : latest ? (
             <Animated.View
               entering={FadeInDown.delay(80).springify()}
-              className="rounded-3xl border border-white/5 bg-ink-900 p-5"
+              className="rounded-3xl border border-black/5 bg-ink-900 p-5"
             >
               <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
                 {t('sleep.lastNight')}
@@ -90,12 +92,14 @@ export function SleepScreen({ navigation }: Props) {
           ) : (
             <Animated.View
               entering={FadeInDown.delay(80).springify()}
-              className="items-start rounded-3xl border border-white/5 bg-ink-900 p-5"
+              className="items-start overflow-hidden rounded-3xl border border-black/5 bg-ink-900"
             >
-              <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
-                0h
-              </Text>
-              <Text className="mt-3 text-sm leading-relaxed text-content-secondary">
+              <Image
+                source={sectionImages.sleep}
+                className="h-36 w-full bg-ink-800"
+                accessibilityIgnoresInvertColors
+              />
+              <Text className="p-5 text-sm leading-relaxed text-content-secondary">
                 {t('sleep.empty')}
               </Text>
             </Animated.View>
@@ -106,12 +110,12 @@ export function SleepScreen({ navigation }: Props) {
               <Text className="text-lg font-semibold text-content-primary">
                 {t('sleep.recent')}
               </Text>
-              <View className="mt-3 rounded-3xl border border-white/5 bg-ink-900 px-5">
+              <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5">
                 {entries.slice(0, 7).map((entry, index) => (
                   <View
                     key={entry.id}
                     className={`flex-row items-center justify-between py-4 ${
-                      index > 0 ? 'border-t border-white/5' : ''
+                      index > 0 ? 'border-t border-black/5' : ''
                     }`}
                   >
                     <View>
@@ -135,15 +139,7 @@ export function SleepScreen({ navigation }: Props) {
           entering={FadeInDown.delay(200).springify()}
           className="absolute inset-x-5 bottom-6"
         >
-          <PressableScale
-            onPress={() => navigation.navigate('LogSleep')}
-            accessibilityRole="button"
-            className="rounded-2xl bg-brand py-4"
-          >
-            <Text className="text-center text-base font-semibold text-ink-950">
-              {t('sleep.log')}
-            </Text>
-          </PressableScale>
+          <Button label={t('sleep.log')} onPress={() => navigation.navigate('LogSleep')} />
         </Animated.View>
       </View>
     </SafeAreaView>

@@ -1,29 +1,49 @@
 import { Ionicons } from '@expo/vector-icons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { MacroBar } from '../../../components/MacroBar';
+import { Button } from '../../../components/Button';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
-import type { AppStackParamList } from '../../../navigation/types';
+import type { TabScreenProps } from '../../../navigation/types';
+import { API_URL } from '../../../services/api';
+import { useAuthStore } from '../../../store/auth';
+import { mealCategoryImages } from '../../../theme/images';
 import { theme } from '../../../theme';
 import { addDays, todayISO } from '../helpers';
 import { useAlternatives, useDaySummary, useMeals } from '../hooks';
 import type { Meal, MealCategory } from '../types';
 
-type Props = NativeStackScreenProps<AppStackParamList, 'Nutrition'>;
+type Props = TabScreenProps<'Nutrition'>;
 
 const CATEGORY_ORDER: MealCategory[] = ['breakfast', 'lunch', 'dinner', 'snack'];
 
 function MealRow({ meal, onSuggest }: { meal: Meal; onSuggest: (meal: Meal) => void }) {
   const { t } = useTranslation();
+  const token = useAuthStore((state) => state.token);
   return (
-    <View className="border-t border-white/5 py-3">
+    <View className="border-t border-black/5 py-3">
       <View className="flex-row items-center justify-between">
+        {meal.imageUrl ? (
+          <Image
+            source={{
+              uri: `${API_URL}${meal.imageUrl}`,
+              headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+            }}
+            className="mr-3 h-14 w-14 rounded-2xl bg-ink-800"
+            accessibilityIgnoresInvertColors
+          />
+        ) : (
+          <Image
+            source={mealCategoryImages[meal.category]}
+            className="mr-3 h-14 w-14 rounded-2xl bg-ink-800"
+            accessibilityIgnoresInvertColors
+          />
+        )}
         <View className="flex-1 pr-3">
           <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
             {t(`nutrition.category.${meal.category}`)}
@@ -35,6 +55,7 @@ function MealRow({ meal, onSuggest }: { meal: Meal; onSuggest: (meal: Meal) => v
             onPress={() => onSuggest(meal)}
             accessibilityRole="button"
             accessibilityLabel={t('nutrition.suggestAlternatives')}
+            hitSlop={8}
             className="h-9 w-9 items-center justify-center rounded-full bg-ink-800"
           >
             <Ionicons name="sparkles-outline" size={16} color={theme.colors.brand.DEFAULT} />
@@ -73,7 +94,6 @@ export function NutritionScreen({ navigation }: Props) {
     <SafeAreaView className="flex-1 bg-ink-950">
       <View className="flex-1 px-5">
         <ScreenHeader
-          showBack
           title={t('nutrition.title')}
           right={
             <PressableScale
@@ -94,6 +114,7 @@ export function NutritionScreen({ navigation }: Props) {
           <PressableScale
             onPress={() => setDate(addDays(date, -1))}
             accessibilityRole="button"
+            hitSlop={6}
             className="h-10 w-10 items-center justify-center rounded-full bg-ink-900"
           >
             <Ionicons name="chevron-back" size={18} color={theme.colors.content.secondary} />
@@ -105,6 +126,7 @@ export function NutritionScreen({ navigation }: Props) {
             onPress={() => setDate(addDays(date, 1))}
             disabled={isToday}
             accessibilityRole="button"
+            hitSlop={6}
             className={`h-10 w-10 items-center justify-center rounded-full bg-ink-900 ${
               isToday ? 'opacity-40' : ''
             }`}
@@ -119,7 +141,7 @@ export function NutritionScreen({ navigation }: Props) {
           ) : (
             <Animated.View
               entering={FadeInDown.delay(80).springify()}
-              className="rounded-3xl border border-white/5 bg-ink-900 p-5"
+              className="rounded-3xl border border-black/5 bg-ink-900 p-5"
             >
               <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
                 {t('nutrition.calories')}
@@ -167,17 +189,19 @@ export function NutritionScreen({ navigation }: Props) {
             {mealsQuery.isPending ? (
               <SkeletonBlock className="mt-3 h-32 rounded-3xl" />
             ) : orderedMeals.length > 0 ? (
-              <View className="mt-3 rounded-3xl border border-white/5 bg-ink-900 px-5 pb-1 pt-2">
+              <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5 pb-1 pt-2">
                 {orderedMeals.map((meal) => (
                   <MealRow key={meal.id} meal={meal} onSuggest={requestAlternatives} />
                 ))}
               </View>
             ) : (
-              <View className="mt-3 items-start rounded-3xl border border-white/5 bg-ink-900 p-5">
-                <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
-                  0
-                </Text>
-                <Text className="mt-3 text-sm leading-relaxed text-content-secondary">
+              <View className="mt-3 items-start overflow-hidden rounded-3xl border border-black/5 bg-ink-900">
+                <Image
+                  source={mealCategoryImages.breakfast}
+                  className="h-36 w-full bg-ink-800"
+                  accessibilityIgnoresInvertColors
+                />
+                <Text className="p-5 text-sm leading-relaxed text-content-secondary">
                   {t('nutrition.empty')}
                 </Text>
               </View>
@@ -196,11 +220,11 @@ export function NutritionScreen({ navigation }: Props) {
                   {t('nutrition.alternativesUnavailable')}
                 </Text>
               ) : (
-                <View className="mt-3 rounded-3xl border border-white/5 bg-ink-900 px-5">
+                <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5">
                   {(alternativesMutation.data?.suggestions ?? []).map((suggestion, index) => (
                     <View
                       key={suggestion.title}
-                      className={`py-4 ${index > 0 ? 'border-t border-white/5' : ''}`}
+                      className={`py-4 ${index > 0 ? 'border-t border-black/5' : ''}`}
                     >
                       <Text className="text-base font-semibold text-content-primary">
                         {suggestion.title}
@@ -222,15 +246,7 @@ export function NutritionScreen({ navigation }: Props) {
           className="absolute inset-x-5 bottom-6 flex-row gap-3"
         >
           <View className="flex-1">
-            <PressableScale
-              onPress={() => navigation.navigate('AddMeal')}
-              accessibilityRole="button"
-              className="rounded-2xl bg-brand py-4"
-            >
-              <Text className="text-center text-base font-semibold text-ink-950">
-                {t('nutrition.addMeal')}
-              </Text>
-            </PressableScale>
+            <Button label={t('nutrition.addMeal')} onPress={() => navigation.navigate('AddMeal')} />
           </View>
           <PressableScale
             onPress={() => navigation.navigate('ScanMeal')}

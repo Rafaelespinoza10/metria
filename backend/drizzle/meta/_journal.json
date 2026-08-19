@@ -15,6 +15,13 @@
       "when": 1786924829448,
       "tag": "0001_grey_luke_cage",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787084117255,
+      "tag": "0002_high_doctor_faustus",
+      "breakpoints": true
     }
   ]
 }

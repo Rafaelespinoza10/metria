@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray, isNull } from 'drizzle-orm';
+import { and, asc, desc, eq, exists, gte, ilike, inArray, isNull, lte, or, sql } from 'drizzle-orm';
 import { getDb } from '../../database/client.js';
 import { workoutExercises, workoutSets, workouts } from '../../database/schema/workouts.js';
 import type { WorkoutExerciseInput } from './workouts.schema.js';
@@ -25,6 +25,12 @@ export interface CreateWorkoutData {
   exercises: WorkoutExerciseInput[];
 }
 
+export interface WorkoutsListFilter {
+  from?: string | undefined;
+  to?: string | undefined;
+  search?: string | undefined;
+}
+
 export interface UpdateWorkoutData {
   name?: string | undefined;
   performedAt?: Date | undefined;
@@ -49,6 +55,7 @@ async function insertExerciseTree(
         workoutId,
         name: exercise.name,
         muscleGroup: exercise.muscleGroup ?? null,
+        imageKey: exercise.imageKey ?? null,
         position,
       })
       .returning();
@@ -86,17 +93,58 @@ export class WorkoutsRepository {
     });
   }
 
-  async listRange(userId: string, from?: string, to?: string): Promise<WorkoutWithExercises[]> {
+  private listConditions(userId: string, filter: WorkoutsListFilter) {
+    const conditions = [eq(workouts.userId, userId), isNull(workouts.deletedAt)];
+    if (filter.from) conditions.push(gte(workouts.localDate, filter.from));
+    if (filter.to) conditions.push(lte(workouts.localDate, filter.to));
+    if (filter.search) {
+      const pattern = `%${filter.search}%`;
+      const matchingExercise = this.db
+        .select({ one: sql`1` })
+        .from(workoutExercises)
+        .where(
+          and(eq(workoutExercises.workoutId, workouts.id), ilike(workoutExercises.name, pattern)),
+        );
+      const searchCondition = or(ilike(workouts.name, pattern), exists(matchingExercise));
+      if (searchCondition) conditions.push(searchCondition);
+    }
+    return and(...conditions);
+  }
+
+  /** Filters run in SQL; pagination is offset-based with a total for the client. */
+  async list(
+    userId: string,
+    filter: WorkoutsListFilter,
+    limit: number,
+    offset: number,
+  ): Promise<{ workouts: WorkoutWithExercises[]; total: number }> {
+    const where = this.listConditions(userId, filter);
+    const [countRow] = await this.db
+      .select({ total: sql<number>`count(*)::int` })
+      .from(workouts)
+      .where(where);
     const rows = await this.db
       .select()
       .from(workouts)
-      .where(and(eq(workouts.userId, userId), isNull(workouts.deletedAt)))
+      .where(where)
       .orderBy(desc(workouts.performedAt))
-      .limit(200);
-    const filtered = rows.filter(
-      (row) => (!from || row.localDate >= from) && (!to || row.localDate <= to),
-    );
-    return this.attachExercises(filtered);
+      .limit(limit)
+      .offset(offset);
+    return { workouts: await this.attachExercises(rows), total: countRow?.total ?? 0 };
+  }
+
+  /** Unpaginated ranged fetch for aggregate consumers (score, insights, streaks). */
+  async listRange(userId: string, from?: string, to?: string): Promise<WorkoutWithExercises[]> {
+    const conditions = [eq(workouts.userId, userId), isNull(workouts.deletedAt)];
+    if (from) conditions.push(gte(workouts.localDate, from));
+    if (to) conditions.push(lte(workouts.localDate, to));
+    const rows = await this.db
+      .select()
+      .from(workouts)
+      .where(and(...conditions))
+      .orderBy(desc(workouts.performedAt))
+      .limit(500);
+    return this.attachExercises(rows);
   }
 
   async findByIdForUser(id: string, userId: string): Promise<WorkoutWithExercises | undefined> {

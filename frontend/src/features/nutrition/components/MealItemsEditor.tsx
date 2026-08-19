@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
+import { Button } from '../../../components/Button';
 import { PressableScale } from '../../../components/PressableScale';
 import { theme } from '../../../theme';
 import { AuthTextField } from '../../auth/components/AuthTextField';
@@ -59,12 +60,12 @@ export function MealItemsEditor({ items, onChange, confidences }: MealItemsEdito
   return (
     <>
       {items.length > 0 ? (
-        <View className="mt-6 rounded-3xl border border-white/5 bg-ink-900 px-5">
+        <View className="mt-6 rounded-3xl border border-black/5 bg-ink-900 px-5">
           {items.map((item, index) => (
             <View
               key={`${item.name}-${index}`}
               className={`flex-row items-center justify-between py-3 ${
-                index > 0 ? 'border-t border-white/5' : ''
+                index > 0 ? 'border-t border-black/5' : ''
               }`}
             >
               <View className="flex-1 pr-3">
@@ -82,13 +83,14 @@ export function MealItemsEditor({ items, onChange, confidences }: MealItemsEdito
                 onPress={() => onChange(items.filter((_, i) => i !== index))}
                 accessibilityRole="button"
                 accessibilityLabel={t('nutrition.removeItem')}
+                hitSlop={8}
                 className="h-9 w-9 items-center justify-center rounded-full bg-ink-800"
               >
                 <Ionicons name="close" size={16} color={theme.colors.content.secondary} />
               </PressableScale>
             </View>
           ))}
-          <View className="border-t border-white/5 py-3">
+          <View className="border-t border-black/5 py-3">
             <Text className="text-sm text-content-secondary">
               {t('nutrition.totalLabel')}{' '}
               <Text className="font-bold text-content-primary">{totals.calories} kcal</Text>
@@ -106,7 +108,7 @@ export function MealItemsEditor({ items, onChange, confidences }: MealItemsEdito
       <Text className="mb-2 mt-8 text-xs font-semibold uppercase tracking-widest text-content-tertiary">
         {t('nutrition.addItem')}
       </Text>
-      <View className="gap-4 rounded-3xl border border-white/5 bg-ink-900 p-5">
+      <View className="gap-4 rounded-3xl border border-black/5 bg-ink-900 p-5">
         <AuthTextField
           label={t('nutrition.itemName')}
           placeholder={t('nutrition.itemNamePlaceholder')}
@@ -162,16 +164,12 @@ export function MealItemsEditor({ items, onChange, confidences }: MealItemsEdito
             />
           </View>
         </View>
-        <PressableScale
-          onPress={addItem}
+        <Button
+          label={t('nutrition.addItemAction')}
+          variant="secondary"
           disabled={!draftValid}
-          accessibilityRole="button"
-          className={`rounded-2xl border border-brand/40 py-3 ${draftValid ? '' : 'opacity-40'}`}
-        >
-          <Text className="text-center text-sm font-semibold text-brand">
-            {t('nutrition.addItemAction')}
-          </Text>
-        </PressableScale>
+          onPress={addItem}
+        />
       </View>
     </>
   );

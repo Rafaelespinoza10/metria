@@ -61,7 +61,20 @@
       "90d": "90d"
     },
     "achievements": "Logros",
-    "achievementsHint": "Rachas y hitos"
+    "achievementsHint": "Rachas y hitos",
+    "streak": "Racha (días)",
+    "workoutsWeek": "Entrenos · semana",
+    "activeToday": "Min activos hoy",
+    "trends": "Tendencias",
+    "trendWindow": {
+      "7": "7d",
+      "14": "14d",
+      "30": "30d"
+    },
+    "average": "Promedio",
+    "target": "Objetivo",
+    "trendsEmpty": "Registra comidas, pasos o sueño para ver tu tendencia.",
+    "dayInitials": "DLMXJVS"
   },
   "goals": {
     "title": "Metas",
@@ -128,7 +141,10 @@
       "right_thigh": "Muslo der.",
       "left_calf": "Pantorrilla izq.",
       "right_calf": "Pantorrilla der."
-    }
+    },
+    "bodyHint": "Toca una zona del cuerpo para registrar su medida.",
+    "tapSite": "O toca la zona en el cuerpo",
+    "wholeBody": "Cuerpo completo"
   },
   "nutrition": {
     "title": "Nutrición",
@@ -206,7 +222,44 @@
     "weight": "Kg",
     "rpe": "RPE",
     "addSet": "Agregar serie",
-    "setLabel": "Serie {{number}}"
+    "setLabel": "Serie {{number}}",
+    "weekKicker": "Últimos 7 días",
+    "weekWorkouts": "entrenos",
+    "weekSets": "series",
+    "weekMinutes": "minutos",
+    "addPhoto": "Agregar foto del ejercicio",
+    "changePhoto": "Cambiar foto del ejercicio",
+    "pickFromCatalog": "Elegir de la biblioteca",
+    "addPicked": "Agregar",
+    "discardPicked": "Descartar selección",
+    "exercisesLabel": "Ejercicios",
+    "setsLabel": "Series",
+    "volumeLabel": "Volumen (kg)",
+    "repeatSet": "Repetir última serie",
+    "removeSet": "Quitar serie",
+    "nameSuggestion": {
+      "push": "Día de empuje",
+      "pull": "Día de jalón",
+      "legs": "Día de pierna",
+      "fullBody": "Cuerpo completo",
+      "upper": "Tren superior",
+      "lower": "Tren inferior"
+    },
+    "searchLabel": "Buscar",
+    "searchPlaceholder": "Nombre del entreno o ejercicio…",
+    "range": {
+      "all": "Todos",
+      "7d": "7d",
+      "30d": "30d",
+      "90d": "90d"
+    },
+    "results": "{{count}} resultados",
+    "noResults": "Nada coincide con tu búsqueda.",
+    "loadMore": "Cargar más",
+    "detailTitle": "Entreno",
+    "notesLabel": "Notas",
+    "deleteWorkout": "Eliminar entreno",
+    "confirmDelete": "Toca otra vez para confirmar"
   },
   "sleep": {
     "title": "Sueño",
@@ -287,6 +340,64 @@
     "permanentTitle": "Eliminar todo permanentemente",
     "permanentHint": "Elimina tu cuenta y todas tus comidas, entrenos, medidas, fotos e insights. No se puede deshacer.",
     "passwordConfirm": "Confirma con tu contraseña",
-    "permanentAction": "Eliminar todo"
+    "permanentAction": "Eliminar todo",
+    "memberSince": "Miembro desde {{date}}",
+    "stats": {
+      "streak": "Racha (días)",
+      "longest": "Mejor racha",
+      "badges": "Insignias"
+    },
+    "data": "Datos",
+    "account": "Cuenta",
+    "exportPdf": "Reporte de progreso (PDF)",
+    "exportPdfHint": "Últimos 30 días, listo para compartir",
+    "exportError": "No se pudo generar el reporte. Intenta de nuevo."
+  },
+  "exercises": {
+    "title": "Biblioteca de ejercicios",
+    "tapHint": "Toca un músculo para ver ejercicios",
+    "allLevels": "Todos",
+    "instructions": "Cómo hacerlo",
+    "useExercise": "Usar este ejercicio",
+    "empty": "No hay ejercicios con este filtro.",
+    "level": {
+      "beginner": "Principiante",
+      "intermediate": "Intermedio",
+      "expert": "Experto"
+    },
+    "region": {
+      "chest": "Pecho",
+      "back": "Espalda",
+      "shoulders": "Hombros",
+      "biceps": "Bíceps",
+      "triceps": "Tríceps",
+      "forearms": "Antebrazos",
+      "abs": "Abdomen",
+      "quads": "Cuádriceps",
+      "hamstrings": "Femorales",
+      "glutes": "Glúteos",
+      "calves": "Pantorrillas",
+      "neck": "Cuello"
+    }
+  },
+  "report": {
+    "title": "Reporte de progreso",
+    "preparedFor": "Preparado para",
+    "dailyAverages": "Promedios diarios (últimos 30 días)",
+    "metric": "Métrica",
+    "start": "Inicio",
+    "end": "Fin",
+    "change": "Cambio",
+    "consistency": "Consistencia (30 días)",
+    "trackedDays": "Días registrados",
+    "currentStreak": "Racha actual",
+    "badges": "Insignias",
+    "generatedOn": "Generado el {{date}}",
+    "disclaimer": "Datos registrados en Metria. Solo informativo — no es consejo médico."
+  },
+  "body": {
+    "front": "Frente",
+    "back": "Espalda",
+    "selected": "Seleccionado"
   }
 }

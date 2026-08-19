@@ -1,7 +1,7 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Chip } from '../../../components/Chip';
@@ -106,6 +106,7 @@ function ReviewForm({
         <AuthSubmitButton
           label={t('nutrition.confirmMeal')}
           loading={confirmMutation.isPending}
+          disabled={!canSubmit}
           onPress={submit}
         />
       </View>
@@ -123,6 +124,15 @@ export function ReviewAnalysisScreen({ navigation, route }: Props) {
       <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
         <View className="px-5 pb-12">
           <ScreenHeader showBack title={t('nutrition.reviewTitle')} />
+          {route.params.photoUri ? (
+            <Animated.View entering={FadeInDown.delay(30).springify()}>
+              <Image
+                source={{ uri: route.params.photoUri }}
+                className="mt-6 h-48 w-full rounded-3xl bg-ink-800"
+                accessibilityIgnoresInvertColors
+              />
+            </Animated.View>
+          ) : null}
           {analysisQuery.isPending ? (
             <View className="mt-8 gap-4">
               <SkeletonBlock className="h-20 rounded-2xl" />
@@ -132,12 +142,12 @@ export function ReviewAnalysisScreen({ navigation, route }: Props) {
             <ReviewForm
               analysisId={analysis.id}
               estimation={analysis.result}
-              onConfirmed={() => navigation.navigate('Nutrition')}
+              onConfirmed={() => navigation.navigate('Tabs', { screen: 'Nutrition' })}
             />
           ) : (
             <Animated.View
               entering={FadeInDown.delay(60).springify()}
-              className="mt-8 items-start rounded-3xl border border-white/5 bg-ink-900 p-5"
+              className="mt-8 items-start rounded-3xl border border-black/5 bg-ink-900 p-5"
             >
               <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
                 —

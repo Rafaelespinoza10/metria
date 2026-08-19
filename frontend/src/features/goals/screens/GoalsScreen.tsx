@@ -1,17 +1,18 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { Button } from '../../../components/Button';
 import { Chip } from '../../../components/Chip';
-import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
 import type { AppStackParamList } from '../../../navigation/types';
 import { goalCategoryKey, goalMetricKey, goalMetricUnit } from '../helpers';
 import { useGoals } from '../hooks';
 import type { Goal, GoalStatus } from '../types';
+import { sectionImages } from '../../../theme/images';
 
 type Props = NativeStackScreenProps<AppStackParamList, 'Goals'>;
 
@@ -24,7 +25,7 @@ function GoalCard({ goal, index }: { goal: Goal; index: number }) {
   return (
     <Animated.View
       entering={FadeInDown.delay(120 + index * 60).springify()}
-      className="mt-3 rounded-3xl border border-white/5 bg-ink-900 p-5"
+      className="mt-3 rounded-3xl border border-black/5 bg-ink-900 p-5"
     >
       <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
         {t(goalCategoryKey(goal.category))}
@@ -65,6 +66,7 @@ export function GoalsScreen({ navigation }: Props) {
               label={t(`goals.status.${item}`)}
               selected={status === item}
               onPress={() => setStatus(item)}
+              className="flex-1"
             />
           ))}
         </Animated.View>
@@ -82,12 +84,14 @@ export function GoalsScreen({ navigation }: Props) {
           ) : (
             <Animated.View
               entering={FadeInDown.delay(120).springify()}
-              className="mt-3 items-start rounded-3xl border border-white/5 bg-ink-900 p-5"
+              className="mt-3 items-start overflow-hidden rounded-3xl border border-black/5 bg-ink-900"
             >
-              <Text className="text-6xl font-extrabold tracking-tighter text-content-tertiary">
-                0
-              </Text>
-              <Text className="mt-3 text-sm leading-relaxed text-content-secondary">
+              <Image
+                source={sectionImages.goals}
+                className="h-36 w-full bg-ink-800"
+                accessibilityIgnoresInvertColors
+              />
+              <Text className="p-5 text-sm leading-relaxed text-content-secondary">
                 {t('goals.empty')}
               </Text>
             </Animated.View>
@@ -99,15 +103,7 @@ export function GoalsScreen({ navigation }: Props) {
           entering={FadeInDown.delay(180).springify()}
           className="absolute inset-x-5 bottom-6"
         >
-          <PressableScale
-            onPress={() => navigation.navigate('CreateGoal')}
-            accessibilityRole="button"
-            className="rounded-2xl bg-brand py-4"
-          >
-            <Text className="text-center text-base font-semibold text-ink-950">
-              {t('goals.newGoal')}
-            </Text>
-          </PressableScale>
+          <Button label={t('goals.newGoal')} onPress={() => navigation.navigate('CreateGoal')} />
         </Animated.View>
       </View>
     </SafeAreaView>

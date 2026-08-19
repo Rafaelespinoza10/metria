@@ -1,12 +1,25 @@
+import { mkdtempSync } from 'node:fs';
+import { rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../../app.js';
 import { closeDb } from '../../database/client.js';
+import { LocalStorageService } from '../../shared/storage/local-storage.service.js';
 import { UsersRepository } from '../users/users.repository.js';
 
 const hasDatabase = Boolean(process.env.DATABASE_URL);
 
-const app = createApp();
+const PNG_BYTES = Buffer.from(
+  '89504e470d0a1a0a0000000d4948445200000001000000010806000000' +
+    '1f15c4890000000d4944415478da63fcffff3f0300050201f4d3e1f000' +
+    '00000049454e44ae426082',
+  'hex',
+);
+
+const storageDir = mkdtempSync(path.join(tmpdir(), 'metria-workouts-'));
+const app = createApp({ storage: new LocalStorageService(storageDir) });
 const usersRepository = new UsersRepository();
 const createdUserIds: string[] = [];
 
@@ -56,6 +69,7 @@ describe.skipIf(!hasDatabase)('workouts', () => {
       await usersRepository.hardDelete(id);
     }
     await closeDb();
+    await rm(storageDir, { recursive: true, force: true });
   });
 
   it('creates a workout with ordered exercises and sets', async () => {
@@ -71,6 +85,42 @@ describe.skipIf(!hasDatabase)('workouts', () => {
     expect(workout.exercises.map((e) => e.name)).toEqual(['Bench press', 'Overhead press']);
     expect(workout.exercises[0]?.sets).toHaveLength(2);
     expect(workout.exercises[0]?.sets[1]?.repetitions).toBe(6);
+  });
+
+  it('searches by workout or exercise name and paginates with totals', async () => {
+    const { token: t2 } = await registerUser();
+    const auth = { Authorization: `Bearer ${t2}` };
+    const mk = (name: string, exercise: string) =>
+      request(app)
+        .post('/api/workouts')
+        .set(auth)
+        .send({
+          name,
+          performedAt: new Date().toISOString(),
+          exercises: [{ name: exercise, sets: [{ repetitions: 8, weightKg: 60 }] }],
+        });
+    await mk('Leg day', 'Back squat');
+    await mk('Push day', 'Bench press');
+    await mk('Pull day', 'Deadlift');
+
+    // Search hits the workout name…
+    const byName = await request(app).get('/api/workouts?search=push').set(auth);
+    expect(byName.body.data.total).toBe(1);
+    expect(byName.body.data.workouts[0].name).toBe('Push day');
+
+    // …and the exercise name.
+    const byExercise = await request(app).get('/api/workouts?search=deadlift').set(auth);
+    expect(byExercise.body.data.total).toBe(1);
+    expect(byExercise.body.data.workouts[0].name).toBe('Pull day');
+
+    // Pagination: page size 2 with a stable total.
+    const page1 = await request(app).get('/api/workouts?limit=2&offset=0').set(auth);
+    expect(page1.body.data.total).toBe(3);
+    expect(page1.body.data.workouts).toHaveLength(2);
+    const page2 = await request(app).get('/api/workouts?limit=2&offset=2').set(auth);
+    expect(page2.body.data.workouts).toHaveLength(1);
+    const page1Ids = (page1.body.data.workouts as { id: string }[]).map((w) => w.id);
+    expect(page1Ids).not.toContain(page2.body.data.workouts[0].id);
   });
 
   it('lists workouts and filters by date range', async () => {
@@ -129,6 +179,61 @@ describe.skipIf(!hasDatabase)('workouts', () => {
       .set('Authorization', `Bearer ${token}`)
       .send({ ...base, exercises: [{ name: 'x', sets: [{ repetitions: 5, rpe: 11 }] }] });
     expect(badRpe.status).toBe(400);
+  });
+
+  it('uploads an exercise photo and serves it back under the user prefix', async () => {
+    const uploaded = await request(app)
+      .post('/api/workouts/exercise-photos')
+      .set('Authorization', `Bearer ${token}`)
+      .attach('photo', PNG_BYTES, { filename: 'bench.png', contentType: 'image/png' });
+    expect(uploaded.status).toBe(201);
+    const photo = uploaded.body.data.photo as { imageKey: string; imageUrl: string };
+    expect(photo.imageKey).toMatch(/^users\/.+\/exercises\/.+\.png$/);
+    expect(photo.imageUrl).toBe(`/api/uploads/${photo.imageKey}`);
+
+    const served = await request(app).get(photo.imageUrl).set('Authorization', `Bearer ${token}`);
+    expect(served.status).toBe(200);
+    expect(served.headers['content-type']).toBe('image/png');
+  });
+
+  it('rejects non-image uploads', async () => {
+    const res = await request(app)
+      .post('/api/workouts/exercise-photos')
+      .set('Authorization', `Bearer ${token}`)
+      .attach('photo', Buffer.from('plain text'), {
+        filename: 'notes.txt',
+        contentType: 'text/plain',
+      });
+    expect(res.status).toBe(400);
+  });
+
+  it('stores an exercise imageKey and exposes it as imageUrl; rejects foreign keys', async () => {
+    const uploaded = await request(app)
+      .post('/api/workouts/exercise-photos')
+      .set('Authorization', `Bearer ${token}`)
+      .attach('photo', PNG_BYTES, { filename: 'bench.png', contentType: 'image/png' });
+    const imageKey = uploaded.body.data.photo.imageKey as string;
+
+    const created = await request(app)
+      .post('/api/workouts')
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        ...PUSH_DAY,
+        exercises: [{ ...PUSH_DAY.exercises[0], imageKey }],
+      });
+    expect(created.status).toBe(201);
+    expect(created.body.data.workout.exercises[0].imageUrl).toBe(`/api/uploads/${imageKey}`);
+    expect(created.body.data.workout.exercises[0].imageKey).toBe(imageKey);
+
+    const foreign = await registerUser();
+    const stolen = await request(app)
+      .post('/api/workouts')
+      .set('Authorization', `Bearer ${foreign.token}`)
+      .send({
+        ...PUSH_DAY,
+        exercises: [{ ...PUSH_DAY.exercises[0], imageKey }],
+      });
+    expect(stolen.status).toBe(400);
   });
 
   it('soft-deletes and answers 404 for foreign workouts', async () => {

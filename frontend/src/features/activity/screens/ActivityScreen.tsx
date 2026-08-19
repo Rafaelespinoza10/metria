@@ -53,7 +53,7 @@ function DayEditor({
     <>
       <Animated.View
         entering={FadeInDown.delay(80).springify()}
-        className="rounded-3xl border border-white/5 bg-ink-900 p-5"
+        className="rounded-3xl border border-black/5 bg-ink-900 p-5"
       >
         <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
           {t('activity.steps')}
@@ -106,6 +106,7 @@ function DayEditor({
         <AuthSubmitButton
           label={t('activity.save')}
           loading={putMutation.isPending}
+          disabled={!canSubmit}
           onPress={submit}
         />
       </Animated.View>
@@ -146,6 +147,7 @@ export function ActivityScreen({ navigation }: Props) {
             <PressableScale
               onPress={() => setDate(addDays(date, -1))}
               accessibilityRole="button"
+              hitSlop={6}
               className="h-10 w-10 items-center justify-center rounded-full bg-ink-900"
             >
               <Ionicons name="chevron-back" size={18} color={theme.colors.content.secondary} />
@@ -157,6 +159,7 @@ export function ActivityScreen({ navigation }: Props) {
               onPress={() => setDate(addDays(date, 1))}
               disabled={isToday}
               accessibilityRole="button"
+              hitSlop={6}
               className={`h-10 w-10 items-center justify-center rounded-full bg-ink-900 ${
                 isToday ? 'opacity-40' : ''
               }`}

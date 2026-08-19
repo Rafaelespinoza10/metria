@@ -70,6 +70,7 @@ describe.skipIf(!hasDatabase)('nutrition', () => {
       });
 
     expect(res.status).toBe(201);
+    expect(res.body.data.meal.imageUrl).toBeNull();
     expect(res.body.data.meal.items).toHaveLength(2);
     expect(res.body.data.meal.totals).toEqual({
       calories: 492,

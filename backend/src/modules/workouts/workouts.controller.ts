@@ -1,10 +1,11 @@
 import type { Request, Response } from 'express';
+import { AppError } from '../../shared/errors/app-error.js';
 import { currentUser } from '../../shared/utils/current-user.js';
 import { ok } from '../../shared/utils/respond.js';
 import {
   createWorkoutSchema,
   updateWorkoutSchema,
-  workoutsRangeQuerySchema,
+  workoutsListQuerySchema,
 } from './workouts.schema.js';
 import type { WorkoutsService } from './workouts.service.js';
 
@@ -17,10 +18,19 @@ export class WorkoutsController {
     ok(res, { workout }, 201);
   };
 
+  uploadExercisePhoto = async (req: Request, res: Response): Promise<void> => {
+    if (!req.file) throw AppError.validation('A "photo" file is required');
+    const photo = await this.workoutsService.saveExercisePhoto(currentUser(req).id, {
+      buffer: req.file.buffer,
+      mimetype: req.file.mimetype,
+    });
+    ok(res, { photo }, 201);
+  };
+
   list = async (req: Request, res: Response): Promise<void> => {
-    const query = workoutsRangeQuerySchema.parse(req.query);
-    const workouts = await this.workoutsService.list(currentUser(req).id, query.from, query.to);
-    ok(res, { workouts });
+    const query = workoutsListQuerySchema.parse(req.query);
+    const page = await this.workoutsService.list(currentUser(req).id, query);
+    ok(res, page);
   };
 
   getById = async (req: Request, res: Response): Promise<void> => {

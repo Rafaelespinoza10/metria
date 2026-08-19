@@ -5,32 +5,42 @@ import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Chip } from '../../../components/Chip';
+import { HumanBody, type BodySide } from '../../../components/HumanBody';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import type { AppStackParamList } from '../../../navigation/types';
 import { AuthSubmitButton } from '../../auth/components/AuthSubmitButton';
 import { AuthTextField } from '../../auth/components/AuthTextField';
 import { parseDecimal } from '../../goals/helpers';
 import { useLogMeasurement, useMeasurementTypes } from '../hooks';
+import { measurementKeyForPart, NON_SITE_TYPE_KEYS } from '../measurement-sites';
 
 type Props = NativeStackScreenProps<AppStackParamList, 'LogMeasurement'>;
 
-export function LogMeasurementScreen({ navigation }: Props) {
+/** Front view unless the tapped site only exists on the back. */
+const BACK_ONLY_KEYS = ['left_triceps', 'right_triceps'];
+
+export function LogMeasurementScreen({ navigation, route }: Props) {
   const { t } = useTranslation();
   const typesQuery = useMeasurementTypes();
   const logMutation = useLogMeasurement();
-  const [typeId, setTypeId] = useState<string | null>(null);
+  const presetKey = route.params?.typeKey ?? null;
+  const [typeKey, setTypeKey] = useState<string | null>(presetKey);
+  const [side, setSide] = useState<BodySide>(
+    presetKey && BACK_ONLY_KEYS.includes(presetKey) ? 'back' : 'front',
+  );
   const [value, setValue] = useState('');
   const [notes, setNotes] = useState('');
 
+  const types = typesQuery.data ?? [];
   const parsedValue = parseDecimal(value);
-  const selectedType = (typesQuery.data ?? []).find((type) => type.id === typeId);
-  const canSubmit = typeId !== null && parsedValue !== null;
+  const selectedType = types.find((type) => type.key === typeKey);
+  const canSubmit = selectedType !== undefined && parsedValue !== null;
 
   const submit = () => {
-    if (!canSubmit || !typeId || parsedValue === null || logMutation.isPending) return;
+    if (!canSubmit || parsedValue === null || logMutation.isPending) return;
     logMutation.mutate(
       {
-        typeId,
+        typeId: selectedType.id,
         value: parsedValue,
         measuredAt: new Date().toISOString(),
         ...(notes.trim() ? { notes: notes.trim() } : {}),
@@ -47,24 +57,41 @@ export function LogMeasurementScreen({ navigation }: Props) {
 
           <Animated.View entering={FadeInDown.delay(60).springify()}>
             <Text className="mb-2 mt-6 text-xs font-semibold uppercase tracking-widest text-content-tertiary">
-              {t('measurements.selectType')}
+              {t('measurements.wholeBody')}
             </Text>
-            <View className="flex-row flex-wrap gap-2">
-              {(typesQuery.data ?? []).map((type) => (
-                <Chip
-                  key={type.id}
-                  label={t(`measurements.type.${type.key}`)}
-                  selected={typeId === type.id}
-                  onPress={() => setTypeId(type.id)}
-                />
-              ))}
+            <View className="flex-row gap-2">
+              {NON_SITE_TYPE_KEYS.filter((key) => types.some((type) => type.key === key)).map(
+                (key) => (
+                  <Chip
+                    key={key}
+                    label={t(`measurements.type.${key}`)}
+                    selected={typeKey === key}
+                    onPress={() => setTypeKey(key)}
+                  />
+                ),
+              )}
+            </View>
+
+            <Text className="mb-3 mt-6 text-xs font-semibold uppercase tracking-widest text-content-tertiary">
+              {t('measurements.tapSite')}
+            </Text>
+            <View className="items-center rounded-3xl border border-black/5 bg-ink-900 py-5">
+              <HumanBody
+                side={side}
+                onSideChange={setSide}
+                keyFor={measurementKeyForPart}
+                selectedKey={typeKey}
+                onSelect={setTypeKey}
+                labelFor={(key) => t(`measurements.type.${key}`)}
+                width={220}
+              />
             </View>
 
             <View className="mt-6 gap-4">
               <AuthTextField
                 label={
                   selectedType
-                    ? `${t('measurements.value')} (${selectedType.unit})`
+                    ? `${t(`measurements.type.${selectedType.key}`)} (${selectedType.unit})`
                     : t('measurements.value')
                 }
                 placeholder="82.5"
@@ -88,6 +115,7 @@ export function LogMeasurementScreen({ navigation }: Props) {
               <AuthSubmitButton
                 label={t('measurements.save')}
                 loading={logMutation.isPending}
+                disabled={!canSubmit}
                 onPress={submit}
               />
             </View>

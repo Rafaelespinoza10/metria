@@ -20,3 +20,51 @@ export function isDraftSubmittable(name: string, exercises: WorkoutExerciseInput
 export function totalSets(exercises: { sets: unknown[] }[]): number {
   return exercises.reduce((sum, exercise) => sum + exercise.sets.length, 0);
 }
+
+export interface WeeklySummary {
+  workouts: number;
+  sets: number;
+  minutes: number;
+}
+
+function isoDate(date: Date): string {
+  const month = `${date.getMonth() + 1}`.padStart(2, '0');
+  const day = `${date.getDate()}`.padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+/** Totals over the 7 days ending at `today` — the list screen's hero numbers. */
+export function weeklySummary(
+  workouts: {
+    localDate: string;
+    durationMinutes: number | null;
+    exercises: { sets: unknown[] }[];
+  }[],
+  today: Date,
+): WeeklySummary {
+  const start = new Date(today);
+  start.setDate(start.getDate() - 6);
+  const cutoff = isoDate(start);
+  const recent = workouts.filter((workout) => workout.localDate >= cutoff);
+  return {
+    workouts: recent.length,
+    sets: recent.reduce((sum, workout) => sum + totalSets(workout.exercises), 0),
+    minutes: recent.reduce((sum, workout) => sum + (workout.durationMinutes ?? 0), 0),
+  };
+}
+
+/** Total lifted volume in kg (reps × weight; bodyweight sets add nothing). */
+export function totalVolume(exercises: { sets: WorkoutSetInput[] }[]): number {
+  return exercises.reduce(
+    (sum, exercise) =>
+      sum + exercise.sets.reduce((acc, set) => acc + set.repetitions * (set.weightKg ?? 0), 0),
+    0,
+  );
+}
+
+/** First exercise photo in the workout — used as the card's image strip. */
+export function firstExerciseImageUrl(workout: {
+  exercises: { imageUrl: string | null }[];
+}): string | null {
+  return workout.exercises.find((exercise) => exercise.imageUrl)?.imageUrl ?? null;
+}

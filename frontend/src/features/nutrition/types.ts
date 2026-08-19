@@ -30,6 +30,8 @@ export interface Meal {
   notes: string | null;
   items: MealItem[];
   totals: MacroTotals;
+  /** Auth-gated photo URL when the meal came from an AI scan. */
+  imageUrl: string | null;
 }
 
 export interface CreateMealInput {

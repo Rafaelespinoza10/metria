@@ -15,6 +15,8 @@ export function createProgressRoutes(deps: ProgressRoutesDeps): Router {
   router.get('/score', controller.score);
   router.get('/today', controller.today);
   router.get('/body', controller.body);
+  router.get('/trends', controller.trends);
+  router.get('/report', controller.report);
 
   return router;
 }
