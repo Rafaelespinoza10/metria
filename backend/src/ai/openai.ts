@@ -18,11 +18,16 @@ const ALTERNATIVES_SYSTEM_PROMPT = `You suggest 2-4 healthier or goal-aligned al
 Respond ONLY with JSON: {"suggestions":[{"title":string,"description":string}]}.
 Rules: small, practical lifestyle swaps aligned with the user's goals; keep descriptions to one or two sentences in the requested language; never give medical advice, diagnoses, or prescriptions.`;
 
+let cachedClient: OpenAI | null = null;
+
 function requireClient(): OpenAI {
   if (!env.OPENAI_API_KEY) {
     throw new AppError('AI_UNAVAILABLE', 'AI features are not configured', 503);
   }
-  return new OpenAI({ apiKey: env.OPENAI_API_KEY });
+  // One shared client; a bounded timeout so a hung upstream can't hold the
+  // mobile request open indefinitely.
+  cachedClient ??= new OpenAI({ apiKey: env.OPENAI_API_KEY, timeout: 30_000, maxRetries: 1 });
+  return cachedClient;
 }
 
 async function completeJson(
@@ -33,6 +38,7 @@ async function completeJson(
   const response = await client.chat.completions.create({
     model: env.OPENAI_MODEL,
     response_format: { type: 'json_object' },
+    max_tokens: 1500,
     messages: [
       { role: 'system', content: system },
       { role: 'user', content: userContent },
@@ -40,7 +46,12 @@ async function completeJson(
   });
   const content = response.choices[0]?.message.content;
   if (!content) throw new AppError('AI_UNAVAILABLE', 'Empty AI response', 503);
-  return JSON.parse(content) as unknown;
+  try {
+    return JSON.parse(content) as unknown;
+  } catch {
+    // Truncated or malformed model output is an availability problem, not a 500.
+    throw new AppError('AI_UNAVAILABLE', 'AI returned an unusable response', 503);
+  }
 }
 
 export class OpenAIMealVision implements MealVisionPort {

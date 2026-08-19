@@ -30,16 +30,20 @@ export const workouts = pgTable(
   (table) => [index('workouts_user_local_date_idx').on(table.userId, table.localDate)],
 );
 
-export const workoutExercises = pgTable('workout_exercises', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  workoutId: uuid('workout_id')
-    .notNull()
-    .references(() => workouts.id, { onDelete: 'cascade' }),
-  name: text('name').notNull(),
-  muscleGroup: text('muscle_group'),
-  imageKey: text('image_key'),
-  position: integer('position').notNull(),
-});
+export const workoutExercises = pgTable(
+  'workout_exercises',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    workoutId: uuid('workout_id')
+      .notNull()
+      .references(() => workouts.id, { onDelete: 'cascade' }),
+    name: text('name').notNull(),
+    muscleGroup: text('muscle_group'),
+    imageKey: text('image_key'),
+    position: integer('position').notNull(),
+  },
+  (table) => [index('workout_exercises_workout_idx').on(table.workoutId)],
+);
 
 export const workoutSets = pgTable(
   'workout_sets',
@@ -54,5 +58,8 @@ export const workoutSets = pgTable(
     rpe: numeric('rpe', { precision: 3, scale: 1, mode: 'number' }),
     notes: text('notes'),
   },
-  (table) => [check('workout_sets_rpe_range', sql`${table.rpe} between 1 and 10`)],
+  (table) => [
+    check('workout_sets_rpe_range', sql`${table.rpe} between 1 and 10`),
+    index('workout_sets_exercise_idx').on(table.exerciseId),
+  ],
 );

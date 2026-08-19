@@ -19,10 +19,14 @@ export class GamificationRepository {
   }
 
   /** Idempotent: the unique (user, badge) constraint absorbs repeats. */
-  async award(userId: string, badgeKey: string): Promise<void> {
+  /** Awards all keys in one atomic statement — concurrent evaluations can't
+   *  interleave partial awards. Already-earned badges are left untouched. */
+  async awardMany(userId: string, badgeKeys: string[]): Promise<void> {
+    if (badgeKeys.length === 0) return;
+    const awardedAt = new Date();
     await this.db
       .insert(userBadges)
-      .values({ userId, badgeKey, awardedAt: new Date() })
+      .values(badgeKeys.map((badgeKey) => ({ userId, badgeKey, awardedAt })))
       .onConflictDoNothing();
   }
 

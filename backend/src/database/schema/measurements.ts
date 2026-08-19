@@ -41,15 +41,19 @@ export const measurements = pgTable(
   ],
 );
 
-export const progressPhotos = pgTable('progress_photos', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  // Storage-abstraction key (local disk now, S3/R2 later), never a raw filesystem path.
-  fileKey: text('file_key').notNull(),
-  takenAt: timestamp('taken_at', { withTimezone: true }).notNull(),
-  notes: text('notes'),
-  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
-  deletedAt: timestamp('deleted_at', { withTimezone: true }),
-});
+export const progressPhotos = pgTable(
+  'progress_photos',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    // Storage-abstraction key (local disk now, S3/R2 later), never a raw filesystem path.
+    fileKey: text('file_key').notNull(),
+    takenAt: timestamp('taken_at', { withTimezone: true }).notNull(),
+    notes: text('notes'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+    deletedAt: timestamp('deleted_at', { withTimezone: true }),
+  },
+  (table) => [index('progress_photos_user_taken_idx').on(table.userId, table.takenAt)],
+);

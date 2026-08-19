@@ -1,6 +1,8 @@
 import { AppError } from '../../shared/errors/app-error.js';
 import { IMAGE_EXTENSIONS, sniffImageType } from '../../shared/utils/image-type.js';
+import { endOfDayInTimezone, startOfDayInTimezone } from '../../shared/utils/local-date.js';
 import type { StoragePort } from '../../shared/storage/storage.port.js';
+import type { UsersRepository } from '../users/users.repository.js';
 import type {
   CreateMeasurementInput,
   ListMeasurementsQuery,
@@ -35,7 +37,13 @@ export class MeasurementsService {
   constructor(
     private readonly measurementsRepository: MeasurementsRepository,
     private readonly storage: StoragePort,
+    private readonly usersRepository: UsersRepository,
   ) {}
+
+  private async userTimezone(userId: string): Promise<string> {
+    const user = await this.usersRepository.findById(userId);
+    return user?.timezone ?? 'UTC';
+  }
 
   async listTypes(userId: string): Promise<MeasurementTypeRow[]> {
     return this.measurementsRepository.listTypesForUser(userId);
@@ -54,11 +62,13 @@ export class MeasurementsService {
   }
 
   async list(userId: string, query: ListMeasurementsQuery): Promise<MeasurementRow[]> {
+    // Calendar dates bound the range in the user's timezone, matching how every
+    // other module buckets days — not in UTC.
+    const timezone = query.from || query.to ? await this.userTimezone(userId) : 'UTC';
     return this.measurementsRepository.listByUser(userId, {
       typeId: query.typeId,
-      from: query.from ? new Date(query.from) : undefined,
-      // `to` is an inclusive calendar date: include the whole day.
-      to: query.to ? new Date(`${query.to}T23:59:59.999Z`) : undefined,
+      from: query.from ? startOfDayInTimezone(query.from, timezone) : undefined,
+      to: query.to ? endOfDayInTimezone(query.to, timezone) : undefined,
     });
   }
 
