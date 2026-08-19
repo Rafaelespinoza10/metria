@@ -45,8 +45,10 @@ Six PRs, three backend then three frontend, each independently mergeable:
   defaults (staleTime, no retry on 4xx).
 - **E — Frontend CRUD completion** — edit and delete for meals, goals (status
   transitions achieved/abandoned included), and sleep entries; discard AI analyses on
-  cancel; delete progress photos; date/time pickers so meals, workouts, and measurements
-  can be back-dated (today everything is hard-coded to "now").
+  cancel; date/time pickers so meals and workouts can be back-dated (today everything
+  is hard-coded to "now"). Progress-photo delete and measurement back-dating were
+  deferred with the rest of the measurement-screen work (workflow 17 owns those
+  screens).
 - **F — Frontend UX, performance, release** — pull-to-refresh and a shared error/retry
   state on every list screen; the paginated workouts list becomes a `FlatList` with
   `onEndReached`; authenticated images move to `expo-image` (header-aware disk cache);
@@ -66,7 +68,8 @@ Six PRs, three backend then three frontend, each independently mergeable:
 
 ## Non-goals
 
-Deferred to future workflows: onboarding flow, push notifications, Apple Health /
+Deferred to future workflows: progress-photo delete and measurement back-dating
+(measurements screens), onboarding flow, push notifications, Apple Health /
 Google Health Connect, goal progress computation endpoint, insight regeneration and
 history, micronutrient UI, refresh tokens / per-device sessions, email verification,
 S3/R2 storage driver, strength progression analytics.
@@ -77,22 +80,23 @@ No new tables. One migration: the child-table indexes listed in B.
 
 ## Backend tasks
 
-- [ ] A: trust proxy, global + AI rate limiters, Multer error mapping, magic-byte
+- [x] A: trust proxy, global + AI rate limiters, Multer error mapping, magic-byte
       sniffing, uploads `Content-Disposition`, prod env guards, JWT `alg`/`iss`/`aud`,
       mailer prod guard — with tests.
-- [ ] B: SQL range predicates replacing in-memory filters and silent caps; index
+- [x] B: SQL range predicates replacing in-memory filters and silent caps; index
       migration; timezone-consistent boundaries; gamification award transaction;
       batched metric queries; OpenAI adapter hardening — with tests.
-- [ ] C: graceful shutdown, `/api/health/ready`, pino request logging with request IDs,
+- [x] C: graceful shutdown, `/api/health/ready`, pino request logging with request IDs,
       seed presence boot check — with tests where feasible.
 
 ## Frontend tasks
 
-- [ ] D: 401 → signOut, boot revalidation, Forgot/Reset password screens, QueryClient
+- [x] D: 401 → signOut, boot revalidation, Forgot/Reset password screens, QueryClient
       defaults — with tests.
-- [ ] E: meals/goals/sleep edit + delete, analysis discard, photo delete, date/time
-      pickers — with tests.
-- [ ] F: pull-to-refresh + error/retry states, workouts `FlatList`, `expo-image`,
+- [x] E: meals/goals/sleep edit + delete, analysis discard, meal/workout date-time
+      pickers — with tests. (Photo delete + measurement back-dating deferred to the
+      measurements screens' owner; see Scope.)
+- [x] F: pull-to-refresh + error/retry states, workouts `FlatList`, `expo-image`,
       `app.json` identity + splash, `eas.json` — with tests.
 
 ## API contracts
