@@ -16,16 +16,21 @@ visual, obvious path it should always have been.
 
 - **`components/HumanBody.tsx` (new, shared)** — replaces
   `features/exercises/components/BodyMap.tsx` (rectangles and ellipses) with a figure
-  built from SVG `Path` outlines on a 200×420 viewBox using the 8-head canon: skull with
-  jaw taper, trapezius slope into deltoid caps, pectorals and rib cage narrowing to the
-  waist, oblique-to-hip flare, thigh mass tapering to the knee, calf bellies over the
-  tibia line, and hands/feet that read as hands and feet.
-  - *Dimensional shading (the "3D" read)*: each muscle group is filled with its own
-    `LinearGradient` (light on the medial/upper edge → dark toward the contour), a
-    `RadialGradient` core highlight on the large groups, hairline contour separations
-    between adjacent groups, and a soft occlusion wash at the joints (shoulder, elbow,
-    knee) plus a ground shadow ellipse under the feet. Selected parts swap to a brand
-    gradient and gain a halo; nothing rotates and no camera is involved.
+  built from SVG `Path` outlines on a 200×430 viewBox using the 8-head canon: head ≈ 1/8
+  of the height, crotch at half the height (so the legs read as legs), shoulder span ≈ two
+  head widths, trapezius slope into deltoid caps, rib cage narrowing to the waist,
+  oblique-to-hip flare, thigh mass tapering to the knee, calf bellies over the tibia line,
+  and hands/feet that read as hands and feet.
+  - *Dimensional shading (the "3D" read)*: gradients declared once in
+    `objectBoundingBox` units, so a single `LinearGradient` shades every group relative to
+    its own outline (light on the medial/upper edge → dark toward the contour); hairline
+    contour strokes separate adjacent groups; `RadialGradient` washes sit over the
+    shoulder, elbow, knee, and crotch seams; a contact shadow ellipse seats the figure.
+    Selected parts swap to a brand gradient with a darker edge; nothing rotates and no
+    camera is involved.
+  - *Filler layer*: the groups are separate shapes, so inset flat capsules are painted
+    underneath — otherwise the seams between them show the screen background through the
+    body. They are inset far enough never to poke outside an outline.
   - *Generic hotspot API* so both features drive it without either owning the anatomy:
     `parts` are anatomical (`biceps`, `thigh`, …) and each carries a
     `laterality` (`left` | `right` | `center`); the consumer supplies
@@ -84,8 +89,8 @@ migrations.
 
 - [x] `components/HumanBody.tsx`: anatomical paths, gradient/occlusion shading, front &
       back views, hotspot API with laterality, badges, press feedback per part.
-- [x] `components/human-body-geometry.ts`: part table + pure helpers (visible parts per
-      side, badge anchor points, mirroring) with Jest tests.
+- [x] `components/human-body-geometry.ts`: part table, filler capsules, joint washes, and
+      pure helpers (parts per side, badge anchors, path mirroring) with Jest tests.
 - [x] `features/exercises`: point `ExerciseBrowserScreen` at the shared component,
       collapsing laterality onto `BodyRegion`; delete the old `BodyMap.tsx`.
 - [x] `features/measurements/measurement-sites.ts` + Jest test proving every anatomical
