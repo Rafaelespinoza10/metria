@@ -44,6 +44,8 @@ import { createUploadsRoutes } from './modules/uploads/uploads.routes.js';
 import { WorkoutsRepository } from './modules/workouts/workouts.repository.js';
 import { createWorkoutsRoutes } from './modules/workouts/workouts.routes.js';
 import { WorkoutsService } from './modules/workouts/workouts.service.js';
+import { UsersDataRepository } from './modules/users/users-data.repository.js';
+import { UsersDataService } from './modules/users/users-data.service.js';
 import { UsersRepository } from './modules/users/users.repository.js';
 import { createUsersRoutes } from './modules/users/users.routes.js';
 import { UsersService } from './modules/users/users.service.js';
@@ -86,6 +88,7 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   // Composition root: manual constructor injection, one instance per app.
   const storage = deps.storage ?? new LocalStorageService(env.STORAGE_DIR);
   const usersRepository = new UsersRepository();
+  const usersDataRepository = new UsersDataRepository();
   const passwordResetRepository = new PasswordResetRepository();
   const goalsRepository = new GoalsRepository();
   const measurementsRepository = new MeasurementsRepository();
@@ -103,6 +106,7 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   const workoutsRepository = new WorkoutsRepository();
   const activityRepository = new ActivityRepository();
   const usersService = new UsersService(usersRepository, storage);
+  const usersDataService = new UsersDataService(usersRepository, usersDataRepository);
   const goalsService = new GoalsService(goalsRepository, measurementsRepository);
   const measurementsService = new MeasurementsService(measurementsRepository, storage);
   const nutritionService = new NutritionService(
@@ -171,7 +175,7 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   app.use('/api/health', createHealthRoutes());
   app.use('/api/auth', createAuthRateLimiter(deps.authRateLimit));
   app.use('/api/auth', createAuthRoutes({ authService, authMiddleware }));
-  app.use('/api/users', createUsersRoutes({ usersService, authMiddleware }));
+  app.use('/api/users', createUsersRoutes({ usersService, usersDataService, authMiddleware }));
   app.use('/api/goals', createGoalsRoutes({ goalsService, authMiddleware }));
   app.use('/api/measurements', createMeasurementsRoutes({ measurementsService, authMiddleware }));
   app.use(
