@@ -5,12 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { AuthedImage } from '../../../components/AuthedImage';
 import { Button } from '../../../components/Button';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
 import type { AppStackParamList } from '../../../navigation/types';
-import { API_URL } from '../../../services/api';
-import { useAuthStore } from '../../../store/auth';
 import { theme } from '../../../theme';
 import { sectionImages } from '../../../theme/images';
 import { firstExerciseImageUrl, formatSet, totalSets, totalVolume } from '../helpers';
@@ -20,7 +19,6 @@ type Props = NativeStackScreenProps<AppStackParamList, 'WorkoutDetail'>;
 
 export function WorkoutDetailScreen({ navigation, route }: Props) {
   const { t } = useTranslation();
-  const token = useAuthStore((state) => state.token);
   const workoutQuery = useWorkout(route.params.id);
   const deleteMutation = useDeleteWorkout();
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -53,18 +51,15 @@ export function WorkoutDetailScreen({ navigation, route }: Props) {
                 entering={FadeInDown.delay(40).springify()}
                 className="mt-6 overflow-hidden rounded-3xl border border-black/5 bg-ink-900"
               >
-                <Image
-                  source={
-                    heroUrl
-                      ? {
-                          uri: `${API_URL}${heroUrl}`,
-                          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-                        }
-                      : sectionImages.workout
-                  }
-                  className="h-40 w-full bg-ink-800"
-                  accessibilityIgnoresInvertColors
-                />
+                {heroUrl ? (
+                  <AuthedImage url={heroUrl} className="h-40 w-full bg-ink-800" />
+                ) : (
+                  <Image
+                    source={sectionImages.workout}
+                    className="h-40 w-full bg-ink-800"
+                    accessibilityIgnoresInvertColors
+                  />
+                )}
                 <View className="p-5">
                   <View className="flex-row items-baseline justify-between">
                     <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
@@ -117,13 +112,9 @@ export function WorkoutDetailScreen({ navigation, route }: Props) {
                 >
                   <View className="flex-row items-center gap-3">
                     {exercise.imageUrl ? (
-                      <Image
-                        source={{
-                          uri: `${API_URL}${exercise.imageUrl}`,
-                          headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-                        }}
+                      <AuthedImage
+                        url={exercise.imageUrl}
                         className="h-12 w-12 rounded-2xl bg-ink-800"
-                        accessibilityIgnoresInvertColors
                       />
                     ) : (
                       <View className="h-12 w-12 items-center justify-center rounded-2xl bg-brand-soft">
