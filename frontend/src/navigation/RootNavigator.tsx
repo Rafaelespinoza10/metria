@@ -4,10 +4,13 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SkeletonBlock } from '../components/SkeletonBlock';
+import { ForgotPasswordScreen } from '../features/auth/screens/ForgotPasswordScreen';
 import { LoginScreen } from '../features/auth/screens/LoginScreen';
+import { ResetPasswordScreen } from '../features/auth/screens/ResetPasswordScreen';
 import { RegisterScreen } from '../features/auth/screens/RegisterScreen';
 import { HomeScreen } from '../features/dashboard/screens/HomeScreen';
 import { CreateGoalScreen } from '../features/goals/screens/CreateGoalScreen';
+import { GoalDetailScreen } from '../features/goals/screens/GoalDetailScreen';
 import { GoalsScreen } from '../features/goals/screens/GoalsScreen';
 import { LogMeasurementScreen } from '../features/measurements/screens/LogMeasurementScreen';
 import { MeasurementsScreen } from '../features/measurements/screens/MeasurementsScreen';
@@ -88,6 +91,7 @@ export function RootNavigator() {
         <AppStack.Navigator screenOptions={{ headerShown: false }}>
           <AppStack.Screen name="Tabs" component={Tabs} />
           <AppStack.Screen name="Goals" component={GoalsScreen} />
+          <AppStack.Screen name="GoalDetail" component={GoalDetailScreen} />
           <AppStack.Screen name="CreateGoal" component={CreateGoalScreen} />
           <AppStack.Screen name="Measurements" component={MeasurementsScreen} />
           <AppStack.Screen name="LogMeasurement" component={LogMeasurementScreen} />
@@ -110,6 +114,8 @@ export function RootNavigator() {
         <AuthStack.Navigator screenOptions={{ headerShown: false }}>
           <AuthStack.Screen name="Login" component={LoginScreen} />
           <AuthStack.Screen name="Register" component={RegisterScreen} />
+          <AuthStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+          <AuthStack.Screen name="ResetPassword" component={ResetPasswordScreen} />
         </AuthStack.Navigator>
       )}
     </NavigationContainer>

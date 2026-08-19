@@ -51,6 +51,23 @@ export function analyzeMealPhoto(photo: {
   });
 }
 
+export function updateMeal(id: string, input: Partial<CreateMealInput>): Promise<{ meal: Meal }> {
+  return api<{ meal: Meal }>(`/api/nutrition/meals/${id}`, {
+    method: 'PATCH',
+    body: JSON.stringify(input),
+  });
+}
+
+export function deleteMeal(id: string): Promise<{ deleted: boolean }> {
+  return api<{ deleted: boolean }>(`/api/nutrition/meals/${id}`, { method: 'DELETE' });
+}
+
+export function discardAnalysis(id: string): Promise<{ analysis: MealAnalysis }> {
+  return api<{ analysis: MealAnalysis }>(`/api/nutrition/analyses/${id}/discard`, {
+    method: 'POST',
+  });
+}
+
 export function fetchAnalysis(id: string): Promise<{ analysis: MealAnalysis }> {
   return api<{ analysis: MealAnalysis }>(`/api/nutrition/analyses/${id}`);
 }

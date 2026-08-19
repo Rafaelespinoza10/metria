@@ -1,11 +1,14 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Image, ScrollView, Text, View } from 'react-native';
+import { Image, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Button } from '../../../components/Button';
 import { Chip } from '../../../components/Chip';
+import { ErrorState } from '../../../components/ErrorState';
+import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
 import type { AppStackParamList } from '../../../navigation/types';
@@ -18,39 +21,50 @@ type Props = NativeStackScreenProps<AppStackParamList, 'Goals'>;
 
 const STATUSES: GoalStatus[] = ['active', 'achieved', 'abandoned'];
 
-function GoalCard({ goal, index }: { goal: Goal; index: number }) {
+function GoalCard({ goal, index, onPress }: { goal: Goal; index: number; onPress: () => void }) {
   const { t } = useTranslation();
   const unit = goalMetricUnit(goal.metric);
 
   return (
-    <Animated.View
-      entering={FadeInDown.delay(120 + index * 60).springify()}
-      className="mt-3 rounded-3xl border border-black/5 bg-ink-900 p-5"
-    >
-      <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
-        {t(goalCategoryKey(goal.category))}
-      </Text>
-      <Text className="mt-2 text-3xl font-bold tracking-tight text-content-primary">
-        {t(goalMetricKey(goal.metric))}
-      </Text>
-      {goal.targetValue !== null ? (
-        <View className="mt-3 flex-row items-baseline gap-2">
-          {goal.startValue !== null ? (
-            <Text className="text-sm text-content-secondary">
-              {goal.startValue} {unit} →
+    <Animated.View entering={FadeInDown.delay(120 + index * 60).springify()} className="mt-3">
+      <PressableScale
+        onPress={onPress}
+        accessibilityRole="button"
+        className="rounded-3xl border border-black/5 bg-ink-900 p-5"
+      >
+        <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
+          {t(goalCategoryKey(goal.category))}
+        </Text>
+        <Text className="mt-2 text-3xl font-bold tracking-tight text-content-primary">
+          {t(goalMetricKey(goal.metric))}
+        </Text>
+        {goal.targetValue !== null ? (
+          <View className="mt-3 flex-row items-baseline gap-2">
+            {goal.startValue !== null ? (
+              <Text className="text-sm text-content-secondary">
+                {goal.startValue} {unit} →
+              </Text>
+            ) : null}
+            <Text className="text-base font-semibold text-brand">
+              {goal.targetValue} {unit}
             </Text>
-          ) : null}
-          <Text className="text-base font-semibold text-brand">
-            {goal.targetValue} {unit}
-          </Text>
-        </View>
-      ) : null}
+          </View>
+        ) : null}
+      </PressableScale>
     </Animated.View>
   );
 }
 
 export function GoalsScreen({ navigation }: Props) {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
+  const refresh = async () => {
+    setRefreshing(true);
+    await queryClient.refetchQueries({ type: 'active' });
+    setRefreshing(false);
+  };
+
   const [status, setStatus] = useState<GoalStatus>('active');
   const goalsQuery = useGoals(status);
 
@@ -71,15 +85,28 @@ export function GoalsScreen({ navigation }: Props) {
           ))}
         </Animated.View>
 
-        <ScrollView className="mt-2 flex-1" showsVerticalScrollIndicator={false}>
+        <ScrollView
+          className="mt-2 flex-1"
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={() => void refresh()} />
+          }
+        >
           {goalsQuery.isPending ? (
             <>
               <SkeletonBlock className="mt-3 h-32 rounded-3xl" />
               <SkeletonBlock className="mt-3 h-32 rounded-3xl" />
             </>
+          ) : goalsQuery.isError ? (
+            <ErrorState onRetry={() => void goalsQuery.refetch()} />
           ) : goalsQuery.data && goalsQuery.data.length > 0 ? (
             goalsQuery.data.map((goal, index) => (
-              <GoalCard key={goal.id} goal={goal} index={index} />
+              <GoalCard
+                key={goal.id}
+                goal={goal}
+                index={index}
+                onPress={() => navigation.navigate('GoalDetail', { goal })}
+              />
             ))
           ) : (
             <Animated.View

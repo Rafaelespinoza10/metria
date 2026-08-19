@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ScrollView, Text, View } from 'react-native';
+import { RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { ScreenHeader } from '../../../components/ScreenHeader';
@@ -118,10 +120,21 @@ export function InsightsScreen() {
   const { t } = useTranslation();
   const dailyQuery = useDailyInsight();
   const weeklyQuery = useWeeklyInsight();
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
+  const refresh = async () => {
+    setRefreshing(true);
+    await queryClient.refetchQueries({ type: 'active' });
+    setRefreshing(false);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-ink-950">
-      <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+      <ScrollView
+        className="flex-1"
+        showsVerticalScrollIndicator={false}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => void refresh()} />}
+      >
         <View className="px-5 pb-12">
           <ScreenHeader title={t('insights.title')} />
 

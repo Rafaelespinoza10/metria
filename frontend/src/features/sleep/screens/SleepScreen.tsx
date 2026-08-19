@@ -1,9 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Image, ScrollView, Text, View } from 'react-native';
+import { Image, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { ErrorState } from '../../../components/ErrorState';
 import { MacroBar } from '../../../components/MacroBar';
 import { Button } from '../../../components/Button';
 import { PressableScale } from '../../../components/PressableScale';
@@ -33,6 +36,14 @@ function QualityDots({ quality }: { quality: number | null }) {
 
 export function SleepScreen({ navigation }: Props) {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
+  const refresh = async () => {
+    setRefreshing(true);
+    await queryClient.refetchQueries({ type: 'active' });
+    setRefreshing(false);
+  };
+
   const entriesQuery = useSleepEntries();
   const targetsQuery = useSleepTargets();
 
@@ -58,9 +69,17 @@ export function SleepScreen({ navigation }: Props) {
           }
         />
 
-        <ScrollView className="mt-4 flex-1" showsVerticalScrollIndicator={false}>
+        <ScrollView
+          className="mt-4 flex-1"
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={() => void refresh()} />
+          }
+        >
           {entriesQuery.isPending || targetsQuery.isPending ? (
             <SkeletonBlock className="h-48 rounded-3xl" />
+          ) : entriesQuery.isError ? (
+            <ErrorState onRetry={() => void entriesQuery.refetch()} />
           ) : latest ? (
             <Animated.View
               entering={FadeInDown.delay(80).springify()}
@@ -112,8 +131,11 @@ export function SleepScreen({ navigation }: Props) {
               </Text>
               <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5">
                 {entries.slice(0, 7).map((entry, index) => (
-                  <View
+                  <PressableScale
                     key={entry.id}
+                    onPress={() => navigation.navigate('LogSleep', { entry })}
+                    accessibilityRole="button"
+                    accessibilityLabel={t('sleep.edit')}
                     className={`flex-row items-center justify-between py-4 ${
                       index > 0 ? 'border-t border-black/5' : ''
                     }`}
@@ -127,7 +149,7 @@ export function SleepScreen({ navigation }: Props) {
                     <Text className="text-xl font-bold tracking-tight text-content-primary">
                       {formatMinutes(entry.durationMinutes)}
                     </Text>
-                  </View>
+                  </PressableScale>
                 ))}
               </View>
             </Animated.View>

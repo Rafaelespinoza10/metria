@@ -1,4 +1,6 @@
 import { addDaysISO } from '../../shared/utils/date-range.js';
+import { endOfDayInTimezone, startOfDayInTimezone } from '../../shared/utils/local-date.js';
+import type { UsersRepository } from '../users/users.repository.js';
 import type { ActivityRepository } from '../activity/activity.repository.js';
 import type { MeasurementsRepository } from '../measurements/measurements.repository.js';
 import type { DailyTargetsRepository } from '../nutrition/daily-targets.repository.js';
@@ -91,6 +93,7 @@ export class AggregatesService {
     private readonly workoutsRepository: WorkoutsRepository,
     private readonly measurementsRepository: MeasurementsRepository,
     private readonly dailyTargetsRepository: DailyTargetsRepository,
+    private readonly usersRepository: UsersRepository,
   ) {}
 
   /** Per-day macro totals within [from, to]. */
@@ -257,10 +260,12 @@ export class AggregatesService {
     const types = await this.measurementsRepository.listTypesForUser(userId);
     const weightType = types.find((type) => type.key === 'weight');
     if (!weightType) return [];
+    const user = await this.usersRepository.findById(userId);
+    const timezone = user?.timezone ?? 'UTC';
     const rows = await this.measurementsRepository.listByUser(userId, {
       typeId: weightType.id,
-      from: new Date(`${from}T00:00:00.000Z`),
-      to: new Date(`${to}T23:59:59.999Z`),
+      from: startOfDayInTimezone(from, timezone),
+      to: endOfDayInTimezone(to, timezone),
     });
     // listByUser returns newest first.
     return rows.map((row) => row.value).reverse();

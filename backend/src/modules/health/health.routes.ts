@@ -6,6 +6,7 @@ export function createHealthRoutes(): Router {
   const router = Router();
 
   router.get('/', controller.getHealth);
+  router.get('/ready', controller.getReady);
 
   return router;
 }

@@ -5,6 +5,8 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 export type AuthStackParamList = {
   Login: undefined;
   Register: undefined;
+  ForgotPassword: undefined;
+  ResetPassword: undefined;
 };
 
 /** Bottom tab sections (reference-style bar with the orange active pill). */
@@ -20,18 +22,19 @@ export type TabParamList = {
 export type AppStackParamList = {
   Tabs: NavigatorScreenParams<TabParamList>;
   Goals: undefined;
+  GoalDetail: { goal: import('../features/goals/types').Goal };
   CreateGoal: undefined;
   Measurements: undefined;
   /** `typeKey` preselects a measurement type (tapped on the body figure). */
   LogMeasurement: { typeKey?: string } | undefined;
-  AddMeal: undefined;
+  AddMeal: { meal?: import('../features/nutrition/types').Meal } | undefined;
   NutritionTargets: undefined;
   ReviewAnalysis: { analysisId: string; photoUri?: string };
   Activity: undefined;
   ActivityTargets: undefined;
   AddWorkout: { pickedExercise?: { name: string; muscleGroup: string } } | undefined;
   Sleep: undefined;
-  LogSleep: undefined;
+  LogSleep: { entry?: import('../features/sleep/types').SleepEntry } | undefined;
   SleepTarget: undefined;
   Achievements: undefined;
   Settings: undefined;

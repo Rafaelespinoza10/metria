@@ -83,9 +83,7 @@ export class GamificationService {
     if (await this.hasMeasurementImprovement(userId)) {
       earnedNow.push('first_measurement_improvement');
     }
-    for (const key of earnedNow) {
-      await this.gamificationRepository.award(userId, key);
-    }
+    await this.gamificationRepository.awardMany(userId, earnedNow);
 
     const [definitions, userBadges, trackingRow, sleepRow] = await Promise.all([
       this.gamificationRepository.listBadgeKeys(),
@@ -110,15 +108,23 @@ export class GamificationService {
   /** Weight, waist, or body fat below its first recorded value. */
   private async hasMeasurementImprovement(userId: string): Promise<boolean> {
     const types = await this.measurementsRepository.listTypesForUser(userId);
-    for (const key of IMPROVEMENT_METRICS) {
-      const type = types.find((candidate) => candidate.key === key);
-      if (!type) continue;
-      const rows = await this.measurementsRepository.listByUser(userId, { typeId: type.id });
-      if (rows.length < 2) continue;
-      const newest = rows[0];
-      const oldest = rows[rows.length - 1];
-      if (newest && oldest && newest.value < oldest.value) return true;
+    const trackedIds = new Set(
+      types.filter((type) => IMPROVEMENT_METRICS.includes(type.key)).map((type) => type.id),
+    );
+    if (trackedIds.size === 0) return false;
+    // One query for all improvement metrics; rows come newest first.
+    const rows = await this.measurementsRepository.listByUser(userId, {});
+    const byType = new Map<string, { newest: number; oldest: number; count: number }>();
+    for (const row of rows) {
+      if (!trackedIds.has(row.typeId)) continue;
+      const entry = byType.get(row.typeId);
+      if (!entry) {
+        byType.set(row.typeId, { newest: row.value, oldest: row.value, count: 1 });
+      } else {
+        entry.oldest = row.value;
+        entry.count += 1;
+      }
     }
-    return false;
+    return [...byType.values()].some((entry) => entry.count >= 2 && entry.newest < entry.oldest);
   }
 }

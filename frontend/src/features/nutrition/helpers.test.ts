@@ -1,4 +1,4 @@
-import { addDays, sumMealItems, todayISO } from './helpers';
+import { addDays, mealToItemsInput, sumMealItems, todayISO } from './helpers';
 
 describe('addDays', () => {
   it('moves across month and year boundaries in calendar space', () => {
@@ -28,5 +28,37 @@ describe('sumMealItems', () => {
 
   it('returns zeros for no items', () => {
     expect(sumMealItems([])).toEqual({ calories: 0, protein: 0, carbohydrates: 0, fats: 0 });
+  });
+});
+
+describe('mealToItemsInput', () => {
+  it('strips server fields and null grams so the edit form can resubmit items', () => {
+    const items = mealToItemsInput({
+      items: [
+        {
+          id: 'i1',
+          position: 0,
+          name: 'Chicken',
+          grams: 150,
+          calories: 240,
+          protein: 45,
+          carbohydrates: 0,
+          fat: 5,
+        },
+        {
+          id: 'i2',
+          position: 1,
+          name: 'Rice',
+          calories: 200,
+          protein: 4,
+          carbohydrates: 44,
+          fat: 1,
+        },
+      ],
+    });
+    expect(items).toEqual([
+      { name: 'Chicken', grams: 150, calories: 240, protein: 45, carbohydrates: 0, fat: 5 },
+      { name: 'Rice', calories: 200, protein: 4, carbohydrates: 44, fat: 1 },
+    ]);
   });
 });

@@ -3,7 +3,9 @@
     "appName": "METRIA",
     "loading": "Loading…",
     "error": "Something went wrong",
-    "retry": "Retry"
+    "retry": "Retry",
+    "confirmDelete": "Tap again to delete",
+    "loadFailed": "Couldn't load this. Check your connection."
   },
   "auth": {
     "welcomeBack": "Welcome back",
@@ -24,8 +26,19 @@
       "invalidCredentials": "That email and password don't match.",
       "emailTaken": "An account with this email already exists.",
       "invalidInput": "Check the fields and try again.",
-      "generic": "Something went wrong. Try again."
-    }
+      "generic": "Something went wrong. Try again.",
+      "invalidReset": "That code is invalid or expired. Request a new one."
+    },
+    "forgotPassword": "Forgot your password?",
+    "forgotTitle": "Reset password",
+    "forgotHint": "Enter your account email and we'll send you a reset code.",
+    "sendResetCode": "Send reset code",
+    "resetTitle": "New password",
+    "resetHint": "Paste the reset code you received and choose a new password of at least 8 characters.",
+    "resetCode": "Reset code",
+    "resetCodePlaceholder": "Paste your code",
+    "newPassword": "New password",
+    "resetAction": "Update password"
   },
   "home": {
     "goodMorning": "Good morning",
@@ -109,7 +122,12 @@
       "sleep_minutes": "Sleep",
       "workout_frequency": "Workout frequency",
       "measurement": "Body site"
-    }
+    },
+    "detailTitle": "Goal",
+    "markAchieved": "Mark as achieved",
+    "abandon": "Abandon goal",
+    "reactivate": "Reactivate goal",
+    "deleteGoal": "Delete goal"
   },
   "measurements": {
     "title": "Measurements",
@@ -188,7 +206,11 @@
     "confirmMeal": "Confirm and save",
     "suggestAlternatives": "Suggest alternatives",
     "alternativesFor": "Alternatives to {{meal}}",
-    "alternativesUnavailable": "Suggestions aren't available right now."
+    "alternativesUnavailable": "Suggestions aren't available right now.",
+    "editMeal": "Edit meal",
+    "deleteMeal": "Delete meal",
+    "eatenAt": "Eaten at",
+    "discardAnalysis": "Discard scan"
   },
   "activity": {
     "title": "Activity",
@@ -259,7 +281,8 @@
     "detailTitle": "Workout",
     "notesLabel": "Notes",
     "deleteWorkout": "Delete workout",
-    "confirmDelete": "Tap again to confirm"
+    "confirmDelete": "Tap again to confirm",
+    "performedAt": "Performed at"
   },
   "sleep": {
     "title": "Sleep",
@@ -277,7 +300,9 @@
     "target": "Sleep target",
     "saveTarget": "Save target",
     "hoursPerNight": "Hours per night",
-    "targetHint": "Your nightly duration goal, e.g. 8 hours."
+    "targetHint": "Your nightly duration goal, e.g. 8 hours.",
+    "edit": "Edit sleep",
+    "deleteEntry": "Delete entry"
   },
   "insights": {
     "title": "Insights",
@@ -351,7 +376,40 @@
     "account": "Account",
     "exportPdf": "Progress report (PDF)",
     "exportPdfHint": "Last 30 days, ready to share",
-    "exportError": "The report could not be generated. Try again."
+    "exportError": "The report could not be generated. Try again.",
+    "journey": "Your journey",
+    "journeyStats": {
+      "daysTracked": "Days tracked",
+      "meals": "Meals",
+      "workouts": "Workouts",
+      "nights": "Nights of sleep",
+      "measurements": "Measurements",
+      "steps": "Total steps"
+    },
+    "bodyData": "Body data",
+    "birthDate": "Date of birth",
+    "birthDatePlaceholder": "YYYY-MM-DD",
+    "height": "Height (cm)",
+    "heightPlaceholder": "178",
+    "saveBodyData": "Save body data",
+    "invalidBodyData": "Check the date (YYYY-MM-DD) and a height between 50 and 250 cm.",
+    "age": "{{years}} years",
+    "bmi": "BMI {{value}}",
+    "bmiHint": "Calculated from your latest weight and height.",
+    "bmiBand": {
+      "under": "Underweight",
+      "healthy": "Healthy range",
+      "over": "Overweight",
+      "obese": "Obese"
+    },
+    "exportData": "Backup (JSON)",
+    "exportDataHint": "Every log, ready to restore",
+    "importData": "Restore a backup",
+    "importDataHint": "Pick a Metria JSON file",
+    "importSummary": "Restored: {{meals}} meals, {{workouts}} workouts, {{sleep}} nights, {{measurements}} measurements.",
+    "importError": "That file is not a valid Metria backup.",
+    "about": "About",
+    "version": "Version {{version}}"
   },
   "exercises": {
     "title": "Exercise library",

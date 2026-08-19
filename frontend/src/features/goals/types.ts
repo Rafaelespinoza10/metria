@@ -34,3 +34,10 @@ export interface CreateGoalInput {
   startValue?: number;
   targetValue?: number;
 }
+
+export interface UpdateGoalInput {
+  startValue?: number | null;
+  targetValue?: number | null;
+  targetDate?: string | null;
+  status?: GoalStatus;
+}

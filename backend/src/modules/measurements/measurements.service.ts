@@ -1,5 +1,8 @@
 import { AppError } from '../../shared/errors/app-error.js';
+import { IMAGE_EXTENSIONS, sniffImageType } from '../../shared/utils/image-type.js';
+import { endOfDayInTimezone, startOfDayInTimezone } from '../../shared/utils/local-date.js';
 import type { StoragePort } from '../../shared/storage/storage.port.js';
+import type { UsersRepository } from '../users/users.repository.js';
 import type {
   CreateMeasurementInput,
   ListMeasurementsQuery,
@@ -11,12 +14,6 @@ import type {
   MeasurementsRepository,
   ProgressPhotoRow,
 } from './measurements.repository.js';
-
-const PHOTO_CONTENT_TYPES: Record<string, string> = {
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
-};
 
 export interface UploadedPhotoFile {
   buffer: Buffer;
@@ -40,7 +37,13 @@ export class MeasurementsService {
   constructor(
     private readonly measurementsRepository: MeasurementsRepository,
     private readonly storage: StoragePort,
+    private readonly usersRepository: UsersRepository,
   ) {}
+
+  private async userTimezone(userId: string): Promise<string> {
+    const user = await this.usersRepository.findById(userId);
+    return user?.timezone ?? 'UTC';
+  }
 
   async listTypes(userId: string): Promise<MeasurementTypeRow[]> {
     return this.measurementsRepository.listTypesForUser(userId);
@@ -59,11 +62,13 @@ export class MeasurementsService {
   }
 
   async list(userId: string, query: ListMeasurementsQuery): Promise<MeasurementRow[]> {
+    // Calendar dates bound the range in the user's timezone, matching how every
+    // other module buckets days — not in UTC.
+    const timezone = query.from || query.to ? await this.userTimezone(userId) : 'UTC';
     return this.measurementsRepository.listByUser(userId, {
       typeId: query.typeId,
-      from: query.from ? new Date(query.from) : undefined,
-      // `to` is an inclusive calendar date: include the whole day.
-      to: query.to ? new Date(`${query.to}T23:59:59.999Z`) : undefined,
+      from: query.from ? startOfDayInTimezone(query.from, timezone) : undefined,
+      to: query.to ? endOfDayInTimezone(query.to, timezone) : undefined,
     });
   }
 
@@ -99,14 +104,15 @@ export class MeasurementsService {
     file: UploadedPhotoFile,
     input: { takenAt?: string | undefined; notes?: string | undefined },
   ): Promise<PhotoWithUrl> {
-    const extension = PHOTO_CONTENT_TYPES[file.mimetype];
-    if (!extension) throw AppError.validation('Only JPEG, PNG, or WebP images are allowed');
+    const imageType = sniffImageType(file.buffer);
+    if (!imageType) throw AppError.validation('Only JPEG, PNG, or WebP images are allowed');
+    const extension = IMAGE_EXTENSIONS[imageType];
 
     const stored = await this.storage.save({
       userId,
       folder: 'photos',
       extension,
-      contentType: file.mimetype,
+      contentType: imageType,
       data: file.buffer,
     });
     const photo = await this.measurementsRepository.createPhoto({

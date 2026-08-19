@@ -1,17 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
-import { Image, ScrollView, Text, View } from 'react-native';
+import { Image, RefreshControl, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { AuthedImage } from '../../../components/AuthedImage';
+import { ErrorState } from '../../../components/ErrorState';
 import { MacroBar } from '../../../components/MacroBar';
 import { Button } from '../../../components/Button';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
 import type { TabScreenProps } from '../../../navigation/types';
-import { API_URL } from '../../../services/api';
-import { useAuthStore } from '../../../store/auth';
 import { mealCategoryImages } from '../../../theme/images';
 import { theme } from '../../../theme';
 import { addDays, todayISO } from '../helpers';
@@ -22,21 +23,26 @@ type Props = TabScreenProps<'Nutrition'>;
 
 const CATEGORY_ORDER: MealCategory[] = ['breakfast', 'lunch', 'dinner', 'snack'];
 
-function MealRow({ meal, onSuggest }: { meal: Meal; onSuggest: (meal: Meal) => void }) {
+function MealRow({
+  meal,
+  onSuggest,
+  onEdit,
+}: {
+  meal: Meal;
+  onSuggest: (meal: Meal) => void;
+  onEdit: (meal: Meal) => void;
+}) {
   const { t } = useTranslation();
-  const token = useAuthStore((state) => state.token);
   return (
-    <View className="border-t border-black/5 py-3">
+    <PressableScale
+      onPress={() => onEdit(meal)}
+      accessibilityRole="button"
+      accessibilityLabel={t('nutrition.editMeal')}
+      className="border-t border-black/5 py-3"
+    >
       <View className="flex-row items-center justify-between">
         {meal.imageUrl ? (
-          <Image
-            source={{
-              uri: `${API_URL}${meal.imageUrl}`,
-              headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-            }}
-            className="mr-3 h-14 w-14 rounded-2xl bg-ink-800"
-            accessibilityIgnoresInvertColors
-          />
+          <AuthedImage url={meal.imageUrl} className="mr-3 h-14 w-14 rounded-2xl bg-ink-800" />
         ) : (
           <Image
             source={mealCategoryImages[meal.category]}
@@ -66,12 +72,20 @@ function MealRow({ meal, onSuggest }: { meal: Meal; onSuggest: (meal: Meal) => v
           </View>
         </View>
       </View>
-    </View>
+    </PressableScale>
   );
 }
 
 export function NutritionScreen({ navigation }: Props) {
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const [refreshing, setRefreshing] = useState(false);
+  const refresh = async () => {
+    setRefreshing(true);
+    await queryClient.refetchQueries({ type: 'active' });
+    setRefreshing(false);
+  };
+
   const [date, setDate] = useState(todayISO());
   const summaryQuery = useDaySummary(date);
   const mealsQuery = useMeals(date);
@@ -135,7 +149,13 @@ export function NutritionScreen({ navigation }: Props) {
           </PressableScale>
         </Animated.View>
 
-        <ScrollView className="mt-4 flex-1" showsVerticalScrollIndicator={false}>
+        <ScrollView
+          className="mt-4 flex-1"
+          showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={() => void refresh()} />
+          }
+        >
           {summaryQuery.isPending || !summary ? (
             <SkeletonBlock className="h-56 rounded-3xl" />
           ) : (
@@ -188,10 +208,17 @@ export function NutritionScreen({ navigation }: Props) {
             </Text>
             {mealsQuery.isPending ? (
               <SkeletonBlock className="mt-3 h-32 rounded-3xl" />
+            ) : mealsQuery.isError ? (
+              <ErrorState onRetry={() => void mealsQuery.refetch()} />
             ) : orderedMeals.length > 0 ? (
               <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5 pb-1 pt-2">
                 {orderedMeals.map((meal) => (
-                  <MealRow key={meal.id} meal={meal} onSuggest={requestAlternatives} />
+                  <MealRow
+                    key={meal.id}
+                    meal={meal}
+                    onSuggest={requestAlternatives}
+                    onEdit={(target) => navigation.navigate('AddMeal', { meal: target })}
+                  />
                 ))}
               </View>
             ) : (

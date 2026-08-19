@@ -3,7 +3,9 @@
     "appName": "METRIA",
     "loading": "Cargando…",
     "error": "Algo salió mal",
-    "retry": "Reintentar"
+    "retry": "Reintentar",
+    "confirmDelete": "Toca de nuevo para eliminar",
+    "loadFailed": "No se pudo cargar. Revisa tu conexión."
   },
   "auth": {
     "welcomeBack": "Hola de nuevo",
@@ -24,8 +26,19 @@
       "invalidCredentials": "El correo y la contraseña no coinciden.",
       "emailTaken": "Ya existe una cuenta con este correo.",
       "invalidInput": "Revisa los campos e inténtalo de nuevo.",
-      "generic": "Algo salió mal. Inténtalo de nuevo."
-    }
+      "generic": "Algo salió mal. Inténtalo de nuevo.",
+      "invalidReset": "El código no es válido o expiró. Pide uno nuevo."
+    },
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "forgotTitle": "Recuperar contraseña",
+    "forgotHint": "Escribe el correo de tu cuenta y te enviaremos un código de recuperación.",
+    "sendResetCode": "Enviar código",
+    "resetTitle": "Nueva contraseña",
+    "resetHint": "Pega el código que recibiste y elige una contraseña nueva de al menos 8 caracteres.",
+    "resetCode": "Código de recuperación",
+    "resetCodePlaceholder": "Pega tu código",
+    "newPassword": "Nueva contraseña",
+    "resetAction": "Actualizar contraseña"
   },
   "home": {
     "goodMorning": "Buenos días",
@@ -109,7 +122,12 @@
       "sleep_minutes": "Sueño",
       "workout_frequency": "Frecuencia de entreno",
       "measurement": "Zona del cuerpo"
-    }
+    },
+    "detailTitle": "Meta",
+    "markAchieved": "Marcar como lograda",
+    "abandon": "Abandonar meta",
+    "reactivate": "Reactivar meta",
+    "deleteGoal": "Eliminar meta"
   },
   "measurements": {
     "title": "Medidas",
@@ -188,7 +206,11 @@
     "confirmMeal": "Confirmar y guardar",
     "suggestAlternatives": "Sugerir alternativas",
     "alternativesFor": "Alternativas a {{meal}}",
-    "alternativesUnavailable": "Las sugerencias no están disponibles ahora."
+    "alternativesUnavailable": "Las sugerencias no están disponibles ahora.",
+    "editMeal": "Editar comida",
+    "deleteMeal": "Eliminar comida",
+    "eatenAt": "Hora de la comida",
+    "discardAnalysis": "Descartar análisis"
   },
   "activity": {
     "title": "Actividad",
@@ -259,7 +281,8 @@
     "detailTitle": "Entreno",
     "notesLabel": "Notas",
     "deleteWorkout": "Eliminar entreno",
-    "confirmDelete": "Toca otra vez para confirmar"
+    "confirmDelete": "Toca otra vez para confirmar",
+    "performedAt": "Fecha del entreno"
   },
   "sleep": {
     "title": "Sueño",
@@ -277,7 +300,9 @@
     "target": "Objetivo de sueño",
     "saveTarget": "Guardar objetivo",
     "hoursPerNight": "Horas por noche",
-    "targetHint": "Tu meta de duración por noche, p. ej. 8 horas."
+    "targetHint": "Tu meta de duración por noche, p. ej. 8 horas.",
+    "edit": "Editar sueño",
+    "deleteEntry": "Eliminar registro"
   },
   "insights": {
     "title": "Insights",
@@ -351,7 +376,40 @@
     "account": "Cuenta",
     "exportPdf": "Reporte de progreso (PDF)",
     "exportPdfHint": "Últimos 30 días, listo para compartir",
-    "exportError": "No se pudo generar el reporte. Intenta de nuevo."
+    "exportError": "No se pudo generar el reporte. Intenta de nuevo.",
+    "journey": "Tu recorrido",
+    "journeyStats": {
+      "daysTracked": "Días registrados",
+      "meals": "Comidas",
+      "workouts": "Entrenamientos",
+      "nights": "Noches de sueño",
+      "measurements": "Mediciones",
+      "steps": "Pasos totales"
+    },
+    "bodyData": "Datos corporales",
+    "birthDate": "Fecha de nacimiento",
+    "birthDatePlaceholder": "AAAA-MM-DD",
+    "height": "Estatura (cm)",
+    "heightPlaceholder": "178",
+    "saveBodyData": "Guardar datos",
+    "invalidBodyData": "Revisa la fecha (AAAA-MM-DD) y una estatura entre 50 y 250 cm.",
+    "age": "{{years}} años",
+    "bmi": "IMC {{value}}",
+    "bmiHint": "Calculado con tu último peso y tu estatura.",
+    "bmiBand": {
+      "under": "Bajo peso",
+      "healthy": "Rango saludable",
+      "over": "Sobrepeso",
+      "obese": "Obesidad"
+    },
+    "exportData": "Respaldo (JSON)",
+    "exportDataHint": "Todos tus registros, listos para restaurar",
+    "importData": "Restaurar un respaldo",
+    "importDataHint": "Elige un archivo JSON de Metria",
+    "importSummary": "Restaurado: {{meals}} comidas, {{workouts}} entrenamientos, {{sleep}} noches, {{measurements}} mediciones.",
+    "importError": "Ese archivo no es un respaldo válido de Metria.",
+    "about": "Acerca de",
+    "version": "Versión {{version}}"
   },
   "exercises": {
     "title": "Biblioteca de ejercicios",
