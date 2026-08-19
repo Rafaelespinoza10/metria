@@ -15,6 +15,8 @@ export interface UpdateProfileData {
   name?: string | undefined;
   locale?: string | undefined;
   timezone?: string | undefined;
+  birthDate?: string | null | undefined;
+  heightCm?: number | null | undefined;
 }
 
 export class UsersRepository {
