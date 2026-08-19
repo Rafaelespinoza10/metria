@@ -1,6 +1,7 @@
 import request from 'supertest';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../../app.js';
+import { progressPercent } from './goals.service.js';
 import { closeDb } from '../../database/client.js';
 import { UsersRepository } from '../users/users.repository.js';
 
@@ -142,6 +143,42 @@ describe.skipIf(!hasDatabase)('goals', () => {
     expect(otherIds).not.toContain(goalId);
   });
 
+  it('computes progress from the latest measurement of the goal metric', async () => {
+    const user = await registerUser();
+    const types = await request(app)
+      .get('/api/measurements/types')
+      .set('Authorization', `Bearer ${user.token}`);
+    const weightType = (types.body.data.types as { id: string; key: string }[]).find(
+      (type) => type.key === 'weight',
+    );
+    expect(weightType).toBeDefined();
+
+    await request(app)
+      .post('/api/measurements')
+      .set('Authorization', `Bearer ${user.token}`)
+      .send({ typeId: weightType?.id, value: 85, measuredAt: new Date().toISOString() });
+
+    const created = await request(app)
+      .post('/api/goals')
+      .set('Authorization', `Bearer ${user.token}`)
+      .send({ category: 'lose_fat', metric: 'weight', startValue: 90, targetValue: 80 });
+    expect(created.status).toBe(201);
+    expect(created.body.data.goal.progress).toEqual({ current: 85, percent: 50 });
+
+    const list = await request(app).get('/api/goals').set('Authorization', `Bearer ${user.token}`);
+    const goal = (
+      list.body.data.goals as { id: string; progress: { current: number; percent: number } }[]
+    ).find((row) => row.id === created.body.data.goal.id);
+    expect(goal?.progress).toEqual({ current: 85, percent: 50 });
+
+    // Habit metrics stay null.
+    const habit = await request(app)
+      .post('/api/goals')
+      .set('Authorization', `Bearer ${user.token}`)
+      .send({ category: 'improve_habits', metric: 'steps', targetValue: 10000 });
+    expect(habit.body.data.goal.progress).toBeNull();
+  });
+
   it('soft delete hides the goal from list and get', async () => {
     const created = await request(app)
       .post('/api/goals')
@@ -158,5 +195,15 @@ describe.skipIf(!hasDatabase)('goals', () => {
       .get(`/api/goals/${goalId}`)
       .set('Authorization', `Bearer ${token}`);
     expect(get.status).toBe(404);
+  });
+});
+
+describe('progressPercent', () => {
+  it('is direction-agnostic and clamped', () => {
+    expect(progressPercent(90, 80, 85)).toBe(50); // losing
+    expect(progressPercent(60, 70, 65)).toBe(50); // gaining
+    expect(progressPercent(90, 80, 79)).toBe(100); // past the target clamps
+    expect(progressPercent(90, 80, 95)).toBe(0); // regression clamps
+    expect(progressPercent(80, 80, 75)).toBeNull(); // degenerate range
   });
 });
