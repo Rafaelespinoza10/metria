@@ -141,7 +141,10 @@
       "right_thigh": "Muslo der.",
       "left_calf": "Pantorrilla izq.",
       "right_calf": "Pantorrilla der."
-    }
+    },
+    "bodyHint": "Toca una zona del cuerpo para registrar su medida.",
+    "tapSite": "O toca la zona en el cuerpo",
+    "wholeBody": "Cuerpo completo"
   },
   "nutrition": {
     "title": "Nutrición",
@@ -352,8 +355,6 @@
   },
   "exercises": {
     "title": "Biblioteca de ejercicios",
-    "front": "Frente",
-    "back": "Espalda",
     "tapHint": "Toca un músculo para ver ejercicios",
     "allLevels": "Todos",
     "instructions": "Cómo hacerlo",
@@ -393,5 +394,10 @@
     "badges": "Insignias",
     "generatedOn": "Generado el {{date}}",
     "disclaimer": "Datos registrados en Metria. Solo informativo — no es consejo médico."
+  },
+  "body": {
+    "front": "Frente",
+    "back": "Espalda",
+    "selected": "Seleccionado"
   }
 }

@@ -11,8 +11,9 @@ import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
 import type { AppStackParamList } from '../../../navigation/types';
 import { theme } from '../../../theme';
-import { BodyMap, type BodySide } from '../components/BodyMap';
+import { HumanBody, type BodySide } from '../../../components/HumanBody';
 import { useExerciseDetail, useExercises } from '../hooks';
+import { regionForPart } from '../body-regions-map';
 import type { BodyRegion } from '../regions';
 import type { CatalogExercise, ExerciseLevel } from '../types';
 
@@ -138,7 +139,14 @@ export function ExerciseBrowserScreen({ navigation, route }: Props) {
             entering={FadeInDown.delay(60).springify()}
             className="mt-6 rounded-3xl border border-black/5 bg-ink-900 p-5"
           >
-            <BodyMap side={side} onSideChange={setSide} selected={region} onSelect={setRegion} />
+            <HumanBody
+              side={side}
+              onSideChange={setSide}
+              keyFor={(part) => regionForPart(part)}
+              selectedKey={region}
+              onSelect={(key) => setRegion(key as BodyRegion)}
+              labelFor={(key) => t(`exercises.region.${key}`)}
+            />
             <Text className="mt-2 text-center text-sm font-semibold text-content-primary">
               {region ? t(`exercises.region.${region}`) : t('exercises.tapHint')}
             </Text>

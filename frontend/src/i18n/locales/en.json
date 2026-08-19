@@ -141,7 +141,10 @@
       "right_thigh": "Right thigh",
       "left_calf": "Left calf",
       "right_calf": "Right calf"
-    }
+    },
+    "bodyHint": "Tap a spot on the body to log a measurement there.",
+    "tapSite": "Or tap the site on the body",
+    "wholeBody": "Whole body"
   },
   "nutrition": {
     "title": "Nutrition",
@@ -352,8 +355,6 @@
   },
   "exercises": {
     "title": "Exercise library",
-    "front": "Front",
-    "back": "Back",
     "tapHint": "Tap a muscle to see exercises",
     "allLevels": "All",
     "instructions": "How to do it",
@@ -393,5 +394,10 @@
     "badges": "Badges",
     "generatedOn": "Generated on {{date}}",
     "disclaimer": "Data logged in Metria. Informational only — not medical advice."
+  },
+  "body": {
+    "front": "Front",
+    "back": "Back",
+    "selected": "Selected"
   }
 }

@@ -1,11 +1,13 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Image, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Button } from '../../../components/Button';
+import { HumanBody, type BodySide } from '../../../components/HumanBody';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import { SkeletonBlock } from '../../../components/SkeletonBlock';
@@ -14,6 +16,7 @@ import { API_URL } from '../../../services/api';
 import { useAuthStore } from '../../../store/auth';
 import { theme } from '../../../theme';
 import { useLatestMeasurements, usePhotos, useUploadPhoto } from '../hooks';
+import { measurementKeyForPart } from '../measurement-sites';
 
 type Props = NativeStackScreenProps<AppStackParamList, 'Measurements'>;
 
@@ -23,6 +26,15 @@ export function MeasurementsScreen({ navigation }: Props) {
   const latestQuery = useLatestMeasurements();
   const photosQuery = usePhotos();
   const uploadMutation = useUploadPhoto();
+  const [side, setSide] = useState<BodySide>('front');
+
+  // Latest reading per type key, so a measured site can show its value on the figure.
+  const latestByKey = new Map(
+    (latestQuery.data ?? []).map((entry) => [
+      entry.type.key,
+      `${entry.measurement.value} ${entry.type.unit}`,
+    ]),
+  );
 
   const pickAndUpload = async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -44,7 +56,31 @@ export function MeasurementsScreen({ navigation }: Props) {
         <View className="px-5 pb-12">
           <ScreenHeader showBack title={t('measurements.title')} />
 
-          <Animated.View entering={FadeInDown.delay(60).springify()} className="mt-8">
+          <Animated.View
+            entering={FadeInDown.delay(60).springify()}
+            className="mt-6 items-center rounded-3xl border border-black/5 bg-ink-900 py-5"
+          >
+            {latestQuery.isPending ? (
+              <SkeletonBlock className="h-96 w-64 rounded-3xl" />
+            ) : (
+              <>
+                <HumanBody
+                  side={side}
+                  onSideChange={setSide}
+                  keyFor={measurementKeyForPart}
+                  selectedKey={null}
+                  onSelect={(typeKey) => navigation.navigate('LogMeasurement', { typeKey })}
+                  badgeFor={(typeKey) => latestByKey.get(typeKey) ?? null}
+                  labelFor={(typeKey) => t(`measurements.type.${typeKey}`)}
+                />
+                <Text className="mt-4 px-6 text-center text-sm leading-relaxed text-content-secondary">
+                  {t('measurements.bodyHint')}
+                </Text>
+              </>
+            )}
+          </Animated.View>
+
+          <Animated.View entering={FadeInDown.delay(120).springify()} className="mt-8">
             <View className="flex-row items-center justify-between">
               <Text className="text-lg font-semibold text-content-primary">
                 {t('measurements.latest')}
@@ -88,7 +124,7 @@ export function MeasurementsScreen({ navigation }: Props) {
             )}
           </Animated.View>
 
-          <Animated.View entering={FadeInDown.delay(120).springify()} className="mt-8">
+          <Animated.View entering={FadeInDown.delay(180).springify()} className="mt-8">
             <Text className="text-lg font-semibold text-content-primary">
               {t('measurements.photos')}
             </Text>
@@ -121,7 +157,7 @@ export function MeasurementsScreen({ navigation }: Props) {
             </ScrollView>
           </Animated.View>
 
-          <Animated.View entering={FadeInDown.delay(180).springify()} className="mt-10">
+          <Animated.View entering={FadeInDown.delay(240).springify()} className="mt-10">
             <Button
               label={t('measurements.log')}
               onPress={() => navigation.navigate('LogMeasurement')}
