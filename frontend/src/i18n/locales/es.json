@@ -351,7 +351,40 @@
     "account": "Cuenta",
     "exportPdf": "Reporte de progreso (PDF)",
     "exportPdfHint": "Últimos 30 días, listo para compartir",
-    "exportError": "No se pudo generar el reporte. Intenta de nuevo."
+    "exportError": "No se pudo generar el reporte. Intenta de nuevo.",
+    "journey": "Tu recorrido",
+    "journeyStats": {
+      "daysTracked": "Días registrados",
+      "meals": "Comidas",
+      "workouts": "Entrenamientos",
+      "nights": "Noches de sueño",
+      "measurements": "Mediciones",
+      "steps": "Pasos totales"
+    },
+    "bodyData": "Datos corporales",
+    "birthDate": "Fecha de nacimiento",
+    "birthDatePlaceholder": "AAAA-MM-DD",
+    "height": "Estatura (cm)",
+    "heightPlaceholder": "178",
+    "saveBodyData": "Guardar datos",
+    "invalidBodyData": "Revisa la fecha (AAAA-MM-DD) y una estatura entre 50 y 250 cm.",
+    "age": "{{years}} años",
+    "bmi": "IMC {{value}}",
+    "bmiHint": "Calculado con tu último peso y tu estatura.",
+    "bmiBand": {
+      "under": "Bajo peso",
+      "healthy": "Rango saludable",
+      "over": "Sobrepeso",
+      "obese": "Obesidad"
+    },
+    "exportData": "Respaldo (JSON)",
+    "exportDataHint": "Todos tus registros, listos para restaurar",
+    "importData": "Restaurar un respaldo",
+    "importDataHint": "Elige un archivo JSON de Metria",
+    "importSummary": "Restaurado: {{meals}} comidas, {{workouts}} entrenamientos, {{sleep}} noches, {{measurements}} mediciones.",
+    "importError": "Ese archivo no es un respaldo válido de Metria.",
+    "about": "Acerca de",
+    "version": "Versión {{version}}"
   },
   "exercises": {
     "title": "Biblioteca de ejercicios",
