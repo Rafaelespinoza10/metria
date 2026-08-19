@@ -24,8 +24,19 @@
       "invalidCredentials": "That email and password don't match.",
       "emailTaken": "An account with this email already exists.",
       "invalidInput": "Check the fields and try again.",
-      "generic": "Something went wrong. Try again."
-    }
+      "generic": "Something went wrong. Try again.",
+      "invalidReset": "That code is invalid or expired. Request a new one."
+    },
+    "forgotPassword": "Forgot your password?",
+    "forgotTitle": "Reset password",
+    "forgotHint": "Enter your account email and we'll send you a reset code.",
+    "sendResetCode": "Send reset code",
+    "resetTitle": "New password",
+    "resetHint": "Paste the reset code you received and choose a new password of at least 8 characters.",
+    "resetCode": "Reset code",
+    "resetCodePlaceholder": "Paste your code",
+    "newPassword": "New password",
+    "resetAction": "Update password"
   },
   "home": {
     "goodMorning": "Good morning",

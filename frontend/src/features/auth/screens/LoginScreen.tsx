@@ -93,7 +93,14 @@ export function LoginScreen({ navigation }: Props) {
                 disabled={!canSubmit}
                 onPress={submit}
               />
-              <View className="mt-6 flex-row items-center gap-1.5">
+              <Pressable
+                onPress={() => navigation.navigate('ForgotPassword')}
+                hitSlop={8}
+                className="mt-5 self-start"
+              >
+                <Text className="text-sm font-semibold text-brand">{t('auth.forgotPassword')}</Text>
+              </Pressable>
+              <View className="mt-4 flex-row items-center gap-1.5">
                 <Text className="text-sm text-content-secondary">{t('auth.noAccount')}</Text>
                 <Pressable onPress={() => navigation.navigate('Register')} hitSlop={8}>
                   <Text className="text-sm font-semibold text-brand">

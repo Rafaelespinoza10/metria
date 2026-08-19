@@ -33,6 +33,15 @@ export function setAuthToken(token: string | null): void {
   authToken = token;
 }
 
+let onUnauthorized: (() => void) | null = null;
+
+/** Called once by the auth store: a 401 on any authenticated route means the
+ *  session is dead (expired/revoked token) and the app must sign out instead
+ *  of rendering screens that all silently fail. */
+export function setUnauthorizedHandler(handler: (() => void) | null): void {
+  onUnauthorized = handler;
+}
+
 export async function api<T>(path: string, options: RequestInit = {}): Promise<T> {
   // FormData sets its own multipart boundary — never send a manual Content-Type for it.
   const isFormData = options.body instanceof FormData;
@@ -54,6 +63,11 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
   }
 
   if (!body.ok) {
+    // Auth endpoints 401 on wrong credentials — only a rejected *session* token
+    // (a 401 outside /api/auth while a token is set) means the session is dead.
+    if (response.status === 401 && authToken !== null && !path.startsWith('/api/auth/')) {
+      onUnauthorized?.();
+    }
     throw new ApiError(body.error.code, body.error.message, response.status);
   }
   return body.data;

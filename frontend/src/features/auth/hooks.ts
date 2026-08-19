@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { getCalendars } from 'expo-localization';
 import i18n from '../../i18n';
 import { useAuthStore } from '../../store/auth';
-import { login, logout, register } from './api';
+import { forgotPassword, login, logout, register, resetPassword } from './api';
 
 export function useLogin() {
   const signIn = useAuthStore((state) => state.signIn);
@@ -28,6 +28,17 @@ export function useRegister() {
         timezone: getCalendars()[0]?.timeZone ?? undefined,
       }),
     onSuccess: ({ token, user }) => signIn(token, user),
+  });
+}
+
+export function useForgotPassword() {
+  return useMutation({ mutationFn: forgotPassword });
+}
+
+export function useResetPassword() {
+  return useMutation({
+    mutationFn: (input: { token: string; newPassword: string }) =>
+      resetPassword(input.token, input.newPassword),
   });
 }
 

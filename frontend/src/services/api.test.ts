@@ -1,4 +1,4 @@
-import { api, ApiError, setAuthToken } from './api';
+import { api, ApiError, setAuthToken, setUnauthorizedHandler } from './api';
 
 function mockFetchOnce(body: unknown, status = 200) {
   (globalThis.fetch as jest.Mock).mockResolvedValueOnce({
@@ -64,6 +64,33 @@ describe('api client', () => {
     const [, options] = (globalThis.fetch as jest.Mock).mock.calls[0] as [string, RequestInit];
     expect((options.headers as Record<string, string>)['Content-Type']).toBeUndefined();
     expect(options.body).toBe(formData);
+  });
+
+  it('fires the unauthorized handler on a session 401, but not for auth endpoints', async () => {
+    const onUnauthorized = jest.fn();
+    setUnauthorizedHandler(onUnauthorized);
+    const unauthorized = { ok: false, error: { code: 'UNAUTHORIZED', message: 'expired' } };
+
+    // Dead session token on an authenticated route → handler fires.
+    setAuthToken('stale-token');
+    mockFetchOnce(unauthorized, 401);
+    await expect(api('/api/goals')).rejects.toMatchObject({ status: 401 });
+    expect(onUnauthorized).toHaveBeenCalledTimes(1);
+
+    // Wrong credentials on /api/auth/* → the handler must NOT fire.
+    mockFetchOnce(unauthorized, 401);
+    await expect(api('/api/auth/login', { method: 'POST' })).rejects.toMatchObject({
+      status: 401,
+    });
+    expect(onUnauthorized).toHaveBeenCalledTimes(1);
+
+    // No token set (already signed out) → nothing to invalidate.
+    setAuthToken(null);
+    mockFetchOnce(unauthorized, 401);
+    await expect(api('/api/goals')).rejects.toMatchObject({ status: 401 });
+    expect(onUnauthorized).toHaveBeenCalledTimes(1);
+
+    setUnauthorizedHandler(null);
   });
 
   it('exposes ApiError as an Error subclass', () => {
