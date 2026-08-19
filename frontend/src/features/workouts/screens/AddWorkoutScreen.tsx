@@ -8,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import { Button } from '../../../components/Button';
 import { Chip } from '../../../components/Chip';
+import { DateTimeField } from '../../../components/DateTimeField';
 import { PressableScale } from '../../../components/PressableScale';
 import { ScreenHeader } from '../../../components/ScreenHeader';
 import type { AppStackParamList } from '../../../navigation/types';
@@ -49,6 +50,7 @@ export function AddWorkoutScreen({ navigation, route }: Props) {
   const createMutation = useCreateWorkout();
   const [name, setName] = useState('');
   const [duration, setDuration] = useState('');
+  const [performedAt, setPerformedAt] = useState<Date>(new Date());
   const [exercises, setExercises] = useState<ExerciseDraft[]>([]);
   const [exerciseName, setExerciseName] = useState('');
   const [muscleGroup, setMuscleGroup] = useState('');
@@ -171,7 +173,7 @@ export function AddWorkoutScreen({ navigation, route }: Props) {
       }
       await createMutation.mutateAsync({
         name: name.trim(),
-        performedAt: new Date().toISOString(),
+        performedAt: performedAt.toISOString(),
         ...(parsedDuration !== undefined
           ? { durationMinutes: Math.round(parsedDuration ?? 0) }
           : {}),
@@ -214,6 +216,12 @@ export function AddWorkoutScreen({ navigation, route }: Props) {
               keyboardType="number-pad"
               value={duration}
               onChangeText={setDuration}
+            />
+            <DateTimeField
+              label={t('workouts.performedAt')}
+              value={performedAt}
+              onChange={setPerformedAt}
+              maximumDate={new Date()}
             />
             <View className="flex-row gap-2">
               {DURATION_SUGGESTIONS.map((minutes) => (

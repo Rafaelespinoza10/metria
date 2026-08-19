@@ -3,6 +3,9 @@ import {
   analyzeMealPhoto,
   confirmAnalysis,
   createMeal,
+  deleteMeal,
+  discardAnalysis,
+  updateMeal,
   fetchAlternatives,
   fetchAnalysis,
   fetchMeals,
@@ -33,6 +36,27 @@ export function useCreateMeal() {
     mutationFn: createMeal,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['nutrition'] }),
   });
+}
+
+export function useUpdateMeal() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (input: { id: string; changes: Partial<CreateMealInput> }) =>
+      updateMeal(input.id, input.changes),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['nutrition'] }),
+  });
+}
+
+export function useDeleteMeal() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deleteMeal,
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['nutrition'] }),
+  });
+}
+
+export function useDiscardAnalysis() {
+  return useMutation({ mutationFn: discardAnalysis });
 }
 
 export function useNutritionTargets() {

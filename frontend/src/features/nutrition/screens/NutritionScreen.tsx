@@ -22,11 +22,24 @@ type Props = TabScreenProps<'Nutrition'>;
 
 const CATEGORY_ORDER: MealCategory[] = ['breakfast', 'lunch', 'dinner', 'snack'];
 
-function MealRow({ meal, onSuggest }: { meal: Meal; onSuggest: (meal: Meal) => void }) {
+function MealRow({
+  meal,
+  onSuggest,
+  onEdit,
+}: {
+  meal: Meal;
+  onSuggest: (meal: Meal) => void;
+  onEdit: (meal: Meal) => void;
+}) {
   const { t } = useTranslation();
   const token = useAuthStore((state) => state.token);
   return (
-    <View className="border-t border-black/5 py-3">
+    <PressableScale
+      onPress={() => onEdit(meal)}
+      accessibilityRole="button"
+      accessibilityLabel={t('nutrition.editMeal')}
+      className="border-t border-black/5 py-3"
+    >
       <View className="flex-row items-center justify-between">
         {meal.imageUrl ? (
           <Image
@@ -66,7 +79,7 @@ function MealRow({ meal, onSuggest }: { meal: Meal; onSuggest: (meal: Meal) => v
           </View>
         </View>
       </View>
-    </View>
+    </PressableScale>
   );
 }
 
@@ -191,7 +204,12 @@ export function NutritionScreen({ navigation }: Props) {
             ) : orderedMeals.length > 0 ? (
               <View className="mt-3 rounded-3xl border border-black/5 bg-ink-900 px-5 pb-1 pt-2">
                 {orderedMeals.map((meal) => (
-                  <MealRow key={meal.id} meal={meal} onSuggest={requestAlternatives} />
+                  <MealRow
+                    key={meal.id}
+                    meal={meal}
+                    onSuggest={requestAlternatives}
+                    onEdit={(target) => navigation.navigate('AddMeal', { meal: target })}
+                  />
                 ))}
               </View>
             ) : (

@@ -10,6 +10,7 @@ import { ResetPasswordScreen } from '../features/auth/screens/ResetPasswordScree
 import { RegisterScreen } from '../features/auth/screens/RegisterScreen';
 import { HomeScreen } from '../features/dashboard/screens/HomeScreen';
 import { CreateGoalScreen } from '../features/goals/screens/CreateGoalScreen';
+import { GoalDetailScreen } from '../features/goals/screens/GoalDetailScreen';
 import { GoalsScreen } from '../features/goals/screens/GoalsScreen';
 import { LogMeasurementScreen } from '../features/measurements/screens/LogMeasurementScreen';
 import { MeasurementsScreen } from '../features/measurements/screens/MeasurementsScreen';
@@ -90,6 +91,7 @@ export function RootNavigator() {
         <AppStack.Navigator screenOptions={{ headerShown: false }}>
           <AppStack.Screen name="Tabs" component={Tabs} />
           <AppStack.Screen name="Goals" component={GoalsScreen} />
+          <AppStack.Screen name="GoalDetail" component={GoalDetailScreen} />
           <AppStack.Screen name="CreateGoal" component={CreateGoalScreen} />
           <AppStack.Screen name="Measurements" component={MeasurementsScreen} />
           <AppStack.Screen name="LogMeasurement" component={LogMeasurementScreen} />

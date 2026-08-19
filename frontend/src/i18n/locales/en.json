@@ -3,7 +3,8 @@
     "appName": "METRIA",
     "loading": "Loading…",
     "error": "Something went wrong",
-    "retry": "Retry"
+    "retry": "Retry",
+    "confirmDelete": "Tap again to delete"
   },
   "auth": {
     "welcomeBack": "Welcome back",
@@ -120,7 +121,12 @@
       "sleep_minutes": "Sleep",
       "workout_frequency": "Workout frequency",
       "measurement": "Body site"
-    }
+    },
+    "detailTitle": "Goal",
+    "markAchieved": "Mark as achieved",
+    "abandon": "Abandon goal",
+    "reactivate": "Reactivate goal",
+    "deleteGoal": "Delete goal"
   },
   "measurements": {
     "title": "Measurements",
@@ -199,7 +205,11 @@
     "confirmMeal": "Confirm and save",
     "suggestAlternatives": "Suggest alternatives",
     "alternativesFor": "Alternatives to {{meal}}",
-    "alternativesUnavailable": "Suggestions aren't available right now."
+    "alternativesUnavailable": "Suggestions aren't available right now.",
+    "editMeal": "Edit meal",
+    "deleteMeal": "Delete meal",
+    "eatenAt": "Eaten at",
+    "discardAnalysis": "Discard scan"
   },
   "activity": {
     "title": "Activity",
@@ -270,7 +280,8 @@
     "detailTitle": "Workout",
     "notesLabel": "Notes",
     "deleteWorkout": "Delete workout",
-    "confirmDelete": "Tap again to confirm"
+    "confirmDelete": "Tap again to confirm",
+    "performedAt": "Performed at"
   },
   "sleep": {
     "title": "Sleep",
@@ -288,7 +299,9 @@
     "target": "Sleep target",
     "saveTarget": "Save target",
     "hoursPerNight": "Hours per night",
-    "targetHint": "Your nightly duration goal, e.g. 8 hours."
+    "targetHint": "Your nightly duration goal, e.g. 8 hours.",
+    "edit": "Edit sleep",
+    "deleteEntry": "Delete entry"
   },
   "insights": {
     "title": "Insights",
