@@ -1,9 +1,6 @@
-import { randomUUID } from 'node:crypto';
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
-import { pinoHttp } from 'pino-http';
-import { logger } from './shared/logger.js';
 import { OpenAIInsights, OpenAIMealAlternatives, OpenAIMealVision } from './ai/openai.js';
 import type { InsightsPort, MealAlternativesPort, MealVisionPort } from './ai/ports.js';
 import { env } from './config/env.js';
@@ -98,15 +95,6 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   }
   // JSON API: no HTML is served, so CSP adds nothing here.
   app.use(helmet({ contentSecurityPolicy: false }));
-  if (env.NODE_ENV !== 'test') {
-    app.use(
-      pinoHttp({
-        logger,
-        genReqId: () => randomUUID(),
-        autoLogging: { ignore: (req) => req.url?.startsWith('/api/health') ?? false },
-      }),
-    );
-  }
   app.use(
     cors({
       origin: env.CORS_ORIGIN === '*' ? true : env.CORS_ORIGIN.split(','),

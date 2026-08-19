@@ -87,6 +87,18 @@ describe('auth store', () => {
     expect(useAuthStore.getState().status).toBe('signedIn');
   });
 
+  it('routes through onboarding only for the session that registered', async () => {
+    expect(useAuthStore.getState().justRegistered).toBe(false);
+    useAuthStore.getState().markJustRegistered();
+    expect(useAuthStore.getState().justRegistered).toBe(true);
+    useAuthStore.getState().completeOnboarding();
+    expect(useAuthStore.getState().justRegistered).toBe(false);
+
+    useAuthStore.getState().markJustRegistered();
+    await useAuthStore.getState().signOut();
+    expect(useAuthStore.getState().justRegistered).toBe(false);
+  });
+
   it('signOut clears the stored session and state', async () => {
     await useAuthStore.getState().signIn('token-abc', user);
     await useAuthStore.getState().signOut();

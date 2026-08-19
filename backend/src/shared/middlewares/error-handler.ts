@@ -2,6 +2,7 @@ import type { NextFunction, Request, Response } from 'express';
 import multer from 'multer';
 import { ZodError } from 'zod';
 import { AppError } from '../errors/app-error.js';
+import { logger } from '../logger.js';
 import { fail } from '../utils/respond.js';
 import { env } from '../../config/env.js';
 
@@ -32,10 +33,8 @@ export function errorHandler(
   }
 
   if (env.NODE_ENV !== 'test') {
-    // pino-http attaches req.log (with the request id); fall back to console
-    // for the test-injected apps that skip the logging middleware.
-    if (req.log) req.log.error({ err }, 'Unhandled error');
-    else console.error('Unhandled error:', err);
+    // Unexpected failures still surface; only per-request access logging is gone.
+    logger.error({ err, method: req.method, url: req.originalUrl }, 'Unhandled error');
   }
   fail(res, 'INTERNAL_ERROR', 'An unexpected error occurred', 500);
 }

@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { SkeletonBlock } from '../components/SkeletonBlock';
 import { ForgotPasswordScreen } from '../features/auth/screens/ForgotPasswordScreen';
 import { LoginScreen } from '../features/auth/screens/LoginScreen';
+import { OnboardingScreen } from '../features/onboarding/screens/OnboardingScreen';
 import { ResetPasswordScreen } from '../features/auth/screens/ResetPasswordScreen';
 import { RegisterScreen } from '../features/auth/screens/RegisterScreen';
 import { HomeScreen } from '../features/dashboard/screens/HomeScreen';
@@ -82,11 +83,14 @@ function HydrationSkeleton() {
 
 export function RootNavigator() {
   const status = useAuthStore((state) => state.status);
+  const justRegistered = useAuthStore((state) => state.justRegistered);
 
   return (
     <NavigationContainer theme={navigationTheme}>
       {status === 'loading' ? (
         <HydrationSkeleton />
+      ) : status === 'signedIn' && justRegistered ? (
+        <OnboardingScreen />
       ) : status === 'signedIn' ? (
         <AppStack.Navigator screenOptions={{ headerShown: false }}>
           <AppStack.Screen name="Tabs" component={Tabs} />

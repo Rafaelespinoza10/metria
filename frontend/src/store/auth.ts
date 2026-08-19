@@ -11,10 +11,15 @@ interface AuthState {
   status: AuthStatus;
   token: string | null;
   user: AuthUser | null;
+  /** True only for the session that just registered — routes into onboarding.
+   *  Deliberately not persisted: onboarding is a registration continuation. */
+  justRegistered: boolean;
   hydrate: () => Promise<void>;
   signIn: (token: string, user: AuthUser) => Promise<void>;
   signOut: () => Promise<void>;
   setUser: (user: AuthUser) => void;
+  markJustRegistered: () => void;
+  completeOnboarding: () => void;
 }
 
 function applyUserLocale(user: AuthUser): void {
@@ -27,6 +32,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   status: 'loading',
   token: null,
   user: null,
+  justRegistered: false,
 
   hydrate: async () => {
     const session = await loadSession();
@@ -60,10 +66,14 @@ export const useAuthStore = create<AuthState>((set) => ({
   signOut: async () => {
     setAuthToken(null);
     await clearSession();
-    set({ status: 'signedOut', token: null, user: null });
+    set({ status: 'signedOut', token: null, user: null, justRegistered: false });
   },
 
   setUser: (user) => set({ user }),
+
+  markJustRegistered: () => set({ justRegistered: true }),
+
+  completeOnboarding: () => set({ justRegistered: false }),
 }));
 
 // A 401 on any authenticated route means the token is dead: sign out globally

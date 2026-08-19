@@ -20,6 +20,7 @@ export interface RegisterFormInput {
 
 export function useRegister() {
   const signIn = useAuthStore((state) => state.signIn);
+  const markJustRegistered = useAuthStore((state) => state.markJustRegistered);
   return useMutation({
     mutationFn: (input: RegisterFormInput) =>
       register({
@@ -27,7 +28,10 @@ export function useRegister() {
         locale: i18n.language === 'es' ? 'es' : 'en',
         timezone: getCalendars()[0]?.timeZone ?? undefined,
       }),
-    onSuccess: ({ token, user }) => signIn(token, user),
+    onSuccess: async ({ token, user }) => {
+      await signIn(token, user);
+      markJustRegistered();
+    },
   });
 }
 

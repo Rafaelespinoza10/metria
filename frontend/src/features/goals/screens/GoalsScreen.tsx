@@ -50,6 +50,27 @@ function GoalCard({ goal, index, onPress }: { goal: Goal; index: number; onPress
             </Text>
           </View>
         ) : null}
+        {goal.progress ? (
+          <View className="mt-4">
+            <View className="flex-row items-baseline justify-between">
+              <Text className="text-xs font-semibold uppercase tracking-widest text-content-tertiary">
+                {t('goals.current')}
+              </Text>
+              <Text className="text-sm font-semibold text-content-primary">
+                {goal.progress.current} {unit}
+                {goal.progress.percent !== null ? ` · ${goal.progress.percent}%` : ''}
+              </Text>
+            </View>
+            {goal.progress.percent !== null ? (
+              <View className="mt-2 h-2 overflow-hidden rounded-full bg-black/10">
+                <View
+                  className="h-2 rounded-full bg-brand"
+                  style={{ width: `${goal.progress.percent}%` }}
+                />
+              </View>
+            ) : null}
+          </View>
+        ) : null}
       </PressableScale>
     </Animated.View>
   );
