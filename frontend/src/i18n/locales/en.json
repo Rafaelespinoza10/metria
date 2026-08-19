@@ -5,7 +5,8 @@
     "error": "Something went wrong",
     "retry": "Retry",
     "confirmDelete": "Tap again to delete",
-    "loadFailed": "Couldn't load this. Check your connection."
+    "loadFailed": "Couldn't load this. Check your connection.",
+    "continue": "Continue"
   },
   "auth": {
     "welcomeBack": "Welcome back",
@@ -127,7 +128,8 @@
     "markAchieved": "Mark as achieved",
     "abandon": "Abandon goal",
     "reactivate": "Reactivate goal",
-    "deleteGoal": "Delete goal"
+    "deleteGoal": "Delete goal",
+    "current": "Current"
   },
   "measurements": {
     "title": "Measurements",
@@ -457,5 +459,19 @@
     "front": "Front",
     "back": "Back",
     "selected": "Selected"
+  },
+  "onboarding": {
+    "welcomeTitle": "Welcome, {{name}}",
+    "welcomeBody": "Metria connects what you eat, how you move, and how you sleep with how your body changes. Two minutes of setup makes every screen useful from day one.",
+    "start": "Let's set it up",
+    "targetsTitle": "Your daily targets",
+    "targetsBody": "These power your progress score and daily rings. Fill what you know — everything can be changed later.",
+    "sleepHours": "Sleep (hours)",
+    "goalTitle": "A first goal",
+    "goalBody": "Optional: set a weight goal and Metria will track your progress from every measurement you log.",
+    "currentWeight": "Current weight (kg)",
+    "targetWeight": "Target weight (kg)",
+    "finish": "Finish setup",
+    "skip": "Skip for now"
   }
 }

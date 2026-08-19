@@ -65,6 +65,26 @@ export function GoalDetailScreen({ navigation, route }: Props) {
                 </Text>
               </View>
             ) : null}
+            {goal.progress ? (
+              <View className="mt-4 border-t border-black/5 pt-4">
+                <View className="flex-row items-baseline gap-2">
+                  <Text className="text-4xl font-extrabold tracking-tighter text-content-primary">
+                    {goal.progress.current}
+                  </Text>
+                  <Text className="text-base font-medium text-content-secondary">
+                    {unit} {t('goals.current').toLowerCase()}
+                  </Text>
+                </View>
+                {goal.progress.percent !== null ? (
+                  <View className="mt-3 h-2 overflow-hidden rounded-full bg-black/10">
+                    <View
+                      className="h-2 rounded-full bg-brand"
+                      style={{ width: `${goal.progress.percent}%` }}
+                    />
+                  </View>
+                ) : null}
+              </View>
+            ) : null}
           </Animated.View>
 
           {updateMutation.isError || deleteMutation.isError ? (

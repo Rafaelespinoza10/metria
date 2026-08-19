@@ -25,6 +25,8 @@ export interface Goal {
   targetDate: string | null;
   status: GoalStatus;
   createdAt: string;
+  /** Computed by the backend for measurement-backed metrics; null otherwise. */
+  progress: { current: number; percent: number | null } | null;
 }
 
 export interface CreateGoalInput {
