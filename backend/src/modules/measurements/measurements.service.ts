@@ -1,4 +1,5 @@
 import { AppError } from '../../shared/errors/app-error.js';
+import { IMAGE_EXTENSIONS, sniffImageType } from '../../shared/utils/image-type.js';
 import type { StoragePort } from '../../shared/storage/storage.port.js';
 import type {
   CreateMeasurementInput,
@@ -11,12 +12,6 @@ import type {
   MeasurementsRepository,
   ProgressPhotoRow,
 } from './measurements.repository.js';
-
-const PHOTO_CONTENT_TYPES: Record<string, string> = {
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
-};
 
 export interface UploadedPhotoFile {
   buffer: Buffer;
@@ -99,14 +94,15 @@ export class MeasurementsService {
     file: UploadedPhotoFile,
     input: { takenAt?: string | undefined; notes?: string | undefined },
   ): Promise<PhotoWithUrl> {
-    const extension = PHOTO_CONTENT_TYPES[file.mimetype];
-    if (!extension) throw AppError.validation('Only JPEG, PNG, or WebP images are allowed');
+    const imageType = sniffImageType(file.buffer);
+    if (!imageType) throw AppError.validation('Only JPEG, PNG, or WebP images are allowed');
+    const extension = IMAGE_EXTENSIONS[imageType];
 
     const stored = await this.storage.save({
       userId,
       folder: 'photos',
       extension,
-      contentType: file.mimetype,
+      contentType: imageType,
       data: file.buffer,
     });
     const photo = await this.measurementsRepository.createPhoto({

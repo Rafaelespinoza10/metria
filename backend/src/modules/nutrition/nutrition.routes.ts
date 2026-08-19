@@ -11,6 +11,8 @@ export interface NutritionRoutesDeps {
   nutritionService: NutritionService;
   mealAnalysisService: MealAnalysisService;
   authMiddleware: RequestHandler;
+  /** Per-user quota — these routes trigger OpenAI calls. */
+  aiLimiter: RequestHandler;
 }
 
 export function createNutritionRoutes(deps: NutritionRoutesDeps): Router {
@@ -31,8 +33,8 @@ export function createNutritionRoutes(deps: NutritionRoutesDeps): Router {
   router.get('/meals/:id', controller.getMeal);
   router.patch('/meals/:id', controller.updateMeal);
   router.delete('/meals/:id', controller.softDeleteMeal);
-  router.post('/meals/:id/alternatives', analysisController.alternatives);
-  router.post('/analyses', upload.single('photo'), analysisController.analyze);
+  router.post('/meals/:id/alternatives', deps.aiLimiter, analysisController.alternatives);
+  router.post('/analyses', deps.aiLimiter, upload.single('photo'), analysisController.analyze);
   router.get('/analyses/:id', analysisController.getById);
   router.post('/analyses/:id/confirm', analysisController.confirm);
   router.post('/analyses/:id/discard', analysisController.discard);
