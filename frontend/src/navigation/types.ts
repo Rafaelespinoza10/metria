@@ -22,7 +22,8 @@ export type AppStackParamList = {
   Goals: undefined;
   CreateGoal: undefined;
   Measurements: undefined;
-  LogMeasurement: undefined;
+  /** `typeKey` preselects a measurement type (tapped on the body figure). */
+  LogMeasurement: { typeKey?: string } | undefined;
   AddMeal: undefined;
   NutritionTargets: undefined;
   ReviewAnalysis: { analysisId: string; photoUri?: string };
