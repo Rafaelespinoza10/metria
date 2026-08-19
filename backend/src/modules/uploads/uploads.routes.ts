@@ -25,6 +25,9 @@ export function createUploadsRoutes(deps: UploadsRoutesDeps): Router {
       if (!file) throw AppError.notFound('File not found');
 
       res.setHeader('Content-Type', file.contentType);
+      // Defense in depth: never let a browser interpret a stored file as a document.
+      res.setHeader('Content-Disposition', 'attachment');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
       res.setHeader('Cache-Control', 'private, max-age=3600');
       file.stream.pipe(res);
     } catch (error) {

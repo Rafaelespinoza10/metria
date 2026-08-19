@@ -1,4 +1,5 @@
 import { AppError } from '../../shared/errors/app-error.js';
+import { IMAGE_EXTENSIONS, sniffImageType } from '../../shared/utils/image-type.js';
 import type { StoragePort } from '../../shared/storage/storage.port.js';
 import { userKeyPrefix } from '../../shared/storage/storage.port.js';
 import { localDateFor } from '../../shared/utils/local-date.js';
@@ -13,12 +14,6 @@ import type {
   WorkoutWithExercises,
   WorkoutsRepository,
 } from './workouts.repository.js';
-
-const PHOTO_CONTENT_TYPES: Record<string, string> = {
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
-};
 
 export interface UploadedImage {
   buffer: Buffer;
@@ -71,13 +66,14 @@ export class WorkoutsService {
   }
 
   async saveExercisePhoto(userId: string, file: UploadedImage): Promise<ExercisePhoto> {
-    const extension = PHOTO_CONTENT_TYPES[file.mimetype];
-    if (!extension) throw AppError.validation('Only JPEG, PNG, or WebP images are allowed');
+    const imageType = sniffImageType(file.buffer);
+    if (!imageType) throw AppError.validation('Only JPEG, PNG, or WebP images are allowed');
+    const extension = IMAGE_EXTENSIONS[imageType];
     const stored = await this.storage.save({
       userId,
       folder: 'exercises',
       extension,
-      contentType: file.mimetype,
+      contentType: imageType,
       data: file.buffer,
     });
     return { imageKey: stored.key, imageUrl: `/api/uploads/${stored.key}` };

@@ -51,8 +51,10 @@ import { createUsersRoutes } from './modules/users/users.routes.js';
 import { UsersService } from './modules/users/users.service.js';
 import { createAuthMiddleware } from './shared/middlewares/auth.js';
 import {
+  createAiRateLimiter,
   createAuthRateLimiter,
-  type AuthRateLimitOptions,
+  createGlobalRateLimiter,
+  type RateLimitOptions,
 } from './shared/middlewares/rate-limit.js';
 import { errorHandler } from './shared/middlewares/error-handler.js';
 import { notFound } from './shared/middlewares/not-found.js';
@@ -69,13 +71,24 @@ export interface AppDependencies {
   mealAlternatives?: MealAlternativesPort;
   insightsPort?: InsightsPort;
   /** Injectable in tests (limits are off under NODE_ENV=test otherwise). */
-  authRateLimit?: AuthRateLimitOptions;
+  authRateLimit?: RateLimitOptions;
+  globalRateLimit?: RateLimitOptions;
+  aiRateLimit?: RateLimitOptions;
 }
 
 export function createApp(deps: AppDependencies = {}): express.Express {
   const app = express();
 
   app.disable('x-powered-by');
+  if (env.TRUST_PROXY !== undefined) {
+    // Numeric hop count or a comma-separated CIDR/address list — without this,
+    // req.ip behind a proxy is the proxy itself and per-IP limits collapse.
+    const numeric = Number(env.TRUST_PROXY);
+    app.set(
+      'trust proxy',
+      Number.isNaN(numeric) ? env.TRUST_PROXY.split(',').map((s) => s.trim()) : numeric,
+    );
+  }
   // JSON API: no HTML is served, so CSP adds nothing here.
   app.use(helmet({ contentSecurityPolicy: false }));
   app.use(
@@ -93,7 +106,7 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   const goalsRepository = new GoalsRepository();
   const measurementsRepository = new MeasurementsRepository();
   const tokenService = new TokenService();
-  const mailer = deps.passwordResetMailer ?? new ConsolePasswordResetMailer();
+  const mailer = deps.passwordResetMailer ?? new ConsolePasswordResetMailer(env.NODE_ENV);
   const authService = new AuthService(
     usersRepository,
     passwordResetRepository,
@@ -172,7 +185,13 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   const authMiddleware = createAuthMiddleware({ usersRepository, tokenService });
   const exerciseCatalog = new ExerciseCatalog();
 
+  const aiLimiter = createAiRateLimiter(deps.aiRateLimit);
+
   app.use('/api/health', createHealthRoutes());
+  // Uploads sit above the global limiter: image-heavy screens fire dozens of
+  // requests and are already auth-gated per user prefix.
+  app.use('/api/uploads', createUploadsRoutes({ storage, authMiddleware }));
+  app.use('/api', createGlobalRateLimiter(deps.globalRateLimit));
   app.use('/api/auth', createAuthRateLimiter(deps.authRateLimit));
   app.use('/api/auth', createAuthRoutes({ authService, authMiddleware }));
   app.use('/api/users', createUsersRoutes({ usersService, usersDataService, authMiddleware }));
@@ -180,16 +199,15 @@ export function createApp(deps: AppDependencies = {}): express.Express {
   app.use('/api/measurements', createMeasurementsRoutes({ measurementsService, authMiddleware }));
   app.use(
     '/api/nutrition',
-    createNutritionRoutes({ nutritionService, mealAnalysisService, authMiddleware }),
+    createNutritionRoutes({ nutritionService, mealAnalysisService, authMiddleware, aiLimiter }),
   );
   app.use('/api/activity', createActivityRoutes({ activityService, authMiddleware }));
   app.use('/api/workouts', createWorkoutsRoutes({ workoutsService, authMiddleware }));
   app.use('/api/sleep', createSleepRoutes({ sleepService, authMiddleware }));
-  app.use('/api/insights', createInsightsRoutes({ insightsService, authMiddleware }));
+  app.use('/api/insights', createInsightsRoutes({ insightsService, authMiddleware, aiLimiter }));
   app.use('/api/progress', createProgressRoutes({ progressService, authMiddleware }));
   app.use('/api/gamification', createGamificationRoutes({ gamificationService, authMiddleware }));
   app.use('/api/exercises', createExercisesRoutes({ catalog: exerciseCatalog, authMiddleware }));
-  app.use('/api/uploads', createUploadsRoutes({ storage, authMiddleware }));
 
   app.use(notFound);
   app.use(errorHandler);

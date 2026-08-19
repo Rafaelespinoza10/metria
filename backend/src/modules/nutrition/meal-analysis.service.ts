@@ -1,6 +1,7 @@
 import { env } from '../../config/env.js';
 import type { MealAlternativesPort, MealVisionPort } from '../../ai/ports.js';
 import { AppError } from '../../shared/errors/app-error.js';
+import { IMAGE_EXTENSIONS, sniffImageType } from '../../shared/utils/image-type.js';
 import { localDateFor } from '../../shared/utils/local-date.js';
 import type { StoragePort } from '../../shared/storage/storage.port.js';
 import type { GoalsRepository } from '../goals/goals.repository.js';
@@ -10,12 +11,6 @@ import type { MealAnalysisRepository, MealAnalysisRow } from './meal-analysis.re
 import type { CreateMealInput } from './nutrition.schema.js';
 import type { NutritionRepository } from './nutrition.repository.js';
 import { mealTotals, type MealResponse } from './nutrition.service.js';
-
-const PHOTO_CONTENT_TYPES: Record<string, string> = {
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
-};
 
 export interface UploadedImage {
   buffer: Buffer;
@@ -45,14 +40,15 @@ export class MealAnalysisService {
 
   /** Photo → stored image → AI draft. NEVER creates a meal (Rule 10). */
   async analyze(userId: string, file: UploadedImage): Promise<MealAnalysisRow> {
-    const extension = PHOTO_CONTENT_TYPES[file.mimetype];
-    if (!extension) throw AppError.validation('Only JPEG, PNG, or WebP images are allowed');
+    const imageType = sniffImageType(file.buffer);
+    if (!imageType) throw AppError.validation('Only JPEG, PNG, or WebP images are allowed');
+    const extension = IMAGE_EXTENSIONS[imageType];
 
     const stored = await this.storage.save({
       userId,
       folder: 'meals',
       extension,
-      contentType: file.mimetype,
+      contentType: imageType,
       data: file.buffer,
     });
     const analysis = await this.analysisRepository.create(userId, stored.key);
@@ -62,7 +58,7 @@ export class MealAnalysisService {
     try {
       raw = await this.vision.analyzeMealImage({
         data: file.buffer,
-        mimeType: file.mimetype,
+        mimeType: imageType,
         locale,
       });
     } catch {

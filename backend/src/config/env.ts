@@ -17,12 +17,28 @@ const envSchema = z.object({
   STORAGE_DIR: z.string().min(1).default('storage'),
   // '*' or a comma-separated list of allowed origins.
   CORS_ORIGIN: z.string().min(1).default('*'),
+  // Express 'trust proxy' setting: unset = off, a hop count ('1'), or CIDR list.
+  TRUST_PROXY: z.string().min(1).optional(),
   // AI features stay disabled (analyses fail gracefully) when the key is absent.
   OPENAI_API_KEY: z.string().min(1).optional(),
   OPENAI_MODEL: z.string().min(1).default('gpt-4o-mini'),
 });
 
 export type Env = z.infer<typeof envSchema>;
+
+/** Exported for tests. Throws when a production deployment carries dev-only defaults. */
+export function assertProductionSafe(data: Env): void {
+  if (data.NODE_ENV !== 'production') return;
+  if (data.JWT_SECRET === DEV_JWT_SECRET) {
+    throw new Error('JWT_SECRET must be set to a real secret in production.');
+  }
+  if (data.CORS_ORIGIN === '*') {
+    throw new Error('CORS_ORIGIN must list explicit origins in production, not "*".');
+  }
+  if (!data.DATABASE_URL) {
+    throw new Error('DATABASE_URL is required in production.');
+  }
+}
 
 function loadEnv(): Env {
   const parsed = envSchema.safeParse(process.env);
@@ -32,9 +48,7 @@ function loadEnv(): Env {
       .join('\n');
     throw new Error(`Invalid environment configuration:\n${issues}`);
   }
-  if (parsed.data.NODE_ENV === 'production' && parsed.data.JWT_SECRET === DEV_JWT_SECRET) {
-    throw new Error('JWT_SECRET must be set to a real secret in production.');
-  }
+  assertProductionSafe(parsed.data);
   return parsed.data;
 }
 
